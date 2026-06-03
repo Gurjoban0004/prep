@@ -25,6 +25,9 @@ module.exports = async function handler(req, res) {
 
     // Call the custom hosted judge service
     const targetUrl = `${JUDGE_SERVICE_URL}/execute`;
+    
+    console.log('[DEBUG] Target URL:', targetUrl);
+    console.log('[DEBUG] API Key mask:', JUDGE_API_KEY ? JUDGE_API_KEY.substring(0, 4) + '...' + (JUDGE_API_KEY.length > 8 ? JUDGE_API_KEY.substring(JUDGE_API_KEY.length - 4) : '') : 'undefined');
 
     const apiResponse = await fetch(targetUrl, {
       method: 'POST',
