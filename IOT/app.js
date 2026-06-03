@@ -105,6 +105,25 @@ const CONFIG = {
         { id: 'linuxPlayground', label: 'Playground' },
         { id: 'practiceTest1', label: 'PT1' }
       ]
+    },
+    java: {
+      label: "Java DSA",
+      examTime: null,
+      storageKey: "java_mastered_topics",
+      storageKeyPractice: "java_practice_answers",
+      storageKeyJava: "java_dsa_progress",
+      data: {},
+      mcqs: null,
+      javaProblems: null,
+      themeColors: {
+        javaPractice: '#E07A5F',
+      },
+      sectionNames: {
+        javaPractice: 'Java DSA Practice',
+      },
+      tabs: [
+        { id: 'javaPractice', label: 'Practice' },
+      ]
     }
   }
 };
@@ -120,21 +139,27 @@ let state = {
   mastered: {
     iot: { st1: [], st2: [], endTerm: [], cheatSheet: [], practice: [] },
     cn:  { unit1_2: [], unit3_4: [], unit5_6: [], unit7_8: [], unit9: [], notes: [], cheatSheet: [], practice: [] },
-    linux: { notes: [], cheatSheet: [], linuxMcq: [], bashPractice: [], linuxPlayground: [], practiceTest1: [] }
+    linux: { notes: [], cheatSheet: [], linuxMcq: [], bashPractice: [], linuxPlayground: [], practiceTest1: [] },
+    java: { javaPractice: [] }
   },
   practiceAnswers: {
     iot: {},
     cn: {},
-    linux: {}
+    linux: {},
+    java: {}
   },
   bashProgress: {
     linux: {}
+  },
+  javaProgress: {
+    java: {}
   },
   smartNotes: [],
   starredMcqs: {
     iot: [],
     cn: [],
-    linux: []
+    linux: [],
+    java: []
   },
   notesFilterSubject: 'all',
   showStarredOnly: false,
@@ -203,6 +228,9 @@ function init() {
     cheatSheet: typeof LINUX_CHEATSHEET !== 'undefined' ? LINUX_CHEATSHEET : [],
     practiceTest1: typeof LINUX_PRACTICE_TEST_1 !== 'undefined' ? LINUX_PRACTICE_TEST_1 : []
   };
+
+  // Java data
+  CONFIG.subjects.java.javaProblems = typeof JAVA_DSA_PROBLEMS !== 'undefined' ? JAVA_DSA_PROBLEMS : [];
 
   loadAllProgress();
   loadSmartNotes();
@@ -317,6 +345,24 @@ function loadAllProgress() {
       state.bashProgress.linux = JSON.parse(linuxBashSaved) || {};
     } catch (e) { console.error("Error loading Linux Bash progress", e); }
   }
+
+  // Load Java DSA progress
+  const javaDsaSaved = localStorage.getItem(CONFIG.subjects.java.storageKeyJava);
+  if (javaDsaSaved) {
+    try {
+      state.javaProgress.java = JSON.parse(javaDsaSaved) || {};
+    } catch (e) { console.error("Error loading Java DSA progress", e); }
+  }
+
+  const javaSaved = localStorage.getItem(CONFIG.subjects.java.storageKey);
+  if (javaSaved) {
+    try {
+      const parsed = JSON.parse(javaSaved);
+      Object.keys(state.mastered.java).forEach(k => {
+        if (parsed[k]) state.mastered.java[k] = parsed[k];
+      });
+    } catch (e) { console.error("Error loading Java general progress", e); }
+  }
 }
 
 function saveProgress() {
@@ -333,6 +379,12 @@ function saveBashProgress() {
   const subjectConfig = CONFIG.subjects[state.activeSubject];
   if (!subjectConfig.storageKeyBash) return;
   localStorage.setItem(subjectConfig.storageKeyBash, JSON.stringify(state.bashProgress[state.activeSubject] || {}));
+}
+
+function saveJavaProgress() {
+  const subjectConfig = CONFIG.subjects[state.activeSubject];
+  if (!subjectConfig.storageKeyJava) return;
+  localStorage.setItem(subjectConfig.storageKeyJava, JSON.stringify(state.javaProgress[state.activeSubject] || {}));
 }
 
 // Smart Notes persistence
@@ -447,6 +499,14 @@ function setupEventListeners() {
       return;
     }
 
+    if (isJavaSection()) {
+      const javaProblems = getActiveJavaProblems();
+      if (state.activeTopicIndex < javaProblems.length - 1) {
+        selectTopic(state.activeTopicIndex + 1);
+      }
+      return;
+    }
+
     const subjectData = CONFIG.subjects[state.activeSubject].data;
     const totalTopics = subjectData[state.activeSection]?.length || 0;
 
@@ -480,13 +540,16 @@ function setupEventListeners() {
       } else if (isBashSection()) {
         const bashProblems = getActiveBashProblems();
         if (state.activeTopicIndex < bashProblems.length - 1) selectTopic(state.activeTopicIndex + 1);
+      } else if (isJavaSection()) {
+        const javaProblems = getActiveJavaProblems();
+        if (state.activeTopicIndex < javaProblems.length - 1) selectTopic(state.activeTopicIndex + 1);
       } else {
         const subjectData = CONFIG.subjects[state.activeSubject].data;
         const totalTopics = subjectData[state.activeSection]?.length || 0;
         if (state.activeTopicIndex < totalTopics - 1) selectTopic(state.activeTopicIndex + 1);
       }
     } else if (e.key === ' ' || e.key.toLowerCase() === 'm') {
-      if (!isMcqSection() && !isBashSection()) {
+      if (!isMcqSection() && !isBashSection() && !isJavaSection()) {
         toggleTopicMastery(state.activeSection, state.activeTopicIndex);
         e.preventDefault();
       }
@@ -604,8 +667,8 @@ function renderLandingPage() {
       <div class="landing-hero">
         <div class="landing-copy">
           <p class="landing-console-line">student@prep:~$ choose-your-battle</p>
-          <h2>One study room. Three exam desks. Zero wandering.</h2>
-          <p>prep keeps your notes, MCQs, progress, and Linux terminal drills in one quiet workspace built for the last stretch before the paper.</p>
+          <h2>One study room. Four desks. Zero wandering.</h2>
+          <p>prep keeps your notes, MCQs, progress, Linux terminal drills, and Java coding practice in one quiet workspace built for the last stretch before the paper.</p>
           <div class="landing-actions">
             <button class="landing-subject-card primary" data-subject="linux">
               <span class="landing-card-icon">&gt;_</span>
@@ -626,6 +689,13 @@ function renderLandingPage() {
               <span>
                 <strong>Computer Networks</strong>
                 <small>Layered units and quiz practice</small>
+              </span>
+            </button>
+            <button class="landing-subject-card" data-subject="java">
+              <span class="landing-card-icon">&lt;/&gt;</span>
+              <span>
+                <strong>Java DSA</strong>
+                <small>LeetCode-style coding practice</small>
               </span>
             </button>
           </div>
@@ -654,7 +724,7 @@ notes --focus st2</pre>
 // ============================================================
 function setActiveSubject(subjectId) {
   document.body.classList.remove('landing-mode');
-  document.body.classList.remove('subject-iot', 'subject-cn', 'subject-linux');
+  document.body.classList.remove('subject-iot', 'subject-cn', 'subject-linux', 'subject-java');
   document.body.classList.add('subject-' + subjectId);
   state.activeSubject = subjectId;
   const subjectConfig = CONFIG.subjects[subjectId];
@@ -738,12 +808,20 @@ function isPlaygroundSection(sectionId = state.activeSection) {
   return sectionId === 'linuxPlayground';
 }
 
+function isJavaSection(sectionId = state.activeSection) {
+  return sectionId === 'javaPractice';
+}
+
 function getActiveMcqBank() {
   return CONFIG.subjects[state.activeSubject].mcqs || [];
 }
 
 function getActiveBashProblems() {
   return CONFIG.subjects[state.activeSubject].bashProblems || [];
+}
+
+function getActiveJavaProblems() {
+  return CONFIG.subjects[state.activeSubject].javaProblems || [];
 }
 
 function setActiveSection(sectionId) {
@@ -768,18 +846,22 @@ function setActiveSection(sectionId) {
   const container = document.querySelector('.container');
   if (isPlaygroundSection(sectionId)) {
     mainContentPane.classList.add('bash-mode', 'playground-mode');
-    mainContentPane.classList.remove('practice-mode');
+    mainContentPane.classList.remove('practice-mode', 'java-mode');
+    container.classList.add('practice-active');
+  } else if (isJavaSection(sectionId)) {
+    mainContentPane.classList.add('bash-mode', 'java-mode');
+    mainContentPane.classList.remove('practice-mode', 'playground-mode');
     container.classList.add('practice-active');
   } else if (isBashSection(sectionId)) {
     mainContentPane.classList.add('bash-mode');
-    mainContentPane.classList.remove('practice-mode', 'playground-mode');
+    mainContentPane.classList.remove('practice-mode', 'playground-mode', 'java-mode');
     container.classList.add('practice-active');
   } else if (isMcqSection(sectionId)) {
     mainContentPane.classList.add('practice-mode');
-    mainContentPane.classList.remove('bash-mode', 'playground-mode');
+    mainContentPane.classList.remove('bash-mode', 'playground-mode', 'java-mode');
     container.classList.add('practice-active');
   } else {
-    mainContentPane.classList.remove('bash-mode', 'practice-mode', 'playground-mode');
+    mainContentPane.classList.remove('bash-mode', 'practice-mode', 'playground-mode', 'java-mode');
     container.classList.remove('practice-active');
   }
 
@@ -831,6 +913,17 @@ function setActiveSection(sectionId) {
   if (isBashSection()) {
     const bashProblems = getActiveBashProblems();
     if (bashProblems.length > 0) {
+      selectTopic(0);
+    } else {
+      elements.welcomeScreen.style.display = 'flex';
+      elements.readingPane.style.display = 'none';
+    }
+    return;
+  }
+
+  if (isJavaSection()) {
+    const javaProblems = getActiveJavaProblems();
+    if (javaProblems.length > 0) {
       selectTopic(0);
     } else {
       elements.welcomeScreen.style.display = 'flex';
@@ -904,6 +997,62 @@ function renderSidebar() {
           sub.textContent = problem.tags.slice(0, 3).join(' · ');
           inner.appendChild(sub);
         }
+
+        button.appendChild(inner);
+        button.addEventListener('click', () => { selectTopic(index); closeMobileSidebar(); });
+        elements.topicList.appendChild(button);
+      });
+      return;
+    }
+
+    // ── Java DSA Practice: grouped by section, difficulty badges ─────────
+    if (isJavaSection()) {
+      const problems = getActiveJavaProblems();
+      const sections = typeof JAVA_SECTIONS !== 'undefined' ? JAVA_SECTIONS : [];
+      let lastSection = null;
+
+      problems.forEach((problem, index) => {
+        const searchText = `${problem.title} ${problem.section} ${problem.tags.join(' ')}`.toLowerCase();
+        if (!searchText.includes(state.searchQuery)) return;
+
+        // Section group divider
+        if (problem.section !== lastSection) {
+          lastSection = problem.section;
+          const sectionMeta = sections.find(s => s.id === problem.section);
+          const divider = document.createElement('div');
+          divider.className = 'sidebar-group-label';
+          divider.textContent = (sectionMeta ? sectionMeta.icon + ' ' : '') + problem.section;
+          elements.topicList.appendChild(divider);
+        }
+
+        const progress = state.javaProgress[state.activeSubject]?.[problem.id] || {};
+        const isSolved = progress.solved === true;
+        const isActive = index === state.activeTopicIndex;
+
+        const button = document.createElement('button');
+        button.className = `topic-item topic-item--rich ${isActive ? 'active' : ''} ${isSolved ? 'mastered' : ''}`;
+        button.setAttribute('data-index', index);
+
+        // Number badge
+        const badge = document.createElement('span');
+        badge.className = 'topic-num-badge';
+        badge.textContent = index + 1;
+        button.appendChild(badge);
+
+        // Text block
+        const inner = document.createElement('div');
+        inner.className = 'topic-item-inner';
+
+        const titleSpan = document.createElement('span');
+        titleSpan.className = 'topic-title-text';
+        titleSpan.textContent = problem.title;
+        inner.appendChild(titleSpan);
+
+        // Subtitle: difficulty + first tag
+        const sub = document.createElement('span');
+        sub.className = 'topic-subtitle';
+        sub.textContent = problem.difficulty + ' · ' + problem.tags.slice(0, 2).join(' · ');
+        inner.appendChild(sub);
 
         button.appendChild(inner);
         button.addEventListener('click', () => { selectTopic(index); closeMobileSidebar(); });
@@ -1097,6 +1246,11 @@ function selectTopic(index) {
     return;
   }
 
+  if (isJavaSection()) {
+    renderJavaProblem(index);
+    return;
+  }
+
   if (isMcqSection()) {
     renderPracticeUnit(index);
     return;
@@ -1230,6 +1384,19 @@ function updateProgressBar() {
     const problems = getActiveBashProblems();
     const solvedCount = problems.filter(problem => {
       const progress = state.bashProgress[state.activeSubject][problem.id] || {};
+      return progress.solved === true;
+    }).length;
+    const total = problems.length;
+    const percentage = total > 0 ? Math.round((solvedCount / total) * 100) : 0;
+    elements.progressPercent.textContent = `${percentage}% Solved (${solvedCount}/${total})`;
+    elements.progressBar.style.width = `${percentage}%`;
+    return;
+  }
+
+  if (isJavaSection()) {
+    const problems = getActiveJavaProblems();
+    const solvedCount = problems.filter(problem => {
+      const progress = state.javaProgress[state.activeSubject]?.[problem.id] || {};
       return progress.solved === true;
     }).length;
     const total = problems.length;
@@ -1652,6 +1819,469 @@ function renderBashProblem(index) {
 
   elements.readingPane.scrollIntoView({ behavior: 'smooth', block: 'start' });
   document.getElementById('main-content-pane').scrollTop = 0;
+}
+
+// ============================================================
+//  JAVA DSA RENDERING & EXECUTION
+// ============================================================
+
+function renderJavaResults(results) {
+  if (!results || results.length === 0) {
+    return '<p class="bash-idle-state">Run sample tests or submit all tests to see output comparison.</p>';
+  }
+
+  return results.map(result => `
+    <div class="bash-result-card ${result.passed ? 'passed' : 'failed'}">
+      <div class="bash-result-title">
+        <strong>${escapeHtml(result.name)}</strong>
+        <span>${result.passed ? 'Passed' : 'Failed'}</span>
+      </div>
+      ${result.visible || !result.passed ? `
+        ${result.visible ? `
+        <div class="bash-result-grid">
+          <div><label>Input</label><pre>${escapeHtml(result.input)}</pre></div>
+          <div><label>Expected</label><pre>${escapeHtml(result.expectedOutput)}</pre></div>
+          <div><label>Your Output</label><pre>${escapeHtml(result.actualOutput || '(empty)')}</pre></div>
+        </div>
+        ` : '<p class="bash-hidden-case">Hidden case failed. Re-check your logic against edge cases.</p>'}
+        ${result.error ? `<div class="java-error-detail"><pre>${escapeHtml(result.error)}</pre></div>` : ''}
+      ` : '<p class="bash-hidden-case">Hidden case passed.</p>'}
+    </div>
+  `).join('');
+}
+
+function renderJavaProblem(index) {
+  const problems = getActiveJavaProblems();
+  const problem = problems[index];
+  if (!problem) return;
+
+  const progress = state.javaProgress[state.activeSubject]?.[problem.id] || {};
+  const currentCode = progress.code || problem.starterCode;
+  const lastResults = progress.lastResults || [];
+  const passedCount = lastResults.filter(r => r.passed).length;
+  const resultSummary = lastResults.length
+    ? `${passedCount} passed / ${lastResults.length} total`
+    : 'No run yet';
+  const lastExecTime = progress.executionTime ? ` (${progress.executionTime}ms)` : '';
+
+  elements.welcomeScreen.style.display = 'none';
+  elements.readingPane.style.display = 'block';
+
+  const examplesHtml = problem.examples.map(ex => `
+    <div class="bash-example">
+      <label>Input</label>
+      <pre>${escapeHtml(ex.input)}</pre>
+      <label>Expected Output</label>
+      <pre>${escapeHtml(ex.output)}</pre>
+    </div>
+  `).join('');
+
+  const constraintsHtml = problem.constraints.map(c => `<li>${escapeHtml(c)}</li>`).join('');
+
+  const difficultyClass = problem.difficulty === 'Easy' ? 'java-diff-easy' :
+                           problem.difficulty === 'Medium' ? 'java-diff-medium' : 'java-diff-hard';
+
+  elements.contentArea.innerHTML = `
+    <div class="bash-workspace" id="java-workspace">
+      <section class="bash-description-pane" id="java-desc-pane">
+        <div class="bash-problem-header">
+          <div class="bash-header-top-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+             <span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--active-accent); letter-spacing: 0.05em;">${escapeHtml(problem.section)}</span>
+             <div class="bash-nav-mini" style="display: flex; gap: 0.4rem;">
+                <button id="java-mini-prev" class="nav-prev-btn" style="padding: 0.25rem 0.5rem; font-size: 0.7rem;" ${index === 0 ? 'disabled style="opacity:0.5"' : ''}>←</button>
+                <button id="java-mini-next" class="nav-next-btn" style="padding: 0.25rem 0.5rem; font-size: 0.7rem;" ${index === problems.length - 1 ? 'disabled style="opacity:0.5"' : ''}>→</button>
+             </div>
+          </div>
+          <h3 style="margin-top: 0; border-left: none; padding-left: 0; font-size: 1.4rem;">${escapeHtml(problem.title)}</h3>
+          <div class="bash-tags">
+            <span class="${difficultyClass}">${escapeHtml(problem.difficulty)}</span>
+            ${problem.tags.map(tag => `<span>${escapeHtml(tag)}</span>`).join('')}
+          </div>
+        </div>
+        <div class="bash-section-block">
+          <h4>Problem</h4>
+          <p style="font-size: 0.95rem;">${problem.prompt}</p>
+        </div>
+        <div class="bash-section-block">
+          <h4>Examples</h4>
+          ${examplesHtml}
+        </div>
+        <div class="bash-section-block">
+          <h4>Constraints</h4>
+          <ul style="font-size: 0.9rem;">${constraintsHtml}</ul>
+        </div>
+        <div class="bash-section-block">
+          <h4 style="margin-bottom: 0.3rem;">Method Signature</h4>
+          <pre style="background: #1e1e2e; color: #cdd6f4; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.85rem; overflow-x: auto;"><code>${escapeHtml(problem.methodName)}(...)</code></pre>
+        </div>
+        <div class="bash-section-block bash-solution-block">
+          <button class="bash-solution-toggle" id="java-solution-toggle">Show Answer</button>
+          <pre class="bash-solution-code" id="java-solution-code" hidden>${escapeHtml(problem.solutionCode || '')}</pre>
+        </div>
+      </section>
+
+      <div class="resizer-h" id="resizer-java-h">
+        <div class="resizer-notch"></div>
+      </div>
+
+      <section class="bash-editor-pane">
+        <div class="bash-editor-toolbar">
+          <span class="bash-editor-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right: 0.3rem;"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            Java Editor
+          </span>
+          <div class="bash-editor-actions" style="display: flex; gap: 0.4rem; align-items: center;">
+            <button class="bash-reset-btn" id="java-piston-settings-btn" title="Compiler Settings" style="padding: 0.6rem; display: inline-flex; align-items: center; justify-content: center; height: 34px; width: 34px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </button>
+            <button class="bash-reset-btn" id="java-reset-btn">Reset</button>
+            <button class="bash-run-btn" id="java-run-btn">▶ Run</button>
+            <button class="bash-submit-btn" id="java-submit-btn">Submit</button>
+          </div>
+        </div>
+        <div class="bash-editor-wrapper">
+          <pre id="java-highlighter" class="bash-highlighter" aria-hidden="true"><code class="language-java"></code></pre>
+          <textarea class="bash-code-editor java-code-editor" id="java-code-editor" spellcheck="false">${escapeHtml(currentCode)}</textarea>
+        </div>
+        
+        <div class="resizer-v" id="resizer-java-v">
+          <div class="resizer-notch"></div>
+        </div>
+
+        <div class="bash-results-panel" id="java-results-pane" style="height: 300px; min-height: 100px; display: flex; flex-direction: column;">
+          <div class="bash-results-header" style="padding: 0.75rem 1.5rem; background: #FAF8F6; border-bottom: 1px solid var(--border-color); flex-shrink: 0; display: flex; justify-content: space-between;">
+            <strong style="font-size: 0.85rem;">Test Results</strong>
+            <span id="java-results-summary" style="font-size: 0.8rem; font-weight: 600;">${resultSummary}${lastExecTime}</span>
+          </div>
+          <div id="java-results-body" style="flex: 1; overflow-y: auto; padding: 1rem;">${renderJavaResults(lastResults)}</div>
+        </div>
+      </section>
+    </div>
+  `;
+
+  // Ensure content area doesn't have its own scroll
+  elements.contentArea.style.overflow = 'hidden';
+  elements.contentArea.style.padding = '0';
+
+  // Initialize resizers
+  initResizer('resizer-java-h', 'java-desc-pane', 'horizontal');
+  initResizer('resizer-java-v', 'java-results-pane', 'vertical', true);
+
+  const editor = document.getElementById('java-code-editor');
+
+  // Syntax Highlighting & Syncing
+  const highlighterPre = document.getElementById('java-highlighter');
+  if (editor && highlighterPre) {
+    editor.addEventListener('scroll', () => {
+      highlighterPre.scrollTop = editor.scrollTop;
+      highlighterPre.scrollLeft = editor.scrollLeft;
+    });
+  }
+
+  // Draft persistence on input
+  editor.addEventListener('input', event => {
+    if (!state.javaProgress[state.activeSubject]) state.javaProgress[state.activeSubject] = {};
+    state.javaProgress[state.activeSubject][problem.id] = {
+      ...state.javaProgress[state.activeSubject][problem.id],
+      code: event.target.value
+    };
+    saveJavaProgress();
+    if (window.updateJavaHighlighting) window.updateJavaHighlighting();
+  });
+
+  // Auto-closing bracket/quote pairs
+  const AUTO_CLOSE_PAIRS = { '(': ')', '[': ']', '{': '}', '"': '"', "'": "'" };
+  editor.addEventListener('keydown', (e) => {
+    // Tab key → insert 4 spaces
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const start = editor.selectionStart;
+      const end = editor.selectionEnd;
+      const before = editor.value.slice(0, start);
+      const after = editor.value.slice(end);
+      editor.value = before + '    ' + after;
+      editor.setSelectionRange(start + 4, start + 4);
+      editor.dispatchEvent(new Event('input'));
+      return;
+    }
+    const open = e.key;
+    if (!AUTO_CLOSE_PAIRS.hasOwnProperty(open)) return;
+    const close = AUTO_CLOSE_PAIRS[open];
+    const start = editor.selectionStart;
+    const end = editor.selectionEnd;
+    const selected = editor.value.slice(start, end);
+    e.preventDefault();
+    const before = editor.value.slice(0, start);
+    const after = editor.value.slice(end);
+    editor.value = before + open + selected + close + after;
+    const newCursor = start + 1 + selected.length;
+    editor.setSelectionRange(newCursor, newCursor);
+    editor.dispatchEvent(new Event('input'));
+  });
+
+  // Initial highlight
+  if (window.updateJavaHighlighting) window.updateJavaHighlighting();
+
+  // Settings Dialog Button Listener
+  const settingsBtn = document.getElementById('java-piston-settings-btn');
+  const settingsDialog = document.getElementById('java-settings-dialog');
+  const settingsUrlInput = document.getElementById('java-settings-url');
+  const settingsKeyInput = document.getElementById('java-settings-key');
+  const settingsCloseBtn = document.getElementById('java-settings-close-btn');
+  const settingsSaveBtn = document.getElementById('java-settings-save-btn');
+  const settingsResetBtn = document.getElementById('java-settings-reset-btn');
+
+  if (settingsBtn && settingsDialog) {
+    settingsBtn.addEventListener('click', () => {
+      // Load current settings
+      let settings = { apiUrl: '/api/execute', apiKey: '' };
+      try {
+        const saved = localStorage.getItem('prep_piston_settings');
+        if (saved) settings = JSON.parse(saved);
+      } catch (e) {}
+
+      if (settingsUrlInput) settingsUrlInput.value = settings.apiUrl;
+      if (settingsKeyInput) settingsKeyInput.value = settings.apiKey;
+
+      settingsDialog.showModal();
+    });
+  }
+
+  if (settingsCloseBtn && settingsDialog) {
+    settingsCloseBtn.addEventListener('click', () => {
+      settingsDialog.close();
+    });
+  }
+
+  if (settingsSaveBtn && settingsDialog) {
+    settingsSaveBtn.addEventListener('click', () => {
+      const settings = {
+        apiUrl: settingsUrlInput ? settingsUrlInput.value.trim() : '/api/execute',
+        apiKey: settingsKeyInput ? settingsKeyInput.value.trim() : ''
+      };
+      try {
+        localStorage.setItem('prep_piston_settings', JSON.stringify(settings));
+      } catch (e) {}
+      settingsDialog.close();
+    });
+  }
+
+  if (settingsResetBtn) {
+    settingsResetBtn.addEventListener('click', () => {
+      if (settingsUrlInput) settingsUrlInput.value = '/api/execute';
+      if (settingsKeyInput) settingsKeyInput.value = '';
+    });
+  }
+
+  // Run / Submit button handlers
+  document.getElementById('java-run-btn').addEventListener('click', () => runJavaProblem(problem, 'run'));
+  document.getElementById('java-submit-btn').addEventListener('click', () => runJavaProblem(problem, 'submit'));
+  
+  // Reset button
+  document.getElementById('java-reset-btn').addEventListener('click', () => {
+    editor.value = problem.starterCode;
+    if (!state.javaProgress[state.activeSubject]) state.javaProgress[state.activeSubject] = {};
+    state.javaProgress[state.activeSubject][problem.id] = {
+      code: problem.starterCode,
+      lastResults: [],
+      solved: false
+    };
+    saveJavaProgress();
+    if (window.updateJavaHighlighting) window.updateJavaHighlighting();
+    const body = document.getElementById('java-results-body');
+    if (body) body.innerHTML = renderJavaResults([]);
+    const summary = document.getElementById('java-results-summary');
+    if (summary) summary.textContent = 'No run yet';
+    editor.focus();
+  });
+
+  // Solution toggle
+  const solutionToggle = document.getElementById('java-solution-toggle');
+  const solutionCode = document.getElementById('java-solution-code');
+  if (solutionToggle && solutionCode) {
+    solutionToggle.addEventListener('click', () => {
+      const isHidden = solutionCode.hasAttribute('hidden');
+      if (isHidden) {
+        solutionCode.removeAttribute('hidden');
+        solutionToggle.textContent = 'Hide Answer';
+      } else {
+        solutionCode.setAttribute('hidden', '');
+        solutionToggle.textContent = 'Show Answer';
+      }
+    });
+  }
+
+  // Mini nav listeners
+  const miniPrev = document.getElementById('java-mini-prev');
+  const miniNext = document.getElementById('java-mini-next');
+  if (miniPrev) miniPrev.addEventListener('click', () => selectTopic(index - 1));
+  if (miniNext) miniNext.addEventListener('click', () => selectTopic(index + 1));
+
+  // Update sidebar active state
+  const sidebarButtons = elements.topicList.querySelectorAll('.topic-item');
+  sidebarButtons.forEach(btn => {
+    const idx = parseInt(btn.getAttribute('data-index'));
+    btn.classList.toggle('active', idx === index);
+  });
+
+  // Nav buttons
+  elements.prevBtn.disabled = index === 0;
+  elements.prevBtn.style.opacity = index === 0 ? '0.5' : '1';
+
+  const isLastProblem = index === problems.length - 1;
+  if (isLastProblem) {
+    elements.nextBtn.innerHTML = 'Practice Complete';
+    elements.nextBtn.style.backgroundColor = '#EEF6F2';
+    elements.nextBtn.style.borderColor = '#CDE3D5';
+    elements.nextBtn.style.color = '#4A7A60';
+    elements.nextBtn.style.opacity = '0.7';
+    elements.nextBtn.style.cursor = 'default';
+  } else {
+    elements.nextBtn.innerHTML = 'Next Problem <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
+    elements.nextBtn.style.backgroundColor = '';
+    elements.nextBtn.style.borderColor = '';
+    elements.nextBtn.style.color = '';
+    elements.nextBtn.style.opacity = '';
+    elements.nextBtn.style.cursor = 'pointer';
+  }
+
+  elements.readingPane.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('main-content-pane').scrollTop = 0;
+}
+
+async function runJavaProblem(problem, mode) {
+  const editor = document.getElementById('java-code-editor');
+  const code = editor ? editor.value : '';
+  const runBtn = document.getElementById('java-run-btn');
+  const submitBtn = document.getElementById('java-submit-btn');
+  const body = document.getElementById('java-results-body');
+  const summary = document.getElementById('java-results-summary');
+
+  // Loading state
+  const activeBtn = mode === 'run' ? runBtn : submitBtn;
+  const originalText = activeBtn.textContent;
+  activeBtn.textContent = 'Running...';
+  activeBtn.disabled = true;
+  runBtn.disabled = true;
+  submitBtn.disabled = true;
+
+  if (body) body.innerHTML = '<div class="java-loading"><div class="java-spinner"></div><p>Compiling & running on server...</p></div>';
+
+  try {
+    const result = await executeJavaProblem(problem, code, mode);
+
+    // Network error
+    if (result.networkError) {
+      if (body) {
+        if (result.networkError.includes('HTTP 401')) {
+          // Load current settings
+          let settings = { apiUrl: '/api/execute', apiKey: '' };
+          try {
+            const saved = localStorage.getItem('prep_piston_settings');
+            if (saved) settings = JSON.parse(saved);
+          } catch (e) {}
+
+          body.innerHTML = `
+            <div class="java-error-panel">
+              <h4>⚠️ Execution Service Unauthorized (HTTP 401)</h4>
+              <p style="margin-bottom: 0.75rem;">The compilation proxy is unauthorized. Please configure a custom URL or set the authorization key.</p>
+              <p style="font-size: 0.82rem; margin-bottom: 1rem; color: var(--text-secondary);">
+                Ensure your proxy key matches the backend server, or point directly to a local compiler instance.
+              </p>
+              
+              <div class="java-settings-inline-panel">
+                <div style="margin-bottom: 0.75rem; display: flex; flex-direction: column;">
+                  <label style="font-size: 0.8rem; font-weight: 600; margin-bottom: 0.2rem; color: var(--text-primary);">Custom Execution API URL</label>
+                  <input type="text" id="java-settings-url-inline" class="java-settings-input-inline" value="${escapeHtml(settings.apiUrl)}">
+                  <span class="java-dialog-help">To run locally: <code>node judge.js</code> inside <code>judge-service</code> then set URL to <code>http://localhost:5005/execute</code></span>
+                </div>
+                <div style="margin-bottom: 0.75rem; display: flex; flex-direction: column;">
+                  <label style="font-size: 0.8rem; font-weight: 600; margin-bottom: 0.2rem; color: var(--text-primary);">API Key (Optional)</label>
+                  <input type="password" id="java-settings-key-inline" class="java-settings-input-inline" value="${escapeHtml(settings.apiKey)}" placeholder="Enter API token">
+                </div>
+                <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.75rem;">
+                  <button id="java-settings-reset-inline-btn" class="bash-reset-btn" style="padding: 0.45rem 0.8rem; font-size: 0.8rem; border-radius: 4px;">Reset Defaults</button>
+                  <button id="java-settings-save-inline-btn" class="bash-submit-btn" style="padding: 0.45rem 0.8rem; font-size: 0.8rem; border-radius: 4px;">Save & Retry</button>
+                </div>
+              </div>
+            </div>
+          `;
+
+          // Attach inline form event listeners
+          document.getElementById('java-settings-reset-inline-btn').addEventListener('click', () => {
+            const urlInput = document.getElementById('java-settings-url-inline');
+            const keyInput = document.getElementById('java-settings-key-inline');
+            if (urlInput) urlInput.value = '/api/execute';
+            if (keyInput) keyInput.value = '';
+          });
+
+          document.getElementById('java-settings-save-inline-btn').addEventListener('click', () => {
+            const urlInput = document.getElementById('java-settings-url-inline');
+            const keyInput = document.getElementById('java-settings-key-inline');
+            const newSettings = {
+              apiUrl: urlInput ? urlInput.value.trim() : '/api/execute',
+              apiKey: keyInput ? keyInput.value.trim() : ''
+            };
+            try {
+              localStorage.setItem('prep_piston_settings', JSON.stringify(newSettings));
+            } catch (e) {}
+            // Retry compilation automatically
+            runJavaProblem(problem, mode);
+          });
+
+        } else {
+          body.innerHTML = `<div class="java-error-panel"><h4>⚠️ Connection Error</h4><p>${escapeHtml(result.networkError)}</p></div>`;
+        }
+      }
+      if (summary) summary.textContent = 'Error';
+      return;
+    }
+
+    // Compile error
+    if (result.compileError) {
+      if (body) body.innerHTML = `<div class="java-error-panel"><h4>❌ Compilation Error</h4><pre>${escapeHtml(result.compileError)}</pre></div>`;
+      if (summary) summary.textContent = `Compile Error (${result.executionTime}ms)`;
+      return;
+    }
+
+    // TLE
+    if (result.timedOut) {
+      if (body) body.innerHTML = `<div class="java-error-panel"><h4>⏱ Time Limit Exceeded</h4><p>Your code took too long to execute. Check for infinite loops or optimize your algorithm.</p></div>`;
+      if (summary) summary.textContent = 'TLE';
+      return;
+    }
+
+    // Test results
+    const passedCount = result.results.filter(r => r.passed).length;
+    const solved = mode === 'submit' && passedCount === result.results.length && result.results.length > 0;
+
+    // Persist results
+    if (!state.javaProgress[state.activeSubject]) state.javaProgress[state.activeSubject] = {};
+    state.javaProgress[state.activeSubject][problem.id] = {
+      ...state.javaProgress[state.activeSubject][problem.id],
+      code,
+      lastResults: result.results,
+      lastMode: mode,
+      executionTime: result.executionTime,
+      solved: solved || (state.javaProgress[state.activeSubject][problem.id] || {}).solved === true
+    };
+    saveJavaProgress();
+
+    if (body) body.innerHTML = renderJavaResults(result.results);
+    if (summary) summary.textContent = `${passedCount} passed / ${result.results.length} total (${result.executionTime}ms)`;
+
+    const panel = document.querySelector('.bash-results-panel');
+    if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    renderSidebar();
+    updateProgressBar();
+
+  } finally {
+    activeBtn.textContent = originalText;
+    activeBtn.disabled = false;
+    runBtn.disabled = false;
+    submitBtn.disabled = false;
+  }
 }
 
 // ============================================================
@@ -2107,6 +2737,19 @@ window.updateBashHighlighting = function() {
     highlighter.textContent = editor.value;
   }
 };
+
+window.updateJavaHighlighting = function() {
+  const editor = document.getElementById('java-code-editor');
+  const highlighter = document.querySelector('#java-highlighter code');
+  if (!editor || !highlighter) return;
+  
+  if (window.Prism && Prism.languages.java) {
+    highlighter.innerHTML = Prism.highlight(editor.value, Prism.languages.java, 'java');
+  } else {
+    highlighter.textContent = editor.value;
+  }
+};
+
 window.addEventListener('DOMContentLoaded', () => {
   init();
 });

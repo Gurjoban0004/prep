@@ -5247,4 +5247,347 @@ body.dark-theme .challenge-feedback-box.error-feedback {
   border-color: rgba(254, 226, 226, 0.1);
 }
 
+/* ============================================================
+   JAVA DSA WORKSPACE & ERROR STYLING
+   ============================================================ */
+
+/* Java Difficulty Badges */
+.java-diff-easy {
+  background-color: #EAF5EF;
+  color: #2F6F5E;
+  border: 1px solid #CDE8D9;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: inline-block;
+}
+.java-diff-medium {
+  background-color: #FAF6EE;
+  color: #B58450;
+  border: 1px solid #F5ECE0;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: inline-block;
+}
+.java-diff-hard {
+  background-color: #FDF2F2;
+  color: #DE3E3E;
+  border: 1px solid #FBD5D5;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+body.dark-theme .java-diff-easy {
+  background: rgba(140, 209, 185, 0.15);
+  color: #8CD1B9;
+  border-color: rgba(140, 209, 185, 0.2);
+}
+body.dark-theme .java-diff-medium {
+  background: rgba(244, 241, 222, 0.1);
+  color: #F4F1DE;
+  border-color: rgba(244, 241, 222, 0.15);
+}
+body.dark-theme .java-diff-hard {
+  background: rgba(254, 226, 226, 0.05);
+  color: #F87171;
+  border-color: rgba(254, 226, 226, 0.1);
+}
+
+/* Loader & Spinner */
+.java-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.java-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--active-accent);
+  border-radius: 50%;
+  animation: java-spin 0.8s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes java-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Error panels & Details */
+.java-error-panel {
+  background-color: #FDF2F2;
+  border: 1px solid #FBD5D5;
+  border-radius: 8px;
+  padding: 1.25rem;
+  color: #DE3E3E;
+  margin-bottom: 1rem;
+}
+
+.java-error-panel h4 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.java-error-panel pre {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  background: #FFF;
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #FBD5D5;
+  overflow-x: auto;
+}
+
+body.dark-theme .java-error-panel {
+  background-color: rgba(254, 226, 226, 0.05);
+  border-color: rgba(254, 226, 226, 0.1);
+  color: #F87171;
+}
+
+body.dark-theme .java-error-panel pre {
+  background: #181514;
+  border-color: rgba(254, 226, 226, 0.1);
+  color: #F87171;
+}
+
+.java-error-detail {
+  margin-top: 0.75rem;
+  border-top: 1px dashed var(--border-color);
+  padding-top: 0.75rem;
+}
+
+.java-error-detail pre {
+  margin: 0;
+  background-color: #FAF8F6;
+  border: 1px solid var(--border-color);
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: #C0392B;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
+body.dark-theme .java-error-detail pre {
+  background-color: #141110;
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #F87171;
+}
+
+/* ============================================================
+   COMPILER SETTINGS DIALOG & INLINE PANEL
+   ============================================================ */
+
+/* Compiler Settings Dialog Modal */
+.java-dialog {
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 0;
+  width: min(450px, 90%);
+  background-color: #FFFDFB;
+  box-shadow: 0 20px 40px rgba(44, 42, 41, 0.16);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  outline: none;
+}
+
+.java-dialog::backdrop {
+  background-color: rgba(44, 42, 41, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+body.dark-theme .java-dialog {
+  background-color: #201C1A;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+}
+
+body.dark-theme .java-dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.java-dialog-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.java-dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.java-dialog-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+body.dark-theme .java-dialog-header h3 {
+  color: #FFFFFF;
+}
+
+.java-dialog-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  line-height: 1;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.java-dialog-close:hover {
+  color: var(--active-accent);
+}
+
+.java-dialog-body {
+  padding: 1.5rem;
+}
+
+.java-dialog-form-group {
+  margin-bottom: 1.25rem;
+}
+
+.java-dialog-form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: var(--text-primary);
+}
+
+body.dark-theme .java-dialog-form-group label {
+  color: #FFFFFF;
+}
+
+.java-dialog-form-group input {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background-color: #FFFDFB;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.java-dialog-form-group input:focus {
+  border-color: var(--active-accent);
+}
+
+body.dark-theme .java-dialog-form-group input {
+  background-color: #141110;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+}
+
+body.dark-theme .java-dialog-form-group input:focus {
+  border-color: var(--active-accent);
+}
+
+.java-dialog-help {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  margin-top: 0.35rem;
+  line-height: 1.4;
+}
+
+.java-dialog-help code {
+  background-color: #FAF6EE;
+  padding: 0.1rem 0.25rem;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+}
+
+body.dark-theme .java-dialog-help code {
+  background-color: #141110;
+  color: #CDE8D9;
+}
+
+.java-dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+  background-color: #FAF8F6;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+body.dark-theme .java-dialog-footer {
+  background-color: #181514;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Inline settings styling for the error panel */
+.java-settings-inline-panel {
+  background-color: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(222, 62, 62, 0.2);
+  border-radius: 6px;
+  padding: 1rem;
+  margin-top: 0.75rem;
+}
+
+body.dark-theme .java-settings-inline-panel {
+  background-color: rgba(20, 17, 16, 0.5);
+  border-color: rgba(248, 113, 113, 0.2);
+}
+
+.java-settings-input-inline {
+  padding: 0.45rem 0.6rem;
+  font-size: 0.85rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: #FFF;
+  color: var(--text-primary);
+  margin-top: 0.25rem;
+  outline: none;
+  box-sizing: border-box;
+}
+
+body.dark-theme .java-settings-input-inline {
+  background: #141110;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+}
+
+.java-settings-input-inline:focus {
+  border-color: var(--active-accent);
+}
+
+
 

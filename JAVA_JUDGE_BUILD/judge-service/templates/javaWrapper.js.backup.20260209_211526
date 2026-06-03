@@ -1,0 +1,882 @@
+/**
+ * FIXED Java Wrapper Generator
+ * 
+ * This version includes:
+ * - Robust input parsing with proper type detection
+ * - Better error messages for debugging
+ * - Handles String -> int[] conversion properly
+ * - Supports nested arrays, ListNode, TreeNode
+ * - Comprehensive logging for debugging
+ */
+
+/**
+ * Parse parameter types from Java method signature
+ */
+function parseParameterTypes(javaMethodSignature) {
+    const match = javaMethodSignature.match(/\((.*?)\)/);
+    if (!match || !match[1].trim()) return [];
+
+    const paramsStr = match[1].trim();
+    const params = paramsStr.split(',').map(p => p.trim());
+
+    return params.map(param => {
+        const parts = param.trim().split(/\s+/);
+        return parts.slice(0, -1).join(' ');
+    });
+}
+
+/**
+ * Parse return type from Java method signature
+ */
+function parseReturnType(javaMethodSignature) {
+    const match = javaMethodSignature.match(/public\s+(\S+)\s+\w+\s*\(/);
+    return match ? match[1] : null;
+}
+
+/**
+ * Generate method invocation with ROBUST type handling
+ */
+function generateMethodInvocation(paramCount, paramTypes, javaMethodSignature) {
+    const returnType = parseReturnType(javaMethodSignature);
+    const isVoid = returnType === 'void';
+
+    // Helper to generate parameter conversion code
+    const generateParamConversion = (index, type) => {
+        const paramName = `param${index}`;
+        const rawName = `param${index}Raw`;
+
+        // Normalize type
+        const normalizedType = type.replace(/\s+/g, '');
+
+        if (type === 'ListNode') {
+            return `        ListNode ${paramName} = convertToListNode(${rawName});`;
+        }
+
+        if (type === 'TreeNode') {
+            return `        TreeNode ${paramName} = convertToTreeNode(${rawName});`;
+        }
+
+        if (normalizedType === 'int[]') {
+            return `        int[] ${paramName} = convertToIntArray(${rawName});`;
+        }
+
+        if (normalizedType === 'int[][]') {
+            return `        int[][] ${paramName} = convertTo2DIntArray(${rawName});`;
+        }
+
+        if (normalizedType === 'String[]') {
+            return `        String[] ${paramName} = convertToStringArray(${rawName});`;
+        }
+
+        if (normalizedType === 'String') {
+            return `        String ${paramName} = convertToString(${rawName});`;
+        }
+
+        if (normalizedType === 'int') {
+            return `        int ${paramName} = convertToInt(${rawName});`;
+        }
+
+        if (normalizedType === 'boolean') {
+            return `        boolean ${paramName} = convertToBoolean(${rawName});`;
+        }
+
+        // Default: try direct cast with helpful error
+        return `        ${type} ${paramName} = (${type}) ${rawName};`;
+    };
+
+    // Generate the actual method invocation
+    if (paramCount === 0) {
+        if (isVoid) {
+            return `
+        solution.solve();
+        return "";
+            `.trim();
+        } else {
+            return `
+        Object result = solution.solve();
+        return convertResultToString(result, "${returnType}");
+            `.trim();
+        }
+    } else if (paramCount === 1) {
+        const type0 = paramTypes[0] || 'Object';
+        const isCollection = type0.includes('[]') || type0 === 'ListNode' || type0 === 'TreeNode';
+
+        const parsing = `
+        Object param0Raw = parseValue(content);
+${generateParamConversion(0, type0)}`;
+
+        if (isVoid && isCollection) {
+            return `${parsing}
+        
+        solution.solve(param0);
+        return convertResultToString(param0, "${type0}");
+            `.trim();
+        } else if (isVoid) {
+            return `${parsing}
+        
+        solution.solve(param0);
+        return "";
+            `.trim();
+        } else {
+            return `${parsing}
+        
+        Object result = solution.solve(param0);
+        return convertResultToString(result, "${returnType}");
+            `.trim();
+        }
+    } else if (paramCount === 2) {
+        const type0 = paramTypes[0] || 'Object';
+        const type1 = paramTypes[1] || 'Object';
+
+        const parsing = `
+        Object[] paramsRaw = parseParameters(content, 2);
+${generateParamConversion(0, type0)}
+${generateParamConversion(1, type1)}`;
+
+        if (isVoid) {
+            return `${parsing}
+        
+        solution.solve(param0, param1);
+        return "";
+            `.trim();
+        } else {
+            return `${parsing}
+        
+        Object result = solution.solve(param0, param1);
+        return convertResultToString(result, "${returnType}");
+            `.trim();
+        }
+    } else if (paramCount === 3) {
+        const type0 = paramTypes[0] || 'Object';
+        const type1 = paramTypes[1] || 'Object';
+        const type2 = paramTypes[2] || 'Object';
+
+        const parsing = `
+        Object[] paramsRaw = parseParameters(content, 3);
+        Object param0Raw = paramsRaw[0];
+        Object param1Raw = paramsRaw[1];
+        Object param2Raw = paramsRaw[2];
+${generateParamConversion(0, type0)}
+${generateParamConversion(1, type1)}
+${generateParamConversion(2, type2)}`;
+
+        if (isVoid) {
+            return `${parsing}
+        
+        solution.solve(param0, param1, param2);
+        return "";
+            `.trim();
+        } else {
+            return `${parsing}
+        
+        Object result = solution.solve(param0, param1, param2);
+        return convertResultToString(result, "${returnType}");
+            `.trim();
+        }
+    } else {
+        return `
+        throw new UnsupportedOperationException("Methods with more than 3 parameters not yet supported");
+        `.trim();
+    }
+}
+
+/**
+ * Generate comprehensive helper methods with ROBUST type conversion
+ */
+function generateHelperMethods() {
+    return `
+    // ========== TYPE CONVERSION HELPERS ==========
+    
+    /**
+     * Convert any Object to int[] with extensive error handling
+     */
+    private static int[] convertToIntArray(Object raw) {
+        if (raw == null) {
+            return new int[0];
+        }
+
+        // Already int[]
+        if (raw.getClass().isArray() && raw.getClass().getComponentType() == int.class) {
+            return (int[]) raw;
+        }
+
+        // Integer[] -> int[]
+        if (raw instanceof Integer[]) {
+            Integer[] arr = (Integer[]) raw;
+            int[] result = new int[arr.length];
+            for (int i = 0; i < arr.length; i++) {
+                result[i] = arr[i] != null ? arr[i] : 0;
+            }
+            return result;
+        }
+
+        // String -> parse as JSON array
+        if (raw instanceof String) {
+            try {
+                String str = ((String) raw).trim();
+                
+                // Handle empty string
+                if (str.isEmpty() || str.equals("[]")) {
+                    return new int[0];
+                }
+                
+                // Add brackets if missing
+                if (!str.startsWith("[")) {
+                    str = "[" + str + "]";
+                }
+                
+                Object parsed = parseArray(str);
+                return convertToIntArray(parsed); // Recursive call
+                
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to convert String to int[]. Input: '" + raw + "'. Error: " + e.getMessage());
+            }
+        }
+
+        // List<Integer> or similar
+        if (raw instanceof List) {
+            List<?> list = (List<?>) raw;
+            int[] result = new int[list.size()];
+            for (int i = 0; i < list.size(); i++) {
+                Object item = list.get(i);
+                result[i] = item instanceof Number ? ((Number) item).intValue() : 0;
+            }
+            return result;
+        }
+
+        // Single integer -> wrap in array
+        if (raw instanceof Integer || raw instanceof Number) {
+            return new int[]{((Number) raw).intValue()};
+        }
+
+        throw new RuntimeException("Cannot convert " + raw.getClass().getName() + " to int[]. Value: " + raw);
+    }
+
+    /**
+     * Convert to 2D int array
+     */
+    private static int[][] convertTo2DIntArray(Object raw) {
+        if (raw == null) {
+            return new int[0][];
+        }
+
+        // Already int[][]
+        if (raw.getClass().isArray() && raw.getClass().getComponentType().isArray()) {
+            Object[] arr = (Object[]) raw;
+            if (arr.length > 0 && arr[0] instanceof int[]) {
+                return (int[][]) raw;
+            }
+        }
+
+        // String -> parse
+        if (raw instanceof String) {
+            try {
+                Object parsed = parseArray((String) raw);
+                return convertTo2DIntArray(parsed);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to parse 2D array from String: " + raw);
+            }
+        }
+
+        // Object[] of arrays
+        if (raw instanceof Object[]) {
+            Object[] arr = (Object[]) raw;
+            int[][] result = new int[arr.length][];
+            for (int i = 0; i < arr.length; i++) {
+                result[i] = convertToIntArray(arr[i]);
+            }
+            return result;
+        }
+
+        throw new RuntimeException("Cannot convert to int[][]: " + raw.getClass().getName());
+    }
+
+    /**
+     * Convert to String array
+     */
+    private static String[] convertToStringArray(Object raw) {
+        if (raw == null) return new String[0];
+
+        if (raw instanceof String[]) {
+            return (String[]) raw;
+        }
+
+        if (raw instanceof String) {
+            try {
+                Object parsed = parseArray((String) raw);
+                return convertToStringArray(parsed);
+            } catch (Exception e) {
+                // Single string -> wrap in array
+                return new String[]{(String) raw};
+            }
+        }
+
+        if (raw instanceof Object[]) {
+            Object[] arr = (Object[]) raw;
+            String[] result = new String[arr.length];
+            for (int i = 0; i < arr.length; i++) {
+                result[i] = arr[i] != null ? arr[i].toString() : null;
+            }
+            return result;
+        }
+
+        if (raw instanceof List) {
+            List<?> list = (List<?>) raw;
+            String[] result = new String[list.size()];
+            for (int i = 0; i < list.size(); i++) {
+                result[i] = list.get(i) != null ? list.get(i).toString() : null;
+            }
+            return result;
+        }
+
+        throw new RuntimeException("Cannot convert to String[]: " + raw.getClass().getName());
+    }
+
+    /**
+     * Convert to String
+     */
+    private static String convertToString(Object raw) {
+        if (raw == null) return "";
+        if (raw instanceof String) return (String) raw;
+        return raw.toString();
+    }
+
+    /**
+     * Convert to int
+     */
+    private static int convertToInt(Object raw) {
+        if (raw == null) return 0;
+        if (raw instanceof Integer) return (Integer) raw;
+        if (raw instanceof Number) return ((Number) raw).intValue();
+        if (raw instanceof String) {
+            try {
+                return Integer.parseInt(((String) raw).trim());
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("Cannot parse int from String: '" + raw + "'");
+            }
+        }
+        throw new RuntimeException("Cannot convert to int: " + raw.getClass().getName());
+    }
+
+    /**
+     * Convert to boolean
+     */
+    private static boolean convertToBoolean(Object raw) {
+        if (raw == null) return false;
+        if (raw instanceof Boolean) return (Boolean) raw;
+        if (raw instanceof String) {
+            String str = ((String) raw).toLowerCase().trim();
+            return str.equals("true") || str.equals("1");
+        }
+        if (raw instanceof Number) {
+            return ((Number) raw).intValue() != 0;
+        }
+        return false;
+    }
+
+    /**
+     * Convert to ListNode
+     */
+    private static ListNode convertToListNode(Object raw) {
+        int[] arr = convertToIntArray(raw);
+        return arrayToList(arr);
+    }
+
+    /**
+     * Convert to TreeNode
+     */
+    private static TreeNode convertToTreeNode(Object raw) {
+        if (raw == null) return null;
+
+        // Handle Integer[] with nulls
+        if (raw instanceof Integer[]) {
+            return arrayToTree((Integer[]) raw);
+        }
+
+        // Handle int[] - convert to Integer[]
+        if (raw.getClass().isArray() && raw.getClass().getComponentType() == int.class) {
+            int[] primitive = (int[]) raw;
+            Integer[] wrapped = new Integer[primitive.length];
+            for (int i = 0; i < primitive.length; i++) {
+                wrapped[i] = primitive[i];
+            }
+            return arrayToTree(wrapped);
+        }
+
+        // Parse from string
+        if (raw instanceof String) {
+            try {
+                Object parsed = parseArray((String) raw);
+                return convertToTreeNode(parsed);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to parse TreeNode from String: " + raw);
+            }
+        }
+
+        throw new RuntimeException("Cannot convert to TreeNode: " + raw.getClass().getName());
+    }
+
+    /**
+     * Convert result to string with type awareness
+     */
+    private static String convertResultToString(Object result, String returnType) {
+        if (result == null) {
+            if ("ListNode".equals(returnType) || "TreeNode".equals(returnType)) {
+                return "[]";
+            }
+            return "null";
+        }
+
+        if (result instanceof ListNode) {
+            return Arrays.toString(listToArray((ListNode) result));
+        }
+
+        if (result instanceof TreeNode) {
+            return Arrays.toString(treeToArray((TreeNode) result));
+        }
+
+        if (result instanceof int[]) {
+            return Arrays.toString((int[]) result);
+        }
+
+        if (result instanceof int[][]) {
+            int[][] arr = (int[][]) result;
+            StringBuilder sb = new StringBuilder("[");
+            for (int i = 0; i < arr.length; i++) {
+                if (i > 0) sb.append(",");
+                sb.append(Arrays.toString(arr[i]));
+            }
+            sb.append("]");
+            return sb.toString();
+        }
+
+        if (result instanceof String[]) {
+            return Arrays.toString((String[]) result);
+        }
+
+        if (result instanceof boolean[]) {
+            return Arrays.toString((boolean[]) result);
+        }
+
+        return result.toString();
+    }
+
+    // ========== JSON PARSING HELPERS ==========
+
+    private static String[] extractTestCases(String json) {
+        json = json.trim();
+        if (json.startsWith("[")) json = json.substring(1);
+        if (json.endsWith("]")) json = json.substring(0, json.length() - 1);
+
+        List<String> cases = new ArrayList<>();
+        int depth = 0;
+        StringBuilder current = new StringBuilder();
+
+        for (int i = 0; i < json.length(); i++) {
+            char c = json.charAt(i);
+            if (c == '{') depth++;
+            else if (c == '}') depth--;
+
+            if (c == ',' && depth == 0) {
+                cases.add(current.toString());
+                current = new StringBuilder();
+            } else {
+                current.append(c);
+            }
+        }
+        if (current.length() > 0) {
+            cases.add(current.toString());
+        }
+
+        return cases.toArray(new String[0]);
+    }
+
+    private static int extractInt(String json, String key) {
+        String search = "\\"" + key + "\\":";
+        int start = json.indexOf(search);
+        if (start == -1) return -1;
+        start += search.length();
+
+        while (start < json.length() && (json.charAt(start) == ' ' || json.charAt(start) == '\\n')) start++;
+
+        int end = start;
+        while (end < json.length() && (Character.isDigit(json.charAt(end)) || json.charAt(end) == '-')) end++;
+
+        return Integer.parseInt(json.substring(start, end));
+    }
+
+    private static String extractString(String json, String key) {
+        String search = "\\"" + key + "\\":\\"";
+        int start = json.indexOf(search);
+        if (start == -1) return "";
+        start += search.length();
+
+        int end = start;
+        while (end < json.length()) {
+            if (json.charAt(end) == '"' && (end == 0 || json.charAt(end - 1) != '\\\\')) {
+                break;
+            }
+            end++;
+        }
+
+        return json.substring(start, end);
+    }
+
+    private static Object[] parseParameters(String content, int expectedCount) throws Exception {
+        List<Object> params = new ArrayList<>();
+        int depth = 0;
+        StringBuilder current = new StringBuilder();
+
+        for (int i = 0; i < content.length(); i++) {
+            char c = content.charAt(i);
+
+            if (c == '[' || c == '{') depth++;
+            else if (c == ']' || c == '}') depth--;
+
+            if (c == ',' && depth == 0) {
+                params.add(parseValue(current.toString().trim()));
+                current = new StringBuilder();
+            } else {
+                current.append(c);
+            }
+        }
+
+        if (current.length() > 0) {
+            params.add(parseValue(current.toString().trim()));
+        }
+
+        return params.toArray(new Object[0]);
+    }
+
+    private static Object parseValue(String value) throws Exception {
+        value = value.trim();
+
+        // null
+        if (value.equals("null")) return null;
+
+        // Array
+        if (value.startsWith("[") && value.endsWith("]")) {
+            return parseArray(value);
+        }
+
+        // String (quoted)
+        if (value.startsWith("\\"") && value.endsWith("\\"")) {
+            return value.substring(1, value.length() - 1);
+        }
+
+        // Boolean
+        if (value.equals("true")) return true;
+        if (value.equals("false")) return false;
+
+        // Number
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            // Return as string if not a number
+            return value;
+        }
+    }
+
+    private static Object parseArray(String arrayStr) throws Exception {
+        String content = arrayStr.substring(1, arrayStr.length() - 1).trim();
+        if (content.isEmpty()) return new int[0];
+
+        String[] elements = splitArray(content);
+
+        if (elements.length == 0) return new int[0];
+
+        String first = elements[0].trim();
+
+        // Nested array
+        if (first.startsWith("[")) {
+            Object[] parsedElements = new Object[elements.length];
+            boolean hasNull = false;
+
+            for (int i = 0; i < elements.length; i++) {
+                parsedElements[i] = parseArray(elements[i].trim());
+                if (parsedElements[i] instanceof Integer[]) {
+                    hasNull = true;
+                }
+            }
+
+            if (hasNull) {
+                Integer[][] result = new Integer[elements.length][];
+                for (int i = 0; i < elements.length; i++) {
+                    Object elem = parsedElements[i];
+                    if (elem instanceof int[]) {
+                        int[] primitive = (int[]) elem;
+                        Integer[] wrapped = new Integer[primitive.length];
+                        for (int k = 0; k < primitive.length; k++) wrapped[k] = primitive[k];
+                        result[i] = wrapped;
+                    } else {
+                        result[i] = (Integer[]) elem;
+                    }
+                }
+                return result;
+            } else {
+                int[][] result = new int[elements.length][];
+                for (int i = 0; i < elements.length; i++) {
+                    result[i] = (int[]) parsedElements[i];
+                }
+                return result;
+            }
+        }
+
+        // String array
+        if (first.startsWith("\\"")) {
+            String[] result = new String[elements.length];
+            for (int i = 0; i < elements.length; i++) {
+                String el = elements[i].trim();
+                result[i] = el.substring(1, el.length() - 1);
+            }
+            return result;
+        }
+
+        // Check for null values
+        boolean hasNull = false;
+        for (String el : elements) {
+            if (el.trim().equals("null")) {
+                hasNull = true;
+                break;
+            }
+        }
+
+        // Integer[] if has null
+        if (hasNull) {
+            Integer[] result = new Integer[elements.length];
+            for (int i = 0; i < elements.length; i++) {
+                String el = elements[i].trim();
+                result[i] = el.equals("null") ? null : Integer.parseInt(el);
+            }
+            return result;
+        }
+
+        // int[] otherwise
+        int[] result = new int[elements.length];
+        for (int i = 0; i < elements.length; i++) {
+            result[i] = Integer.parseInt(elements[i].trim());
+        }
+        return result;
+    }
+
+    private static String[] splitArray(String content) {
+        List<String> elements = new ArrayList<>();
+        int depth = 0;
+        StringBuilder current = new StringBuilder();
+
+        for (int i = 0; i < content.length(); i++) {
+            char c = content.charAt(i);
+
+            if (c == '[' || c == '{') depth++;
+            else if (c == ']' || c == '}') depth--;
+
+            if (c == ',' && depth == 0) {
+                elements.add(current.toString());
+                current = new StringBuilder();
+            } else {
+                current.append(c);
+            }
+        }
+
+        if (current.length() > 0) {
+            elements.add(current.toString());
+        }
+
+        return elements.toArray(new String[0]);
+    }
+
+    // ========== ListNode HELPERS ==========
+
+    private static ListNode arrayToList(int[] arr) {
+        if (arr == null || arr.length == 0) return null;
+
+        ListNode dummy = new ListNode(0);
+        ListNode current = dummy;
+
+        for (int val : arr) {
+            current.next = new ListNode(val);
+            current = current.next;
+        }
+
+        return dummy.next;
+    }
+
+    private static int[] listToArray(ListNode head) {
+        int count = 0;
+        ListNode curr = head;
+        while (curr != null) {
+            count++;
+            curr = curr.next;
+        }
+
+        int[] arr = new int[count];
+        curr = head;
+        for (int i = 0; i < count; i++) {
+            arr[i] = curr.val;
+            curr = curr.next;
+        }
+
+        return arr;
+    }
+
+    // ========== TreeNode HELPERS ==========
+
+    private static TreeNode arrayToTree(Integer[] arr) {
+        if (arr == null || arr.length == 0 || arr[0] == null) return null;
+
+        TreeNode root = new TreeNode(arr[0]);
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+
+        int i = 1;
+        while (i < arr.length) {
+            TreeNode current = queue.poll();
+
+            if (i < arr.length && arr[i] != null) {
+                current.left = new TreeNode(arr[i]);
+                queue.offer(current.left);
+            }
+            i++;
+
+            if (i < arr.length && arr[i] != null) {
+                current.right = new TreeNode(arr[i]);
+                queue.offer(current.right);
+            }
+            i++;
+        }
+
+        return root;
+    }
+
+    private static Integer[] treeToArray(TreeNode root) {
+        if (root == null) return new Integer[0];
+
+        List<Integer> result = new ArrayList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+
+        while (!queue.isEmpty()) {
+            TreeNode node = queue.poll();
+
+            if (node != null) {
+                result.add(node.val);
+                queue.offer(node.left);
+                queue.offer(node.right);
+            } else {
+                result.add(null);
+            }
+        }
+
+        while (!result.isEmpty() && result.get(result.size() - 1) == null) {
+            result.remove(result.size() - 1);
+        }
+
+        return result.toArray(new Integer[0]);
+    }
+
+    private static String normalize(String s) {
+        return s.replaceAll("\\\\s+", "");
+    }
+    `.trim();
+}
+
+/**
+ * Generate Java code wrapper template
+ */
+function generateJavaWrapper(userCode, javaMethodSignature) {
+    const paramTypes = parseParameterTypes(javaMethodSignature);
+    const paramCount = paramTypes.length;
+
+    const methodInvocation = generateMethodInvocation(paramCount, paramTypes, javaMethodSignature);
+    const helperMethods = generateHelperMethods();
+
+    const template = `
+import java.util.*;
+
+public class Main {
+    static class ListNode {
+        int val;
+        ListNode next;
+        
+        ListNode(int val) {
+            this.val = val;
+            this.next = null;
+        }
+    }
+    
+    static class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+        
+        TreeNode(int val) {
+            this.val = val;
+            this.left = null;
+            this.right = null;
+        }
+    }
+    
+    static class Solution {
+        ${userCode}
+    }
+    
+    public static void main(String[] args) {
+        try {
+            String testCasesJson = System.getenv("TEST_CASES");
+            if (testCasesJson == null || testCasesJson.isEmpty()) {
+                System.err.println("ERROR: TEST_CASES environment variable not set");
+                System.exit(1);
+            }
+            
+            Solution solution = new Solution();
+            String[] testCaseBlocks = extractTestCases(testCasesJson);
+            
+            for (String testCaseBlock : testCaseBlocks) {
+                if (testCaseBlock.trim().isEmpty()) continue;
+                
+                int testId = extractInt(testCaseBlock, "test_id");
+                String inputStr = extractString(testCaseBlock, "input");
+                String expectedOutput = extractString(testCaseBlock, "expected_output");
+                
+                try {
+                    String result = executeTest(solution, inputStr);
+                    
+                    if (normalize(result).equals(normalize(expectedOutput))) {
+                        System.out.println("PASS " + testId);
+                    } else {
+                        System.out.println("FAIL " + testId + " EXPECTED:" + expectedOutput + " GOT:" + result);
+                    }
+                } catch (Exception e) {
+                    System.out.println("ERROR " + testId + " " + e.getClass().getSimpleName() + ":" + e.getMessage());
+                    // DEBUG: Print stack trace to stderr for debugging
+                    e.printStackTrace(System.err);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("FATAL: " + e.getMessage());
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+    
+    private static String executeTest(Solution solution, String inputStr) throws Exception {
+        inputStr = inputStr.trim();
+        if (!inputStr.startsWith("[") || !inputStr.endsWith("]")) {
+            throw new Exception("Invalid input format - expected JSON array: " + inputStr);
+        }
+        
+        String content = inputStr.substring(1, inputStr.length() - 1);
+        
+        ${methodInvocation}
+    }
+    
+    ${helperMethods}
+}
+`.trim();
+
+    return template;
+}
+
+module.exports = {
+    generateJavaWrapper
+};

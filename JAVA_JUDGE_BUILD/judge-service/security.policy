@@ -1,0 +1,23 @@
+// Java Security Policy for CodeClass Judge Service
+// Restricts what user-submitted code can do
+
+grant {
+    // Allow reading files (needed for class loading and resource access)
+    permission java.io.FilePermission "<<ALL FILES>>", "read";
+
+    // Allow access to declared members (needed for some standard library operations)
+    permission java.lang.RuntimePermission "accessDeclaredMembers";
+
+    // Allow getting environment variables (for TEST_CASES env var)
+    permission java.lang.RuntimePermission "getenv.*";
+
+    // Allow basic properties access (needed for String operations, etc.)
+    permission java.util.PropertyPermission "*", "read";
+
+    // Explicitly DENIED (by omission):
+    // - java.net.SocketPermission (no network access)
+    // - java.io.FilePermission "write" or "execute" (no file writes or exec)
+    // - java.lang.RuntimePermission "exitVM" (no System.exit)
+    // - java.lang.RuntimePermission "exec" (no Runtime.exec)
+    // - java.lang.RuntimePermission "createClassLoader" (no custom class loaders)
+};

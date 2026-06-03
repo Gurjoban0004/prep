@@ -11,10 +11,12 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, { delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}] });"></script>
 
-  <!-- PrismJS for Bash Syntax Highlighting -->
+  <!-- PrismJS for Bash & Java Syntax Highlighting -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
 </head>
 <body>
   <header>
@@ -40,6 +42,10 @@
         <button class="subject-btn" id="subject-linux" data-subject="linux">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
           Linux
+        </button>
+        <button class="subject-btn" id="subject-java" data-subject="java">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+          Java
         </button>
       </div>
     </div>
@@ -100,6 +106,10 @@
           <button class="subject-btn" data-subject="linux">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
             Linux
+          </button>
+          <button class="subject-btn" data-subject="java">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            Java
           </button>
         </div>
       </div>
@@ -176,7 +186,38 @@
   <script src="linux-data.js"></script>
   <script src="bash-engine.js"></script>
   <script src="solver-engine.js"></script>
-  <script src="app.js"></script>
+  <script src="java-data.js"></script>
+  <script src="java-engine.js?v=2"></script>
+  <script src="app.js?v=2"></script>
+  <!-- Compiler Settings Dialog -->
+  <dialog id="java-settings-dialog" class="java-dialog">
+    <div class="java-dialog-content">
+      <div class="java-dialog-header">
+        <h3>Compiler Settings</h3>
+        <button id="java-settings-close-btn" class="java-dialog-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="java-dialog-body">
+        <p style="margin-top: 0; font-size: 0.9rem; color: var(--text-secondary);">
+          If the default compilation server is restricted (HTTP 401), you can configure a custom server URL or enter an API key here.
+        </p>
+        <div class="java-dialog-form-group">
+          <label for="java-settings-url">Execution API URL</label>
+          <input type="text" id="java-settings-url" placeholder="/api/execute">
+          <span class="java-dialog-help">Point to a secure proxy (default: <code>/api/execute</code>) or self-hosted instance (e.g. <code>http://localhost:5005/execute</code>)</span>
+        </div>
+        <div class="java-dialog-form-group">
+          <label for="java-settings-key">API Key (Optional)</label>
+          <input type="password" id="java-settings-key" placeholder="Enter API Token">
+          <span class="java-dialog-help">Only needed if pointing directly to a custom instance that requires authorization.</span>
+        </div>
+      </div>
+      <div class="java-dialog-footer">
+        <button id="java-settings-reset-btn" class="bash-reset-btn">Reset Defaults</button>
+        <button id="java-settings-save-btn" class="bash-submit-btn">Save Settings</button>
+      </div>
+    </div>
+  </dialog>
+
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
