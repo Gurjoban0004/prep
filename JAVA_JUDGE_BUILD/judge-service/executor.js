@@ -456,19 +456,28 @@ function executeRaw(workDir, timeLimitMs, memoryLimitMb) {
             java.kill('SIGKILL');
         }, timeLimitMs);
 
+        function filterWarnings(str) {
+            if (!str) return '';
+            return str.split('\n')
+                .filter(line => !line.includes('Security Manager') && !line.includes('deprecated and will be removed'))
+                .join('\n')
+                .trim();
+        }
+
         java.on('close', (code) => {
             if (timeout) clearTimeout(timeout);
+            const cleanStderr = filterWarnings(stderr);
             if (timedOut) {
                 resolve({
                     stdout,
-                    stderr: stderr + '\nExecution timed out.',
+                    stderr: cleanStderr + (cleanStderr ? '\n' : '') + 'Execution timed out.',
                     code: 124,
                     signal: 'SIGKILL'
                 });
             } else {
                 resolve({
                     stdout,
-                    stderr,
+                    stderr: cleanStderr,
                     code: code || 0,
                     signal: null
                 });
@@ -477,9 +486,10 @@ function executeRaw(workDir, timeLimitMs, memoryLimitMb) {
 
         java.on('error', (error) => {
             if (timeout) clearTimeout(timeout);
+            const cleanStderr = filterWarnings(stderr);
             resolve({
                 stdout,
-                stderr: stderr + '\n' + error.message,
+                stderr: cleanStderr + (cleanStderr ? '\n' : '') + error.message,
                 code: 1,
                 signal: null
             });

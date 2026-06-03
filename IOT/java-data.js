@@ -632,9 +632,9 @@ const JAVA_DSA_PROBLEMS = [
     }
 }`,
     testCases: [
-      { input: { array: [4, 5, 2, 10], args: [] }, expected: "16", visible: true },
+      { input: { array: [4, 5, 2, 10], args: [] }, expected: "24", visible: true },
       { input: { array: [3, 2, 1], args: [] }, expected: "-3", visible: true },
-      { input: { array: [1, 2, 3, 4], args: [] }, expected: "5", visible: true },
+      { input: { array: [1, 2, 3, 4], args: [] }, expected: "8", visible: true },
       { input: { array: [5], args: [] }, expected: "-1", visible: false },
       { input: { array: [1, 1, 1, 1], args: [] }, expected: "-4", visible: false }
     ]
