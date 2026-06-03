@@ -13,6 +13,14 @@ const TEST_MARKER_END = '_JTEND##';
  * Load Piston custom settings from localStorage
  */
 function getPistonSettings() {
+  // In production (non-localhost), always force the serverless proxy route
+  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    return {
+      apiUrl: '/api/execute',
+      apiKey: ''
+    };
+  }
+
   try {
     const saved = localStorage.getItem('prep_piston_settings');
     if (saved) {
