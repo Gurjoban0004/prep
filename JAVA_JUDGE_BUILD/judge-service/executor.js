@@ -361,20 +361,20 @@ async function executeGeneric(mainJavaContent, timeLimitMs = 5000, memoryLimitMb
         const javaFilePath = path.join(workDir, 'Main.java');
         await fs.writeFile(javaFilePath, mainJavaContent);
 
-        // Step 1: Compile
-        const compileResult = await compile(workDir);
-        if (!compileResult.success) {
+        // Run directly as source file to skip javac JVM startup overhead (cuts execution time in half on low-CPU instances)
+        const runResult = await executeRaw(workDir, timeLimitMs, memoryLimitMb, true);
+        
+        // If compilation failed (exit code is non-zero and output matches compilation error patterns)
+        if (runResult.code !== 0 && (runResult.stderr.includes('error:') || runResult.stderr.includes('Main.java:'))) {
             return {
                 compile: {
                     stdout: '',
-                    stderr: compileResult.error,
+                    stderr: cleanCompilationError(runResult.stderr),
                     code: 1
                 }
             };
         }
 
-        // Step 2: Execute
-        const runResult = await executeRaw(workDir, timeLimitMs, memoryLimitMb);
         return {
             compile: {
                 stdout: '',
@@ -416,7 +416,7 @@ async function executeGeneric(mainJavaContent, timeLimitMs = 5000, memoryLimitMb
 /**
  * Execute compiled Java code raw (without test-case environment variables)
  */
-function executeRaw(workDir, timeLimitMs, memoryLimitMb) {
+function executeRaw(workDir, timeLimitMs, memoryLimitMb, useSourceFile = false) {
     return new Promise((resolve) => {
         const policyPath = path.join(__dirname, 'security.policy');
 
@@ -427,7 +427,7 @@ function executeRaw(workDir, timeLimitMs, memoryLimitMb) {
             javaArgs.push('-Djava.security.manager');
             javaArgs.push(`-Djava.security.policy=${policyPath}`);
         }
-        javaArgs.push('Main');
+        javaArgs.push(useSourceFile ? 'Main.java' : 'Main');
 
         const java = spawn('java', javaArgs, {
             cwd: workDir,
