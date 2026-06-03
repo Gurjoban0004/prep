@@ -2,7 +2,7 @@ const JUDGE_SERVICE_URL = process.env.JUDGE_SERVICE_URL || 'http://localhost:500
 const JUDGE_API_KEY = process.env.JUDGE_API_KEY || 'dsa_judge_secret_123';
 const EXECUTION_TIMEOUT_MS = 15000;
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
