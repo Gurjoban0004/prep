@@ -361,20 +361,20 @@ async function executeGeneric(mainJavaContent, timeLimitMs = 5000, memoryLimitMb
         const javaFilePath = path.join(workDir, 'Main.java');
         await fs.writeFile(javaFilePath, mainJavaContent);
 
-        // Run directly as source file to skip javac JVM startup overhead (cuts execution time in half on low-CPU instances)
-        const runResult = await executeRaw(workDir, timeLimitMs, memoryLimitMb, true);
-        
-        // If compilation failed (exit code is non-zero and output matches compilation error patterns)
-        if (runResult.code !== 0 && (runResult.stderr.includes('error:') || runResult.stderr.includes('Main.java:'))) {
+        // Step 1: Compile
+        const compileResult = await compile(workDir);
+        if (!compileResult.success) {
             return {
                 compile: {
                     stdout: '',
-                    stderr: cleanCompilationError(runResult.stderr),
+                    stderr: compileResult.error,
                     code: 1
                 }
             };
         }
 
+        // Step 2: Execute
+        const runResult = await executeRaw(workDir, timeLimitMs, memoryLimitMb, false);
         return {
             compile: {
                 stdout: '',
