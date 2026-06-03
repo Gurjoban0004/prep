@@ -4,6 +4,7 @@
 // ============================================================
 
 const PISTON_API_URL = 'https://emkc.org/api/v2/piston/execute';
+const DEFAULT_JAVA_EXECUTION_API_URL = '/api/execute';
 const JAVA_VERSION = '15.0.2';
 const PISTON_TIMEOUT_MS = 15000; // 15s client-side timeout
 const TEST_MARKER_START = '##JTEST_';
@@ -13,26 +14,66 @@ const TEST_MARKER_END = '_JTEND##';
  * Load Piston custom settings from localStorage
  */
 function getPistonSettings() {
-  // In production (non-localhost), always force the serverless proxy route
-  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    return {
-      apiUrl: '/api/execute',
-      apiKey: ''
-    };
+  const deployConfig = window.JAVA_EXECUTION_CONFIG || {};
+  let settings = {
+    apiUrl: deployConfig.apiUrl || DEFAULT_JAVA_EXECUTION_API_URL,
+    apiKey: deployConfig.apiKey || '',
+    fallbackApiUrls: Array.isArray(deployConfig.fallbackApiUrls) ? deployConfig.fallbackApiUrls : [PISTON_API_URL]
+  };
+
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    settings.fallbackApiUrls = [
+      'http://localhost:5005/execute',
+      ...settings.fallbackApiUrls
+    ];
   }
 
   try {
     const saved = localStorage.getItem('prep_piston_settings');
     if (saved) {
-      return JSON.parse(saved);
+      const parsed = JSON.parse(saved);
+      settings = {
+        ...settings,
+        ...parsed,
+        fallbackApiUrls: Array.isArray(parsed.fallbackApiUrls) ? parsed.fallbackApiUrls : settings.fallbackApiUrls
+      };
     }
   } catch (e) {
     console.error("Error loading Piston settings", e);
   }
-  return {
-    apiUrl: '/api/execute',
-    apiKey: ''
-  };
+
+  return settings;
+}
+
+function getJavaExecutionEndpointCandidates(settings) {
+  const deployConfig = window.JAVA_EXECUTION_CONFIG || {};
+  const candidates = [
+    settings.apiUrl || DEFAULT_JAVA_EXECUTION_API_URL,
+    deployConfig.apiUrl,
+    ...(settings.fallbackApiUrls || [])
+  ];
+  const seen = new Set();
+
+  return candidates
+    .map(url => typeof url === 'string' ? url.trim() : '')
+    .filter(url => {
+      if (!url || seen.has(url)) return false;
+      seen.add(url);
+      return true;
+    });
+}
+
+function buildJavaExecutionHeaders(settings, apiUrl) {
+  const headers = { 'Content-Type': 'application/json' };
+
+  // Never attach a private/custom key to the public Piston fallback.
+  if (settings.apiKey && apiUrl !== PISTON_API_URL) {
+    headers['Authorization'] = `Bearer ${settings.apiKey}`;
+    headers['X-Piston-Key'] = settings.apiKey;
+    headers['X-API-Key'] = settings.apiKey;
+  }
+
+  return headers;
 }
 
 /**
@@ -235,70 +276,92 @@ function generateTestCall(problem, tc, idx) {
  */
 async function callPistonAPI(wrappedCode) {
   const settings = getPistonSettings();
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), PISTON_TIMEOUT_MS);
+  const endpoints = getJavaExecutionEndpointCandidates(settings);
+  const requestBody = JSON.stringify({
+    language: 'java',
+    version: JAVA_VERSION,
+    files: [{ name: 'Main.java', content: wrappedCode }],
+    compile_timeout: 10000,
+    run_timeout: 5000,
+    compile_memory_limit: -1,
+    run_memory_limit: -1
+  });
+  const attempted = [];
 
-  try {
-    const headers = { 'Content-Type': 'application/json' };
-    if (settings.apiKey) {
-      headers['Authorization'] = `Bearer ${settings.apiKey}`;
-      headers['X-Piston-Key'] = settings.apiKey;
-    }
+  for (const apiUrl of endpoints) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), PISTON_TIMEOUT_MS);
 
-    const response = await fetch(settings.apiUrl, {
-      method: 'POST',
-      headers: headers,
-      signal: controller.signal,
-      body: JSON.stringify({
-        language: 'java',
-        version: JAVA_VERSION,
-        files: [{ name: 'Main.java', content: wrappedCode }],
-        compile_timeout: 10000,
-        run_timeout: 5000,
-        compile_memory_limit: -1,
-        run_memory_limit: -1
-      })
-    });
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: buildJavaExecutionHeaders(settings, apiUrl),
+        signal: controller.signal,
+        body: requestBody
+      });
 
-    clearTimeout(timeoutId);
+      clearTimeout(timeoutId);
 
-    if (!response.ok) {
-      return { stdout: '', stderr: '', exitCode: -1, timedOut: false, error: `API error: HTTP ${response.status}` };
-    }
+      if (!response.ok) {
+        attempted.push(`${apiUrl} (HTTP ${response.status})`);
 
-    const data = await response.json();
+        // A 404 commonly means the static frontend host has no serverless proxy.
+        // Try the next compatible endpoint before surfacing the connection error.
+        if (response.status === 404 && endpoints.length > attempted.length) {
+          continue;
+        }
 
-    // Compile error
-    if (data.compile && data.compile.stderr) {
+        return {
+          stdout: '',
+          stderr: '',
+          exitCode: -1,
+          timedOut: false,
+          error: `API error: HTTP ${response.status} at ${apiUrl}`
+        };
+      }
+
+      const data = await response.json();
+
+      // Compile error
+      if (data.compile && data.compile.stderr) {
+        return {
+          stdout: data.compile.stdout || '',
+          stderr: data.compile.stderr,
+          exitCode: data.compile.code || 1,
+          timedOut: false,
+          error: null,
+          phase: 'compile'
+        };
+      }
+
+      // Run result
+      const run = data.run || {};
+      const timedOut = run.signal === 'SIGKILL' || (run.stderr && run.stderr.includes('timed out'));
+
       return {
-        stdout: data.compile.stdout || '',
-        stderr: data.compile.stderr,
-        exitCode: data.compile.code || 1,
-        timedOut: false,
+        stdout: run.stdout || '',
+        stderr: run.stderr || '',
+        exitCode: run.code || 0,
+        timedOut,
         error: null,
-        phase: 'compile'
+        phase: 'run'
       };
-    }
+    } catch (err) {
+      clearTimeout(timeoutId);
+      attempted.push(`${apiUrl} (${err.name === 'AbortError' ? 'timeout' : err.message})`);
 
-    // Run result
-    const run = data.run || {};
-    const timedOut = run.signal === 'SIGKILL' || (run.stderr && run.stderr.includes('timed out'));
+      if (endpoints.length > attempted.length) {
+        continue;
+      }
 
-    return {
-      stdout: run.stdout || '',
-      stderr: run.stderr || '',
-      exitCode: run.code || 0,
-      timedOut,
-      error: null,
-      phase: 'run'
-    };
-  } catch (err) {
-    clearTimeout(timeoutId);
-    if (err.name === 'AbortError') {
-      return { stdout: '', stderr: '', exitCode: -1, timedOut: true, error: 'Request timed out. Check your internet connection.' };
+      if (err.name === 'AbortError') {
+        return { stdout: '', stderr: '', exitCode: -1, timedOut: true, error: `Request timed out. Tried: ${attempted.join(', ')}` };
+      }
+      return { stdout: '', stderr: '', exitCode: -1, timedOut: false, error: `Network error: ${err.message}. Tried: ${attempted.join(', ')}` };
     }
-    return { stdout: '', stderr: '', exitCode: -1, timedOut: false, error: `Network error: ${err.message}` };
   }
+
+  return { stdout: '', stderr: '', exitCode: -1, timedOut: false, error: `No Java execution endpoints configured. Tried: ${attempted.join(', ')}` };
 }
 
 /**

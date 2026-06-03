@@ -1850,6 +1850,29 @@ function renderJavaResults(results) {
   `).join('');
 }
 
+function getDefaultJavaExecutionSettings() {
+  const config = window.JAVA_EXECUTION_CONFIG || {};
+  return {
+    apiUrl: config.apiUrl || '/api/execute',
+    apiKey: config.apiKey || ''
+  };
+}
+
+function loadJavaExecutionSettings() {
+  const defaults = getDefaultJavaExecutionSettings();
+  try {
+    const saved = localStorage.getItem('prep_piston_settings');
+    if (saved) return { ...defaults, ...JSON.parse(saved) };
+  } catch (e) {}
+  return defaults;
+}
+
+function saveJavaExecutionSettings(settings) {
+  try {
+    localStorage.setItem('prep_piston_settings', JSON.stringify(settings));
+  } catch (e) {}
+}
+
 function renderJavaProblem(index) {
   const problems = getActiveJavaProblems();
   const problem = problems[index];
@@ -2033,12 +2056,7 @@ function renderJavaProblem(index) {
 
   if (settingsBtn && settingsDialog) {
     settingsBtn.addEventListener('click', () => {
-      // Load current settings
-      let settings = { apiUrl: '/api/execute', apiKey: '' };
-      try {
-        const saved = localStorage.getItem('prep_piston_settings');
-        if (saved) settings = JSON.parse(saved);
-      } catch (e) {}
+      const settings = loadJavaExecutionSettings();
 
       if (settingsUrlInput) settingsUrlInput.value = settings.apiUrl;
       if (settingsKeyInput) settingsKeyInput.value = settings.apiKey;
@@ -2056,20 +2074,19 @@ function renderJavaProblem(index) {
   if (settingsSaveBtn && settingsDialog) {
     settingsSaveBtn.addEventListener('click', () => {
       const settings = {
-        apiUrl: settingsUrlInput ? settingsUrlInput.value.trim() : '/api/execute',
+        apiUrl: settingsUrlInput ? settingsUrlInput.value.trim() : getDefaultJavaExecutionSettings().apiUrl,
         apiKey: settingsKeyInput ? settingsKeyInput.value.trim() : ''
       };
-      try {
-        localStorage.setItem('prep_piston_settings', JSON.stringify(settings));
-      } catch (e) {}
+      saveJavaExecutionSettings(settings);
       settingsDialog.close();
     });
   }
 
   if (settingsResetBtn) {
     settingsResetBtn.addEventListener('click', () => {
-      if (settingsUrlInput) settingsUrlInput.value = '/api/execute';
-      if (settingsKeyInput) settingsKeyInput.value = '';
+      const defaults = getDefaultJavaExecutionSettings();
+      if (settingsUrlInput) settingsUrlInput.value = defaults.apiUrl;
+      if (settingsKeyInput) settingsKeyInput.value = defaults.apiKey;
     });
   }
 
@@ -2174,12 +2191,7 @@ async function runJavaProblem(problem, mode) {
     if (result.networkError) {
       if (body) {
         if (result.networkError.includes('HTTP 401')) {
-          // Load current settings
-          let settings = { apiUrl: '/api/execute', apiKey: '' };
-          try {
-            const saved = localStorage.getItem('prep_piston_settings');
-            if (saved) settings = JSON.parse(saved);
-          } catch (e) {}
+          const settings = loadJavaExecutionSettings();
 
           body.innerHTML = `
             <div class="java-error-panel">
@@ -2193,7 +2205,7 @@ async function runJavaProblem(problem, mode) {
                 <div style="margin-bottom: 0.75rem; display: flex; flex-direction: column;">
                   <label style="font-size: 0.8rem; font-weight: 600; margin-bottom: 0.2rem; color: var(--text-primary);">Custom Execution API URL</label>
                   <input type="text" id="java-settings-url-inline" class="java-settings-input-inline" value="${escapeHtml(settings.apiUrl)}">
-                  <span class="java-dialog-help">To run locally: <code>node judge.js</code> inside <code>judge-service</code> then set URL to <code>http://localhost:5005/execute</code></span>
+                  <span class="java-dialog-help">Use your deployed proxy or judge <code>/execute</code> URL. Local judge: <code>http://localhost:5005/execute</code>.</span>
                 </div>
                 <div style="margin-bottom: 0.75rem; display: flex; flex-direction: column;">
                   <label style="font-size: 0.8rem; font-weight: 600; margin-bottom: 0.2rem; color: var(--text-primary);">API Key (Optional)</label>
@@ -2211,26 +2223,33 @@ async function runJavaProblem(problem, mode) {
           document.getElementById('java-settings-reset-inline-btn').addEventListener('click', () => {
             const urlInput = document.getElementById('java-settings-url-inline');
             const keyInput = document.getElementById('java-settings-key-inline');
-            if (urlInput) urlInput.value = '/api/execute';
-            if (keyInput) keyInput.value = '';
+            const defaults = getDefaultJavaExecutionSettings();
+            if (urlInput) urlInput.value = defaults.apiUrl;
+            if (keyInput) keyInput.value = defaults.apiKey;
           });
 
           document.getElementById('java-settings-save-inline-btn').addEventListener('click', () => {
             const urlInput = document.getElementById('java-settings-url-inline');
             const keyInput = document.getElementById('java-settings-key-inline');
             const newSettings = {
-              apiUrl: urlInput ? urlInput.value.trim() : '/api/execute',
+              apiUrl: urlInput ? urlInput.value.trim() : getDefaultJavaExecutionSettings().apiUrl,
               apiKey: keyInput ? keyInput.value.trim() : ''
             };
-            try {
-              localStorage.setItem('prep_piston_settings', JSON.stringify(newSettings));
-            } catch (e) {}
+            saveJavaExecutionSettings(newSettings);
             // Retry compilation automatically
             runJavaProblem(problem, mode);
           });
 
         } else {
-          body.innerHTML = `<div class="java-error-panel"><h4>⚠️ Connection Error</h4><p>${escapeHtml(result.networkError)}</p></div>`;
+          body.innerHTML = `
+            <div class="java-error-panel">
+              <h4>⚠️ Connection Error</h4>
+              <p>${escapeHtml(result.networkError)}</p>
+              <p style="font-size: 0.82rem; margin-top: 0.65rem; color: var(--text-secondary);">
+                Please check your internet connection or backend configuration and try again.
+              </p>
+            </div>
+          `;
         }
       }
       if (summary) summary.textContent = 'Error';

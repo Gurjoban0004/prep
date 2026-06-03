@@ -187,6 +187,12 @@
   <script src="bash-engine.js"></script>
   <script src="solver-engine.js"></script>
   <script src="java-data.js"></script>
+  <script>
+    window.JAVA_EXECUTION_CONFIG = window.JAVA_EXECUTION_CONFIG || {
+      apiUrl: '/api/execute',
+      fallbackApiUrls: ['https://emkc.org/api/v2/piston/execute']
+    };
+  </script>
   <script src="java-engine.js?v=3"></script>
   <script src="app.js?v=3"></script>
   <!-- Compiler Settings Dialog -->
@@ -203,7 +209,7 @@
         <div class="java-dialog-form-group">
           <label for="java-settings-url">Execution API URL</label>
           <input type="text" id="java-settings-url" placeholder="/api/execute">
-          <span class="java-dialog-help">Point to a secure proxy (default: <code>/api/execute</code>) or self-hosted instance (e.g. <code>http://localhost:5005/execute</code>)</span>
+          <span class="java-dialog-help">Point to a secure proxy or your hosted judge <code>/execute</code> URL. Local judge: <code>http://localhost:5005/execute</code>.</span>
         </div>
         <div class="java-dialog-form-group">
           <label for="java-settings-key">API Key (Optional)</label>
