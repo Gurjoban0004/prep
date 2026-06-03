@@ -42,6 +42,12 @@ function getPistonSettings() {
     console.error("Error loading Piston settings", e);
   }
 
+  // In production (non-localhost), always force the serverless proxy route to prevent stale localStorage override
+  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    settings.apiUrl = DEFAULT_JAVA_EXECUTION_API_URL;
+    settings.apiKey = '';
+  }
+
   return settings;
 }
 
