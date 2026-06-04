@@ -141,9 +141,7 @@ function buildTreeJava(varName, values) {
  * Returns { wrappedCode, wrapperLineCount } so we can map compiler errors.
  */
 function wrapJavaCode(studentCode, problem, mode) {
-  const tests = mode === 'run'
-    ? problem.testCases.filter(t => t.visible)
-    : problem.testCases;
+  const tests = problem.testCases;
 
   // --- Header: imports + sanitised student code ---
   const sanitisedCode = stripPublicFromSolution(studentCode);
@@ -153,7 +151,7 @@ function wrapJavaCode(studentCode, problem, mode) {
   // --- Helpers based on problem type ---
   let helpers = '';
 
-  if (problem.type === 'singly_linked_list' || problem.type === 'two_singly_linked_lists') {
+  if (problem.type === 'singly_linked_list' || problem.type === 'two_singly_linked_lists' || problem.type === 'circular_list') {
     helpers += `
     static Solution.Node __buildList(int[] arr) {
         if (arr == null || arr.length == 0) return null;
@@ -179,7 +177,86 @@ function wrapJavaCode(studentCode, problem, mode) {
 `;
   }
 
-  if (problem.type === 'binary_tree') {
+  if (problem.type === 'circular_list') {
+    helpers += `
+    static Solution.Node __buildCircularList(int[] arr) {
+        if (arr == null || arr.length == 0) return null;
+        Solution.Node head = new Solution.Node(arr[0]);
+        Solution.Node curr = head;
+        for (int i = 1; i < arr.length; i++) {
+            curr.next = new Solution.Node(arr[i]);
+            curr = curr.next;
+        }
+        curr.next = head;
+        return head;
+    }
+    static String __printCircularList(Solution.Node head) {
+        if (head == null) return "";
+        StringBuilder sb = new StringBuilder();
+        Solution.Node curr = head;
+        int safety = 0;
+        do {
+            if (sb.length() > 0) sb.append(" ");
+            sb.append(curr.data);
+            curr = curr.next;
+            safety++;
+        } while (curr != null && curr != head && safety < 10000);
+        return sb.toString();
+    }
+`;
+  }
+
+  if (problem.type === 'doubly_linked_list') {
+    helpers += `
+    static Solution.Node __buildDLL(int[] arr) {
+        if (arr == null || arr.length == 0) return null;
+        Solution.Node head = new Solution.Node(arr[0]);
+        Solution.Node curr = head;
+        for (int i = 1; i < arr.length; i++) {
+            Solution.Node temp = new Solution.Node(arr[i]);
+            curr.next = temp;
+            temp.prev = curr;
+            curr = temp;
+        }
+        return head;
+    }
+    static String __printDLL(Solution.Node head) {
+        StringBuilder sb = new StringBuilder();
+        Solution.Node curr = head;
+        int safety = 0;
+        while (curr != null && safety < 10000) {
+            if (sb.length() > 0) sb.append(" ");
+            sb.append(curr.data);
+            curr = curr.next;
+            safety++;
+        }
+        return sb.toString();
+    }
+`;
+  }
+
+  if (problem.type === 'queue') {
+    helpers += `
+    static java.util.Queue<Integer> __buildQueue(int[] arr) {
+        java.util.Queue<Integer> q = new java.util.LinkedList<>();
+        if (arr != null) {
+            for (int x : arr) q.add(x);
+        }
+        return q;
+    }
+    static String __printQueue(java.util.Queue<Integer> q) {
+        if (q == null) return "";
+        StringBuilder sb = new StringBuilder();
+        for (Integer x : q) {
+            if (sb.length() > 0) sb.append(" ");
+            sb.append(x);
+        }
+        return sb.toString();
+    }
+`;
+  }
+
+  if (problem.type === 'binary_tree' || problem.type === 'two_binary_trees' || (problem.returnType === 'Node' && (problem.type === 'array_return' || problem.type === 'binary_tree'))) {
     helpers += `
     static Solution.Node __buildTree(Integer[] arr) {
         if (arr == null || arr.length == 0 || arr[0] == null) return null;
@@ -201,6 +278,19 @@ function wrapJavaCode(studentCode, problem, mode) {
             i++;
         }
         return root;
+    }
+    static String __printTreeInorder(Solution.Node root) {
+        if (root == null) return "";
+        StringBuilder sb = new StringBuilder();
+        __inorderHelper(root, sb);
+        return sb.toString().trim();
+    }
+    static void __inorderHelper(Solution.Node node, StringBuilder sb) {
+        if (node == null) return;
+        __inorderHelper(node.left, sb);
+        if (sb.length() > 0) sb.append(" ");
+        sb.append(node.data);
+        __inorderHelper(node.right, sb);
     }
 `;
   }
@@ -241,12 +331,51 @@ function generateTestCall(problem, tc, idx) {
   if (type === 'singly_linked_list') {
     // Build list, call method with optional extra args
     code += `            Solution.Node __h${idx} = __buildList(new int[]{${(tc.input.list || []).join(',')}});\n`;
+    if (tc.input.isCircular === true) {
+      code += `            if (__h${idx} != null) {\n`;
+      code += `                Solution.Node __temp${idx} = __h${idx};\n`;
+      code += `                while (__temp${idx}.next != null) __temp${idx} = __temp${idx}.next;\n`;
+      code += `                __temp${idx}.next = __h${idx};\n`;
+      code += `            }\n`;
+    }
     const extraArgs = (tc.input.args || []).map(a => String(a)).join(', ');
     const allArgs = `__h${idx}` + (extraArgs ? ', ' + extraArgs : '');
 
-    if (problem.returnType === 'Node') {
+    if (problem.returnType === 'void') {
+      code += `            Solution.${method}(${allArgs});\n`;
+    } else if (problem.returnType === 'Node') {
       code += `            Solution.Node __r${idx} = Solution.${method}(${allArgs});\n`;
-      code += `            System.out.println(__printList(__r${idx}));\n`;
+      if (tc.input.isCircular === true) {
+        code += `            System.out.println(__printCircularList(__r${idx}));\n`;
+      } else {
+        code += `            System.out.println(__printList(__r${idx}));\n`;
+      }
+    } else {
+      code += `            System.out.println(Solution.${method}(${allArgs}));\n`;
+    }
+  } else if (type === 'circular_list') {
+    code += `            Solution.Node __h${idx} = __buildCircularList(new int[]{${(tc.input.list || []).join(',')}});\n`;
+    const extraArgs = (tc.input.args || []).map(a => String(a)).join(', ');
+    const allArgs = `__h${idx}` + (extraArgs ? ', ' + extraArgs : '');
+
+    if (problem.returnType === 'void') {
+      code += `            Solution.${method}(${allArgs});\n`;
+    } else if (problem.returnType === 'Node') {
+      code += `            Solution.Node __r${idx} = Solution.${method}(${allArgs});\n`;
+      code += `            System.out.println(__printCircularList(__r${idx}));\n`;
+    } else {
+      code += `            System.out.println(Solution.${method}(${allArgs}));\n`;
+    }
+  } else if (type === 'doubly_linked_list') {
+    code += `            Solution.Node __h${idx} = __buildDLL(new int[]{${(tc.input.list || []).join(',')}});\n`;
+    const extraArgs = (tc.input.args || []).map(a => String(a)).join(', ');
+    const allArgs = `__h${idx}` + (extraArgs ? ', ' + extraArgs : '');
+
+    if (problem.returnType === 'void') {
+      code += `            Solution.${method}(${allArgs});\n`;
+    } else if (problem.returnType === 'Node') {
+      code += `            Solution.Node __r${idx} = Solution.${method}(${allArgs});\n`;
+      code += `            System.out.println(__printDLL(__r${idx}));\n`;
     } else {
       code += `            System.out.println(Solution.${method}(${allArgs}));\n`;
     }
@@ -256,7 +385,9 @@ function generateTestCall(problem, tc, idx) {
     const extraArgs = (tc.input.args || []).map(a => String(a)).join(', ');
     const allArgs = `__h1_${idx}, __h2_${idx}` + (extraArgs ? ', ' + extraArgs : '');
 
-    if (problem.returnType === 'Node') {
+    if (problem.returnType === 'void') {
+      code += `            Solution.${method}(${allArgs});\n`;
+    } else if (problem.returnType === 'Node') {
       code += `            Solution.Node __r${idx} = Solution.${method}(${allArgs});\n`;
       code += `            System.out.println(__printList(__r${idx}));\n`;
     } else {
@@ -267,21 +398,84 @@ function generateTestCall(problem, tc, idx) {
     code += `            Solution.Node __t${idx} = __buildTree(new Integer[]{${treeValues}});\n`;
     const extraArgs = (tc.input.args || []).map(a => String(a)).join(', ');
     const allArgs = `__t${idx}` + (extraArgs ? ', ' + extraArgs : '');
-    code += `            System.out.println(Solution.${method}(${allArgs}));\n`;
+    if (problem.returnType === 'void') {
+      code += `            Solution.${method}(${allArgs});\n`;
+    } else if (problem.returnType === 'Node') {
+      code += `            Solution.Node __r${idx} = Solution.${method}(${allArgs});\n`;
+      code += `            System.out.println(__printTreeInorder(__r${idx}));\n`;
+    } else {
+      code += `            System.out.println(Solution.${method}(${allArgs}));\n`;
+    }
+  } else if (type === 'two_binary_trees') {
+    const tree1Values = (tc.input.tree || []).map(v => v === null ? 'null' : String(v)).join(',');
+    const tree2Values = (tc.input.tree2 || []).map(v => v === null ? 'null' : String(v)).join(',');
+    code += `            Solution.Node __t1_${idx} = __buildTree(new Integer[]{${tree1Values}});\n`;
+    code += `            Solution.Node __t2_${idx} = __buildTree(new Integer[]{${tree2Values}});\n`;
+    const extraArgs = (tc.input.args || []).map(a => String(a)).join(', ');
+    const allArgs = `__t1_${idx}, __t2_${idx}` + (extraArgs ? ', ' + extraArgs : '');
+    if (problem.returnType === 'void') {
+      code += `            Solution.${method}(${allArgs});\n`;
+    } else if (problem.returnType === 'Node') {
+      code += `            Solution.Node __r${idx} = Solution.${method}(${allArgs});\n`;
+      code += `            System.out.println(__printTreeInorder(__r${idx}));\n`;
+    } else {
+      code += `            System.out.println(Solution.${method}(${allArgs}));\n`;
+    }
+  } else if (type === 'queue') {
+    code += `            java.util.Queue<Integer> __q${idx} = __buildQueue(new int[]{${(tc.input.array || []).join(',')}});\n`;
+    const extraArgs = (tc.input.args || []).map(a => String(a)).join(', ');
+    const allArgs = `__q${idx}` + (extraArgs ? ', ' + extraArgs : '');
+
+    if (problem.returnType === 'void') {
+      code += `            Solution.${method}(${allArgs});\n`;
+    } else if (problem.returnType === 'Queue') {
+      code += `            java.util.Queue<Integer> __r${idx} = Solution.${method}(${allArgs});\n`;
+      code += `            System.out.println(__printQueue(__r${idx}));\n`;
+    } else {
+      code += `            System.out.println(Solution.${method}(${allArgs}));\n`;
+    }
   } else if (type === 'array_return') {
-    // For problems that take an int[] array and/or direct args
     const arr = tc.input.array || [];
     const args = tc.input.args || [];
 
     if (arr.length > 0 && args.length > 0) {
       code += `            int[] __a${idx} = new int[]{${arr.join(',')}};\n`;
-      code += `            System.out.println(Solution.${method}(__a${idx}, ${args.join(', ')}));\n`;
+      if (problem.returnType === 'void') {
+        code += `            Solution.${method}(__a${idx}, ${args.join(', ')});\n`;
+      } else if (problem.returnType === 'Node') {
+        code += `            Solution.Node __r${idx} = Solution.${method}(__a${idx}, ${args.join(', ')});\n`;
+        code += `            System.out.println(__printTreeInorder(__r${idx}));\n`;
+      } else {
+        code += `            System.out.println(Solution.${method}(__a${idx}, ${args.join(', ')}));\n`;
+      }
     } else if (arr.length > 0) {
       code += `            int[] __a${idx} = new int[]{${arr.join(',')}};\n`;
-      code += `            System.out.println(Solution.${method}(__a${idx}));\n`;
+      if (problem.returnType === 'void') {
+        code += `            Solution.${method}(__a${idx});\n`;
+      } else if (problem.returnType === 'Node') {
+        code += `            Solution.Node __r${idx} = Solution.${method}(__a${idx});\n`;
+        code += `            System.out.println(__printTreeInorder(__r${idx}));\n`;
+      } else {
+        code += `            System.out.println(Solution.${method}(__a${idx}));\n`;
+      }
     } else if (args.length > 0) {
-      // Direct numeric args (e.g., power(2, 10))
-      code += `            System.out.println(Solution.${method}(${args.join(', ')}));\n`;
+      if (problem.returnType === 'void') {
+        code += `            Solution.${method}(${args.join(', ')});\n`;
+      } else if (problem.returnType === 'Node') {
+        code += `            Solution.Node __r${idx} = Solution.${method}(${args.join(', ')});\n`;
+        code += `            System.out.println(__printTreeInorder(__r${idx}));\n`;
+      } else {
+        code += `            System.out.println(Solution.${method}(${args.join(', ')}));\n`;
+      }
+    } else {
+      if (problem.returnType === 'void') {
+        code += `            Solution.${method}();\n`;
+      } else if (problem.returnType === 'Node') {
+        code += `            Solution.Node __r${idx} = Solution.${method}();\n`;
+        code += `            System.out.println(__printTreeInorder(__r${idx}));\n`;
+      } else {
+        code += `            System.out.println(Solution.${method}());\n`;
+      }
     }
   } else if (type === 'string_return') {
     const str = tc.input.string || '';
@@ -289,9 +483,17 @@ function generateTestCall(problem, tc, idx) {
     const escapedStr = str.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 
     if (args.length > 0) {
-      code += `            System.out.println(Solution.${method}("${escapedStr}", ${args.join(', ')}));\n`;
+      if (problem.returnType === 'void') {
+        code += `            Solution.${method}("${escapedStr}", ${args.join(', ')});\n`;
+      } else {
+        code += `            System.out.println(Solution.${method}("${escapedStr}", ${args.join(', ')}));\n`;
+      }
     } else {
-      code += `            System.out.println(Solution.${method}("${escapedStr}"));\n`;
+      if (problem.returnType === 'void') {
+        code += `            Solution.${method}("${escapedStr}");\n`;
+      } else {
+        code += `            System.out.println(Solution.${method}("${escapedStr}"));\n`;
+      }
     }
   }
 
@@ -519,9 +721,7 @@ async function executeJavaProblem(problem, studentCode, mode) {
   }
 
   // Parse test results from stdout
-  const tests = mode === 'run'
-    ? problem.testCases.filter(t => t.visible)
-    : problem.testCases;
+  const tests = problem.testCases;
 
   const results = parseTestResults(apiResult.stdout, tests, problem);
 

@@ -2526,7 +2526,7 @@ body.subject-linux .mobile-section-nav button.active[data-section="practiceTest1
   box-shadow: 0 2px 4px rgba(44, 42, 41, 0.06);
 }
 
-/* Syntax Highlighted Bash Editor */
+/* Syntax Highlighted Bash & Java Editor */
 .bash-editor-wrapper {
   position: relative;
   flex: 1;
@@ -2534,9 +2534,52 @@ body.subject-linux .mobile-section-nav button.active[data-section="practiceTest1
   background-color: #1F2421;
   overflow: hidden;
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* Layout gutter and textarea side-by-side */
 }
+
+/* Line Number Gutter */
+.editor-gutter {
+  width: 48px;
+  background-color: #141715; /* Sleek dark theme background for gutter */
+  border-right: 1px solid #2B332E; /* Very subtle separation line */
+  color: #5C6660; /* Muted slate for line numbers */
+  font-family: var(--font-mono) !important;
+  font-size: 1rem !important;
+  line-height: 1.6 !important;
+  padding: 1.5rem 0.5rem 1.5rem 0 !important; /* Top/bottom padding matches editor */
+  text-align: right;
+  user-select: none;
+  overflow: hidden; /* Programmatic scrolling sync */
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.editor-gutter div {
+  height: 1.6em; /* Exact line height match */
+  padding-right: 6px;
+  transition: color 0.15s ease, font-weight 0.15s ease;
+}
+
+/* Highlighted Active Line Number */
+.editor-gutter div.active-line-num {
+  color: #E07A5F; /* Active peach accent */
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(224, 122, 95, 0.3);
+}
+
+/* Editor Textarea and Highlighter Container */
+.editor-textarea-container {
+  position: relative;
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
+}
+
 .bash-code-editor, .bash-highlighter {
+  position: absolute !important;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100% !important;
+  height: 100% !important;
   margin: 0 !important;
   border: none !important;
   font-family: var(--font-mono) !important;
@@ -2547,13 +2590,11 @@ body.subject-linux .mobile-section-nav button.active[data-section="practiceTest1
   white-space: pre !important;
   word-spacing: normal !important;
   word-break: normal !important;
-  tab-size: 2 !important;
+  tab-size: 4 !important;
   border-radius: 0 !important;
-  flex: 1;
+  box-sizing: border-box;
 }
 .bash-highlighter {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
   color: #E9F1EA;
   background: transparent;
   pointer-events: none;
@@ -2574,6 +2615,26 @@ body.subject-linux .mobile-section-nav button.active[data-section="practiceTest1
   outline: none;
   z-index: 2;
   overflow: auto !important;
+}
+
+/* Exam Sidebar Info Banner */
+.sidebar-info-banner {
+  background: rgba(224, 122, 95, 0.08);
+  border: 1px solid rgba(224, 122, 95, 0.2);
+  color: #E07A5F;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  margin: 0.75rem 1rem;
+  border-radius: 8px;
+  line-height: 1.4;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(224, 122, 95, 0.03);
+}
+body.dark-theme .sidebar-info-banner {
+  background: rgba(224, 122, 95, 0.15);
+  border-color: rgba(224, 122, 95, 0.3);
+  color: #FFB3A1;
 }
 
 /* =========================================

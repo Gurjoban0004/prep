@@ -1039,8 +1039,1825 @@ const JAVA_DSA_PROBLEMS = [
       { input: { array: [10, 20, 10, 30, 30, 40, 20], args: [] }, expected: "40", visible: false },
       { input: { array: [99, 1, 99], args: [] }, expected: "1", visible: false }
     ]
-  }
+  },
 
+  // ════════════════════════════════════════════════════════════
+  //  SECTION 6: EXAM QUESTIONS
+  // ════════════════════════════════════════════════════════════
+
+  {
+    id: "java-exam-001",
+    title: "Mirror of the Queue",
+    section: "Queues",
+    difficulty: "Easy",
+    tags: ["Queue", "List"],
+    category: "exam",
+    prompt: "Given a queue of integers, mirror it. That is, append all elements in reverse order to the tail of the queue.",
+    constraints: [
+      "1 ≤ Queue size ≤ 1000",
+      "0 ≤ element value ≤ 10⁵"
+    ],
+    examples: [
+      { input: "Queue: [1, 2, 3]", output: "1 2 3 3 2 1" },
+      { input: "Queue: [10]", output: "10 10" }
+    ],
+    type: "queue",
+    methodName: "mirrorQueue",
+    returnType: "Queue",
+    starterCode: `class Solution {
+    // Mirror the queue by appending elements in reverse order
+    static java.util.Queue<Integer> mirrorQueue(java.util.Queue<Integer> q) {
+        // Write your code here
+        return q;
+    }
+}`,
+    solutionCode: `class Solution {
+    static java.util.Queue<Integer> mirrorQueue(java.util.Queue<Integer> q) {
+        if (q == null) return null;
+        java.util.List<Integer> list = new java.util.ArrayList<>(q);
+        java.util.Collections.reverse(list);
+        q.addAll(list);
+        return q;
+    }
+}`,
+    testCases: [
+      { input: { array: [1, 2, 3], args: [] }, expected: "1 2 3 3 2 1", visible: true },
+      { input: { array: [10], args: [] }, expected: "10 10", visible: true },
+      { input: { array: [5, 4, 3, 2, 1], args: [] }, expected: "5 4 3 2 1 1 2 3 4 5", visible: true },
+      { input: { array: [], args: [] }, expected: "", visible: false }
+    ]
+  },
+
+  {
+    id: "java-exam-002",
+    title: "Flip Odd Elements of Queue",
+    section: "Queues",
+    difficulty: "Medium",
+    tags: ["Queue", "Reversal"],
+    category: "exam",
+    prompt: "Given a queue of integers, reverse (flip) only the elements at odd positions (1-indexed, i.e., 1st, 3rd, 5th, ... elements). Even-positioned elements should remain in their original order.",
+    constraints: [
+      "1 ≤ Queue size ≤ 1000",
+      "0 ≤ element value ≤ 10⁵"
+    ],
+    examples: [
+      { input: "Queue: [1, 2, 3, 4, 5]", output: "5 2 3 4 1" },
+      { input: "Queue: [10, 20]", output: "10 20" }
+    ],
+    type: "queue",
+    methodName: "flipOddElements",
+    returnType: "Queue",
+    starterCode: `class Solution {
+    // Reverse only the elements at odd positions (1-indexed)
+    static java.util.Queue<Integer> flipOddElements(java.util.Queue<Integer> q) {
+        // Write your code here
+        return q;
+    }
+}`,
+    solutionCode: `class Solution {
+    static java.util.Queue<Integer> flipOddElements(java.util.Queue<Integer> q) {
+        if (q == null || q.size() <= 1) return q;
+        java.util.List<Integer> list = new java.util.ArrayList<>(q);
+        java.util.List<Integer> odds = new java.util.ArrayList<>();
+        for (int i = 0; i < list.size(); i += 2) {
+            odds.add(list.get(i));
+        }
+        java.util.Collections.reverse(odds);
+        int oddIdx = 0;
+        for (int i = 0; i < list.size(); i += 2) {
+            list.set(i, odds.get(oddIdx++));
+        }
+        q.clear();
+        q.addAll(list);
+        return q;
+    }
+}`,
+    testCases: [
+      { input: { array: [1, 2, 3, 4, 5], args: [] }, expected: "5 2 3 4 1", visible: true },
+      { input: { array: [10, 20], args: [] }, expected: "10 20", visible: true },
+      { input: { array: [1, 2, 3, 4, 5, 6, 7, 8], args: [] }, expected: "7 2 5 4 3 6 1 8", visible: true },
+      { input: { array: [42], args: [] }, expected: "42", visible: false }
+    ]
+  },
+
+  {
+    id: "java-exam-003",
+    title: "Binary to Decimal (Void Function)",
+    section: "Bit Manipulation",
+    difficulty: "Easy",
+    tags: ["String", "Math"],
+    category: "exam",
+    prompt: "Given a binary string, convert it to its decimal representation. This is a void function, so print the result directly to <code>System.out.println</code>.",
+    constraints: [
+      "1 ≤ binary string length ≤ 30",
+      "String contains only '0' and '1' characters."
+    ],
+    examples: [
+      { input: "binary = \"110\"", output: "6" },
+      { input: "binary = \"1010\"", output: "10" }
+    ],
+    type: "string_return",
+    methodName: "binToDec",
+    returnType: "void",
+    starterCode: `class Solution {
+    // Print the decimal equivalent of the binary string
+    static void binToDec(String binary) {
+        // Write your code here
+    }
+}`,
+    solutionCode: `class Solution {
+    static void binToDec(String binary) {
+        if (binary == null || binary.isEmpty()) return;
+        int dec = 0;
+        for (int i = 0; i < binary.length(); i++) {
+            dec = dec * 2 + (binary.charAt(i) - '0');
+        }
+        System.out.println(dec);
+    }
+}`,
+    testCases: [
+      { input: { string: "110", args: [] }, expected: "6", visible: true },
+      { input: { string: "1010", args: [] }, expected: "10", visible: true },
+      { input: { string: "0", args: [] }, expected: "0", visible: true },
+      { input: { string: "111111", args: [] }, expected: "63", visible: false }
+    ]
+  },
+
+  {
+    id: "java-exam-004",
+    title: "Decimal to Binary (Long Parameter)",
+    section: "Bit Manipulation",
+    difficulty: "Easy",
+    tags: ["Recursion", "Bits"],
+    category: "exam",
+    prompt: "Given a number <code>n</code> (represented as a <code>long</code>), return its binary representation as a string.",
+    constraints: [
+      "0 ≤ n ≤ 2⁵⁰"
+    ],
+    examples: [
+      { input: "n = 10", output: "1010" },
+      { input: "n = 0", output: "0" }
+    ],
+    type: "array_return",
+    methodName: "decToBin",
+    returnType: "String",
+    starterCode: `class Solution {
+    // Return binary string representation of long n
+    static String decToBin(long n) {
+        // Write your code here
+        return "";
+    }
+}`,
+    solutionCode: `class Solution {
+    static String decToBin(long n) {
+        return Long.toBinaryString(n);
+    }
+}`,
+    testCases: [
+      { input: { array: [], args: [10] }, expected: "1010", visible: true },
+      { input: { array: [], args: [0] }, expected: "0", visible: true },
+      { input: { array: [], args: [123456789] }, expected: "111010110111100110100010101", visible: true },
+      { input: { array: [], args: [1099511627776] }, expected: "10000000000000000000000000000000000000000", visible: false }
+    ]
+  },
+
+  {
+    id: "java-exam-005",
+    title: "Greatest Common Divisor (GCD)",
+    section: "Math & GCD",
+    difficulty: "Easy",
+    tags: ["Math", "Recursion"],
+    category: "exam",
+    prompt: "Given two non-negative integers <code>a</code> and <code>b</code>, find and return their Greatest Common Divisor (GCD) using the Euclidean algorithm.",
+    constraints: [
+      "0 ≤ a, b ≤ 10⁶"
+    ],
+    examples: [
+      { input: "a = 12, b = 18", output: "6" },
+      { input: "a = 5, b = 0", output: "5" }
+    ],
+    type: "array_return",
+    methodName: "findGCD",
+    returnType: "int",
+    starterCode: `class Solution {
+    // Return GCD of a and b
+    static int findGCD(int a, int b) {
+        // Write your code here
+        return 1;
+    }
+}`,
+    solutionCode: `class Solution {
+    static int findGCD(int a, int b) {
+        if (b == 0) return a;
+        return findGCD(b, a % b);
+    }
+}`,
+    testCases: [
+      { input: { array: [], args: [12, 18] }, expected: "6", visible: true },
+      { input: { array: [], args: [5, 0] }, expected: "5", visible: true },
+      { input: { array: [], args: [101, 103] }, expected: "1", visible: true },
+      { input: { array: [], args: [256, 128] }, expected: "128", visible: false }
+    ]
+  },
+
+  {
+    id: "java-exam-006",
+    title: "Print Fibonacci in Reverse",
+    section: "Recursion",
+    difficulty: "Easy",
+    tags: ["Math", "Recursion"],
+    category: "exam",
+    prompt: "Given an integer <code>n</code>, print the first <code>n</code> Fibonacci numbers in reverse order (space-separated). Fibonacci sequence starts with <code>0, 1, 1, 2, 3, 5, ...</code>. This is a void function.",
+    constraints: [
+      "1 ≤ n ≤ 50"
+    ],
+    examples: [
+      { input: "n = 5", output: "3 2 1 1 0" },
+      { input: "n = 1", output: "0" }
+    ],
+    type: "array_return",
+    methodName: "printFibReverse",
+    returnType: "void",
+    starterCode: `class Solution {
+    // Print the first n Fibonacci numbers in reverse order (space-separated)
+    static void printFibReverse(int n) {
+        // Write your code here
+    }
+}`,
+    solutionCode: `class Solution {
+    static void printFibReverse(int n) {
+        if (n <= 0) return;
+        long[] fib = new long[n];
+        fib[0] = 0;
+        if (n > 1) fib[1] = 1;
+        for (int i = 2; i < n; i++) {
+            fib[i] = fib[i - 1] + fib[i - 2];
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = n - 1; i >= 0; i--) {
+            if (sb.length() > 0) sb.append(" ");
+            sb.append(fib[i]);
+        }
+        System.out.println(sb.toString());
+    }
+}`,
+    testCases: [
+      { input: { array: [], args: [5] }, expected: "3 2 1 1 0", visible: true },
+      { input: { array: [], args: [1] }, expected: "0", visible: true },
+      { input: { array: [], args: [8] }, expected: "13 8 5 3 2 1 1 0", visible: true },
+      { input: { array: [], args: [15] }, expected: "377 233 144 89 55 34 21 13 8 5 3 2 1 1 0", visible: false }
+    ]
+  },
+
+  // ════════════════════════════════════════════════════════════
+  //  SECTION 7: TESTPAD QUESTIONS
+  // ════════════════════════════════════════════════════════════
+
+  {
+    id: "java-tp-001",
+    title: "Second Largest Element",
+    section: "Arrays",
+    difficulty: "Easy",
+    tags: ["Array", "Searching"],
+    category: "testpad",
+    prompt: "Given an array of integers, find and return the second largest element in the array. Return <code>-1</code> if no second largest element exists (e.g. array size < 2, or all elements are equal).",
+    constraints: [
+      "1 ≤ array size ≤ 10⁵",
+      "-10⁵ ≤ arr[i] ≤ 10⁵"
+    ],
+    examples: [
+      { input: "arr = [12, 35, 1, 10, 34, 1]", output: "34" },
+      { input: "arr = [10, 5, 10]", output: "5" }
+    ],
+    type: "array_return",
+    methodName: "secondLargest",
+    returnType: "int",
+    starterCode: `class Solution {
+    // Return the second largest distinct element, or -1
+    static int secondLargest(int[] arr) {
+        // Write your code here
+        return -1;
+    }
+}`,
+    solutionCode: `class Solution {
+    static int secondLargest(int[] arr) {
+        if (arr == null || arr.length < 2) return -1;
+        int first = Integer.MIN_VALUE, second = Integer.MIN_VALUE;
+        for (int x : arr) {
+            if (x > first) {
+                second = first;
+                first = x;
+            } else if (x > second && x != first) {
+                second = x;
+            }
+        }
+        return second == Integer.MIN_VALUE ? -1 : second;
+    }
+}`,
+    testCases: [
+      { input: { array: [12, 35, 1, 10, 34, 1], args: [] }, expected: "34", visible: true },
+      { input: { array: [10, 5, 10], args: [] }, expected: "5", visible: true },
+      { input: { array: [10, 10, 10], args: [] }, expected: "-1", visible: true },
+      { input: { array: [5], args: [] }, expected: "-1", visible: false }
+    ]
+  },
+
+  {
+    id: "java-tp-002",
+    title: "Palindrome String Check",
+    section: "Strings",
+    difficulty: "Easy",
+    tags: ["String", "Two Pointers"],
+    category: "testpad",
+    prompt: "Check if a string is a palindrome. Ignore case. Return <code>true</code> if it is a palindrome, and <code>false</code> otherwise.",
+    constraints: [
+      "0 ≤ string length ≤ 10⁴"
+    ],
+    examples: [
+      { input: "s = \"radar\"", output: "true" },
+      { input: "s = \"hello\"", output: "false" }
+    ],
+    type: "string_return",
+    methodName: "isPalindrome",
+    returnType: "boolean",
+    starterCode: `class Solution {
+    // Return true if s is a palindrome (case-insensitive)
+    static boolean isPalindrome(String s) {
+        // Write your code here
+        return false;
+    }
+}`,
+    solutionCode: `class Solution {
+    static boolean isPalindrome(String s) {
+        if (s == null) return false;
+        int l = 0, r = s.length() - 1;
+        while (l < r) {
+            if (Character.toLowerCase(s.charAt(l)) != Character.toLowerCase(s.charAt(r))) return false;
+            l++; r--;
+        }
+        return true;
+    }
+}`,
+    testCases: [
+      { input: { string: "RaceCar", args: [] }, expected: "true", visible: false }
+    ]
+  },
+
+  // ============================================================
+  //  EXAM QUESTIONS
+  // ============================================================
+  {
+    id: "java-exam-007",
+    title: "Minimum Size Subarray Sum",
+    section: "Arrays",
+    difficulty: "Medium",
+    tags: ["Array", "Sliding Window"],
+    category: "exam",
+    prompt: "Given an array of positive integers <code>nums</code> and a positive integer <code>target</code>, return the minimal length of a contiguous subarray whose sum is greater than or equal to <code>target</code>. If there is no such subarray, return <code>0</code> instead.",
+    constraints: [
+      "1 ≤ nums.length ≤ 10⁵",
+      "1 ≤ nums[i] ≤ 10⁴",
+      "1 ≤ target ≤ 10⁹"
+    ],
+    examples: [
+      { input: "nums = [2,3,1,2,4,3], target = 7", output: "2" },
+      { input: "nums = [1,4,4], target = 4", output: "1" }
+    ],
+    type: "array_return",
+    methodName: "minSubArrayLen",
+    returnType: "int",
+    starterCode: `class Solution {
+    // Return minimal length of contiguous subarray with sum >= target
+    static int minSubArrayLen(int target, int[] nums) {
+        // Write your code here
+        return 0;
+    }
+}`,
+    solutionCode: `class Solution {
+    static int minSubArrayLen(int target, int[] nums) {
+        if (nums == null || nums.length == 0) return 0;
+        int n = nums.length;
+        int minLen = Integer.MAX_VALUE;
+        int left = 0, sum = 0;
+        for (int right = 0; right < n; right++) {
+            sum += nums[right];
+            while (sum >= target) {
+                minLen = Math.min(minLen, right - left + 1);
+                sum -= nums[left++];
+            }
+        }
+        return minLen == Integer.MAX_VALUE ? 0 : minLen;
+    }
+}`,
+    testCases: [
+      { input: { array: [2, 3, 1, 2, 4, 3], args: [7] }, expected: "2", visible: true },
+      { input: { array: [1, 4, 4], args: [4] }, expected: "1", visible: true },
+      { input: { array: [1, 1, 1, 1, 1, 1, 1, 1], args: [11] }, expected: "0", visible: true },
+      { input: { array: [1, 2, 3, 4, 5], args: [15] }, expected: "5", visible: false }
+    ]
+  },
+
+  {
+    id: "java-exam-008",
+    title: "Minimum Bracket Reversals",
+    section: "Stacks & Queues",
+    difficulty: "Medium",
+    tags: ["Stack", "Greedy"],
+    category: "exam",
+    prompt: "Given a string of only <code>{</code> and <code>}</code>, find the minimum number of bracket reversals needed to make the expression balanced. Return <code>-1</code> if it's not possible (odd length).",
+    constraints: [
+      "String contains only '{' and '}'.",
+      "Return -1 if the string length is odd."
+    ],
+    examples: [
+      { input: "s = \"}{\"", output: "2" },
+      { input: "s = \"{{{\"", output: "-1" }
+    ],
+    type: "string_return",
+    methodName: "minReversals",
+    returnType: "int",
+    starterCode: `class Solution {
+    // Return minimum reversals to balance, or -1
+    static int minReversals(String s) {
+        // Write your code here
+        return -1;
+    }
+}`,
+    solutionCode: `class Solution {
+    static int minReversals(String s) {
+        if (s.length() % 2 != 0) return -1;
+        int open = 0, close = 0;
+        for (char c : s.toCharArray()) {
+            if (c == '{') open++;
+            else {
+                if (open > 0) open--;
+                else close++;
+            }
+        }
+        return (open + 1) / 2 + (close + 1) / 2;
+    }
+}`,
+    testCases: [
+      { input: { string: "}{", args: [] }, expected: "2", visible: true },
+      { input: { string: "{{{", args: [] }, expected: "-1", visible: true },
+      { input: { string: "{{}}", args: [] }, expected: "0", visible: true },
+      { input: { string: "}{}{}{", args: [] }, expected: "2", visible: false }
+    ]
+  },
+
+  {
+    id: "java-exam-009",
+    title: "Map Contains Same Range",
+    section: "Hashing",
+    difficulty: "Easy",
+    tags: ["HashMap", "Collection"],
+    category: "exam",
+    prompt: "Write a function that checks if a <code>Map&lt;String, String&gt;</code> contains any two distinct keys mapping to the same value (range). Return <code>true</code> if so, <code>false</code> otherwise.",
+    constraints: [
+      "Keys and values are comma-separated strings for testing.",
+      "Return true if duplicate values exist in the map."
+    ],
+    examples: [
+      { input: "keys = \"A,B,C\", values = \"X,Y,X\"", output: "true" },
+      { input: "keys = \"A,B,C\", values = \"X,Y,Z\"", output: "false" }
+    ],
+    type: "string_return",
+    methodName: "checkMapRange",
+    returnType: "boolean",
+    starterCode: `import java.util.*;
+class Solution {
+    // Return true if any two keys map to the same value
+    static boolean hasDuplicateValues(Map<String, String> map) {
+        // Write your code here
+        return false;
+    }
+
+    static boolean checkMapRange(String keysStr, String valuesStr) {
+        Map<String, String> map = new HashMap<>();
+        String[] keys = keysStr.split(",");
+        String[] values = valuesStr.split(",");
+        for (int i = 0; i < keys.length; i++) {
+            map.put(keys[i], values[i]);
+        }
+        return hasDuplicateValues(map);
+    }
+}`,
+    solutionCode: `import java.util.*;
+class Solution {
+    static boolean hasDuplicateValues(Map<String, String> map) {
+        Set<String> set = new HashSet<>();
+        for (String val : map.values()) {
+            if (!set.add(val)) return true;
+        }
+        return false;
+    }
+
+    static boolean checkMapRange(String keysStr, String valuesStr) {
+        Map<String, String> map = new HashMap<>();
+        String[] keys = keysStr.split(",");
+        String[] values = valuesStr.split(",");
+        for (int i = 0; i < keys.length; i++) {
+            map.put(keys[i], values[i]);
+        }
+        return hasDuplicateValues(map);
+    }
+}`,
+    testCases: [
+      { input: { string: "A,B,C", args: ["\"X,Y,X\""] }, expected: "true", visible: true },
+      { input: { string: "A,B,C", args: ["\"X,Y,Z\""] }, expected: "false", visible: true },
+      { input: { string: "apple,banana", args: ["\"fruit,fruit\""] }, expected: "true", visible: true },
+      { input: { string: "one,two,three", args: ["\"1,2,3\""] }, expected: "false", visible: false }
+    ]
+  },
+
+  {
+    id: "java-exam-010",
+    title: "Floor and Ceil of BST",
+    section: "Binary Trees",
+    difficulty: "Medium",
+    tags: ["Binary Tree", "BST"],
+    category: "exam",
+    prompt: "Given a Binary Search Tree (BST) and a key, find the floor (largest node value &le; key) and ceil (smallest node value &ge; key) of the key. Return them as a space-separated string: <code>\"floor ceil\"</code>. Use <code>-1</code> if not found.",
+    constraints: [
+      "1 ≤ number of nodes ≤ 10⁴",
+      "Values in BST are non-negative."
+    ],
+    examples: [
+      { input: "Tree: [8, 4, 12, 2, 6, 10, 14], key = 5", output: "4 6" },
+      { input: "Tree: [8, 4, 12, 2, 6, 10, 14], key = 11", output: "10 12" }
+    ],
+    type: "binary_tree",
+    methodName: "findFloorCeil",
+    returnType: "String",
+    starterCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    // Return floor and ceil space-separated: "floor ceil"
+    static String findFloorCeil(Node root, int key) {
+        // Write your code here
+        return "-1 -1";
+    }
+}`,
+    solutionCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    static String findFloorCeil(Node root, int key) {
+        int floor = -1, ceil = -1;
+        Node curr = root;
+        while (curr != null) {
+            if (curr.data == key) {
+                floor = curr.data;
+                break;
+            } else if (curr.data < key) {
+                floor = curr.data;
+                curr = curr.right;
+            } else {
+                curr = curr.left;
+            }
+        }
+        curr = root;
+        while (curr != null) {
+            if (curr.data == key) {
+                ceil = curr.data;
+                break;
+            } else if (curr.data > key) {
+                ceil = curr.data;
+                curr = curr.left;
+            } else {
+                curr = curr.right;
+            }
+        }
+        return floor + " " + ceil;
+    }
+}`,
+    testCases: [
+      { input: { tree: [8, 4, 12, 2, 6, 10, 14], args: [5] }, expected: "4 6", visible: true },
+      { input: { tree: [8, 4, 12, 2, 6, 10, 14], args: [11] }, expected: "10 12", visible: true },
+      { input: { tree: [8, 4, 12, 2, 6, 10, 14], args: [1] }, expected: "-1 2", visible: true },
+      { input: { tree: [8, 4, 12, 2, 6, 10, 14], args: [15] }, expected: "14 -1", visible: false }
+    ]
+  },
+
+  {
+    id: "java-exam-011",
+    title: "Validate BST",
+    section: "Binary Trees",
+    difficulty: "Medium",
+    tags: ["Binary Tree", "BST", "Validation"],
+    category: "exam",
+    prompt: "Given a binary tree, check if it is a valid Binary Search Tree (BST).",
+    constraints: [
+      "1 ≤ number of nodes ≤ 10⁴"
+    ],
+    examples: [
+      { input: "Tree: [10, 5, 15, 2, 7, 12, 20]", output: "true" },
+      { input: "Tree: [10, 5, 15, null, null, 6, 20]", output: "false" }
+    ],
+    type: "binary_tree",
+    methodName: "isBST",
+    returnType: "boolean",
+    starterCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    // Return true if the tree is a valid BST
+    static boolean isBST(Node root) {
+        // Write your code here
+        return false;
+    }
+}`,
+    solutionCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    static boolean isBST(Node root) {
+        return isBSTUtil(root, Long.MIN_VALUE, Long.MAX_VALUE);
+    }
+
+    private static boolean isBSTUtil(Node node, long min, long max) {
+        if (node == null) return true;
+        if (node.data <= min || node.data >= max) return false;
+        return isBSTUtil(node.left, min, node.data) && isBSTUtil(node.right, node.data, max);
+    }
+}`,
+    testCases: [
+      { input: { tree: [10, 5, 15, 2, 7, 12, 20], args: [] }, expected: "true", visible: true },
+      { input: { tree: [10, 5, 15, null, null, 6, 20], args: [] }, expected: "false", visible: true },
+      { input: { tree: [2, 1, 3], args: [] }, expected: "true", visible: true },
+      { input: { tree: [1, 2, 3], args: [] }, expected: "false", visible: false }
+    ]
+  },
+
+  {
+    id: "java-exam-012",
+    title: "Count Set Bits",
+    section: "Bit Manipulation",
+    difficulty: "Easy",
+    tags: ["Bit Manipulation", "Math"],
+    category: "exam",
+    prompt: "Given an integer <code>n</code>, count and return the number of set bits (1s) in its binary representation.",
+    constraints: [
+      "0 ≤ n ≤ 10⁹"
+    ],
+    examples: [
+      { input: "n = 6", output: "2" },
+      { input: "n = 15", output: "4" }
+    ],
+    type: "array_return",
+    methodName: "countSetBits",
+    returnType: "int",
+    starterCode: `class Solution {
+    // Return count of set bits (1s) in binary representation of n
+    static int countSetBits(int n) {
+        // Write your code here
+        return 0;
+    }
+}`,
+    solutionCode: `class Solution {
+    static int countSetBits(int n) {
+        int count = 0;
+        while (n > 0) {
+            n = n & (n - 1);
+            count++;
+        }
+        return count;
+    }
+}`,
+    testCases: [
+      { input: { array: [], args: [6] }, expected: "2", visible: true },
+      { input: { array: [], args: [15] }, expected: "4", visible: true },
+      { input: { array: [], args: [0] }, expected: "0", visible: true },
+      { input: { array: [], args: [1023] }, expected: "10", visible: false }
+    ]
+  },
+
+  {
+    id: "java-exam-013",
+    title: "Code Compiler Output (Balanced Bracket)",
+    section: "Stacks & Queues",
+    difficulty: "Easy",
+    tags: ["Stack", "String"],
+    category: "exam",
+    prompt: "Given a string containing parentheses <code>()</code>, <code>{}</code>, and <code>[]</code>, return <code>\"Success\"</code> if they are balanced, and <code>\"Error\"</code> otherwise.",
+    constraints: [
+      "0 ≤ string length ≤ 10⁴"
+    ],
+    examples: [
+      { input: "s = \"({[]})\"", output: "Success" },
+      { input: "s = \"([)]\"", output: "Error" }
+    ],
+    type: "string_return",
+    methodName: "checkCompilerOutput",
+    returnType: "String",
+    starterCode: `class Solution {
+    // Return "Success" if balanced, else "Error"
+    static String checkCompilerOutput(String s) {
+        // Write your code here
+        return "Error";
+    }
+}`,
+    solutionCode: `class Solution {
+    static String checkCompilerOutput(String s) {
+        java.util.Deque<Character> stack = new java.util.ArrayDeque<>();
+        for (char c : s.toCharArray()) {
+            if (c == '(' || c == '{' || c == '[') stack.push(c);
+            else if (c == ')' || c == '}' || c == ']') {
+                if (stack.isEmpty()) return "Error";
+                char top = stack.pop();
+                if ((c == ')' && top != '(') || (c == '}' && top != '{') ||
+                    (c == ']' && top != '[')) return "Error";
+            }
+        }
+        return stack.isEmpty() ? "Success" : "Error";
+    }
+}`,
+    testCases: [
+      { input: { string: "({[]})", args: [] }, expected: "Success", visible: true },
+      { input: { string: "([)]", args: [] }, expected: "Error", visible: true },
+      { input: { string: "", args: [] }, expected: "Success", visible: true },
+      { input: { string: "(((", args: [] }, expected: "Error", visible: false }
+    ]
+  },
+
+  {
+    id: "java-exam-014",
+    title: "OOPs - Family Members",
+    section: "OOPs",
+    difficulty: "Medium",
+    tags: ["OOPs", "Inheritance"],
+    category: "exam",
+    prompt: "Build an inheritance hierarchy representing family members. Implement a base class <code>FamilyMember</code> with fields <code>name</code> and <code>age</code>, and a method <code>getRole()</code>. Implement subclasses <code>Father</code>, <code>Mother</code>, and <code>Child</code> (which also has a <code>school</code> field) extending <code>FamilyMember</code>.",
+    constraints: [
+      "Ensure Father's role is 'Father', Mother's is 'Mother', Child's is 'Child'."
+    ],
+    examples: [
+      { input: "Father: John(45), Mother: Jane(42), Child: Billy(10, HighSchool)", output: "John(Father,45) & Jane(Mother,42) & Billy(Child,10,HighSchool)" }
+    ],
+    type: "string_return",
+    methodName: "testFamily",
+    returnType: "String",
+    starterCode: `class Solution {
+    static class FamilyMember {
+        String name;
+        int age;
+        FamilyMember(String name, int age) {
+            this.name = name;
+            this.age = age;
+        }
+        String getRole() { return "Member"; }
+    }
+
+    static class Father extends FamilyMember {
+        Father(String name, int age) { super(name, age); }
+        // Implement getRole
+    }
+
+    static class Mother extends FamilyMember {
+        Mother(String name, int age) { super(name, age); }
+        // Implement getRole
+    }
+
+    static class Child extends FamilyMember {
+        String school;
+        Child(String name, int age, String school) {
+            super(name, age);
+            this.school = school;
+        }
+        // Implement getRole
+    }
+
+    static String testFamily(String fatherName, int fatherAge, String motherName, int motherAge, String childName, int childAge, String school) {
+        // Write driver test code to instantiate and return formatted string
+        return "";
+    }
+}`,
+    solutionCode: `class Solution {
+    static class FamilyMember {
+        String name;
+        int age;
+        FamilyMember(String name, int age) {
+            this.name = name;
+            this.age = age;
+        }
+        String getRole() { return "Member"; }
+    }
+
+    static class Father extends FamilyMember {
+        Father(String name, int age) { super(name, age); }
+        @Override String getRole() { return "Father"; }
+    }
+
+    static class Mother extends FamilyMember {
+        Mother(String name, int age) { super(name, age); }
+        @Override String getRole() { return "Mother"; }
+    }
+
+    static class Child extends FamilyMember {
+        String school;
+        Child(String name, int age, String school) {
+            super(name, age);
+            this.school = school;
+        }
+        @Override String getRole() { return "Child"; }
+    }
+
+    static String testFamily(String fatherName, int fatherAge, String motherName, int motherAge, String childName, int childAge, String school) {
+        FamilyMember f = new Father(fatherName, fatherAge);
+        FamilyMember m = new Mother(motherName, motherAge);
+        Child c = new Child(childName, childAge, school);
+        return f.name + "(" + f.getRole() + "," + f.age + ") & " + 
+               m.name + "(" + m.getRole() + "," + m.age + ") & " + 
+               c.name + "(" + c.getRole() + "," + c.age + "," + c.school + ")";
+    }
+}`,
+    testCases: [
+      { input: { string: "John", args: [45, "\"Jane\"", 42, "\"Billy\"", 10, "\"HighSchool\""] }, expected: "John(Father,45) & Jane(Mother,42) & Billy(Child,10,HighSchool)", visible: true },
+      { input: { string: "Bob", args: [50, "\"Alice\"", 48, "\"Charlie\"", 15, "\"MiddleSchool\""] }, expected: "Bob(Father,50) & Alice(Mother,48) & Charlie(Child,15,MiddleSchool)", visible: true }
+    ]
+  },
+
+  {
+    id: "java-exam-015",
+    title: "OOPs - Library and Books",
+    section: "OOPs",
+    difficulty: "Medium",
+    tags: ["OOPs", "Classes"],
+    category: "exam",
+    prompt: "Create a class <code>Book</code> with <code>title</code>, <code>author</code>, and <code>isbn</code>. Create a class <code>Library</code> containing a list of <code>Book</code>s. Implement methods: <code>addBook(Book book)</code>, <code>removeBook(String isbn)</code> (returns <code>boolean</code>), and <code>getBookCount()</code>.",
+    constraints: [
+      "Book isbn must be unique in library checks."
+    ],
+    examples: [
+      { input: "Add Book1, Book2, remove Book1", output: "2 -> true -> 1" }
+    ],
+    type: "string_return",
+    methodName: "testLibrary",
+    returnType: "String",
+    starterCode: `class Solution {
+    static class Book {
+        String title, author, isbn;
+        Book(String t, String a, String i) {
+            title = t; author = a; isbn = i;
+        }
+    }
+
+    static class Library {
+        // Implement Library with addBook, removeBook, and getBookCount
+    }
+
+    static String testLibrary(String b1Title, String b1Author, String b1Isbn, String b2Title, String b2Author, String b2Isbn, String removeIsbn) {
+        // Driver to test your Library
+        return "";
+    }
+}`,
+    solutionCode: `class Solution {
+    static class Book {
+        String title, author, isbn;
+        Book(String t, String a, String i) {
+            title = t; author = a; isbn = i;
+        }
+    }
+
+    static class Library {
+        private java.util.List<Book> books = new java.util.ArrayList<>();
+        void addBook(Book b) { books.add(b); }
+        boolean removeBook(String isbn) {
+            for (int i = 0; i < books.size(); i++) {
+                if (books.get(i).isbn.equals(isbn)) {
+                    books.remove(i);
+                    return true;
+                }
+            }
+            return false;
+        }
+        int getBookCount() { return books.size(); }
+    }
+
+    static String testLibrary(String b1Title, String b1Author, String b1Isbn, String b2Title, String b2Author, String b2Isbn, String removeIsbn) {
+        Library lib = new Library();
+        lib.addBook(new Book(b1Title, b1Author, b1Isbn));
+        lib.addBook(new Book(b2Title, b2Author, b2Isbn));
+        int countBefore = lib.getBookCount();
+        boolean removed = lib.removeBook(removeIsbn);
+        int countAfter = lib.getBookCount();
+        return countBefore + " -> " + removed + " -> " + countAfter;
+    }
+}`,
+    testCases: [
+      { input: { string: "Book One", args: ["\"Author A\"", "\"1234\"", "\"Book Two\"", "\"Author B\"", "\"5678\"", "\"1234\""] }, expected: "2 -> true -> 1", visible: true },
+      { input: { string: "Hacking", args: ["\"Mitnick\"", "\"007\"", "\"Coding\"", "\"Stroustrup\"", "\"1337\"", "\"999\""] }, expected: "2 -> false -> 2", visible: true }
+    ]
+  },
+
+  {
+    id: "java-exam-016",
+    title: "OOPs - Security Gate Counter",
+    section: "OOPs",
+    difficulty: "Easy",
+    tags: ["OOPs", "Class design"],
+    category: "exam",
+    prompt: "Create a <code>SecurityGate</code> class that keeps track of the number of people inside a building. Implement methods: <code>enter()</code> (increments counter), <code>exit()</code> (decrements counter but never below 0), and <code>getCount()</code>.",
+    constraints: [
+      "Counter must never become negative."
+    ],
+    examples: [
+      { input: "enter, enter, exit", output: "1" }
+    ],
+    type: "string_return",
+    methodName: "testGate",
+    returnType: "int",
+    starterCode: `class Solution {
+    static class SecurityGate {
+        // Implement enter, exit, and getCount
+    }
+
+    static int testGate(String ops) {
+        SecurityGate gate = new SecurityGate();
+        for (String op : ops.split(",")) {
+            if (op.equals("enter")) gate.enter();
+            else if (op.equals("exit")) gate.exit();
+        }
+        return gate.getCount();
+    }
+}`,
+    solutionCode: `class Solution {
+    static class SecurityGate {
+        private int count = 0;
+        void enter() { count++; }
+        void exit() { if (count > 0) count--; }
+        int getCount() { return count; }
+    }
+
+    static int testGate(String ops) {
+        SecurityGate gate = new SecurityGate();
+        for (String op : ops.split(",")) {
+            if (op.equals("enter")) gate.enter();
+            else if (op.equals("exit")) gate.exit();
+        }
+        return gate.getCount();
+    }
+}`,
+    testCases: [
+      { input: { string: "enter,enter,exit", args: [] }, expected: "1", visible: true },
+      { input: { string: "exit,exit,enter,enter", args: [] }, expected: "2", visible: true },
+      { input: { string: "enter,enter,enter,exit,exit,exit,exit", args: [] }, expected: "0", visible: false }
+    ]
+  },
+
+  {
+    id: "java-exam-017",
+    title: "Max Element at Each Level",
+    section: "Binary Trees",
+    difficulty: "Medium",
+    tags: ["Binary Tree", "BFS"],
+    category: "exam",
+    prompt: "Given a binary tree, find and return the maximum value at each level as space-separated values.",
+    constraints: [
+      "1 ≤ number of nodes ≤ 10⁴"
+    ],
+    examples: [
+      { input: "Tree: [1, 5, 3, 9, 2, 8]", output: "1 5 9" }
+    ],
+    type: "binary_tree",
+    methodName: "maxAtEachLevel",
+    returnType: "String",
+    starterCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    static String maxAtEachLevel(Node root) {
+        // Write your code here
+        return "";
+    }
+}`,
+    solutionCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    static String maxAtEachLevel(Node root) {
+        if (root == null) return "";
+        java.util.Queue<Node> q = new java.util.LinkedList<>();
+        q.add(root);
+        StringBuilder sb = new StringBuilder();
+        while (!q.isEmpty()) {
+            int size = q.size(), max = Integer.MIN_VALUE;
+            for (int i = 0; i < size; i++) {
+                Node n = q.poll();
+                max = Math.max(max, n.data);
+                if (n.left != null) q.add(n.left);
+                if (n.right != null) q.add(n.right);
+            }
+            if (sb.length() > 0) sb.append(" ");
+            sb.append(max);
+        }
+        return sb.toString();
+    }
+}`,
+    testCases: [
+      { input: { tree: [1, 5, 3, 9, 2, 8], args: [] }, expected: "1 5 9", visible: true },
+      { input: { tree: [10], args: [] }, expected: "10", visible: true }
+    ]
+  },
+
+  {
+    id: "java-exam-018",
+    title: "OOPs - Shape Area Interface",
+    section: "OOPs",
+    difficulty: "Easy",
+    tags: ["OOPs", "Interface"],
+    category: "exam",
+    prompt: "Implement an interface <code>Shape</code> with a method <code>double area()</code>. Create a class <code>Circle</code> that implements <code>Shape</code> and has a constructor taking a radius. Let the output area be formatted to 2 decimal places.",
+    constraints: [
+      "Use Math.PI for accurate circle area."
+    ],
+    examples: [
+      { input: "r = 5.0", output: "78.54" }
+    ],
+    type: "array_return",
+    methodName: "testCircleArea",
+    returnType: "String",
+    starterCode: `class Solution {
+    interface Shape {
+        double area();
+    }
+
+    static class Circle implements Shape {
+        // Implement constructor and area method
+    }
+
+    static String testCircleArea(double radius) {
+        Circle c = new Circle(radius);
+        return String.format(Locale.US, "%.2f", c.area());
+    }
+}`,
+    solutionCode: `class Solution {
+    interface Shape {
+        double area();
+    }
+
+    static class Circle implements Shape {
+        private double radius;
+        Circle(double r) { radius = r; }
+        public double area() { return Math.PI * radius * radius; }
+    }
+
+    static String testCircleArea(double radius) {
+        Circle c = new Circle(radius);
+        return String.format(java.util.Locale.US, "%.2f", c.area());
+    }
+}`,
+    testCases: [
+      { input: { array: [], args: [5.0] }, expected: "78.54", visible: true },
+      { input: { array: [], args: [1.0] }, expected: "3.14", visible: true },
+      { input: { array: [], args: [0.0] }, expected: "0.00", visible: false }
+    ]
+  },
+
+  {
+    id: "java-exam-019",
+    title: "Balanced Parentheses (Boolean Return)",
+    section: "Stacks & Queues",
+    difficulty: "Easy",
+    tags: ["Stack", "String"],
+    category: "exam",
+    prompt: "Check if a string containing parentheses <code>()</code>, <code>{}</code>, and <code>[]</code> is balanced. Return <code>true</code> if balanced, and <code>false</code> otherwise.",
+    constraints: [
+      "0 ≤ string length ≤ 10⁴"
+    ],
+    examples: [
+      { input: "s = \"({[]})\"", output: "true" }
+    ],
+    type: "string_return",
+    methodName: "isBalanced",
+    returnType: "boolean",
+    starterCode: `class Solution {
+    // Return true if balanced, else false
+    static boolean isBalanced(String s) {
+        // Write your code here
+        return false;
+    }
+}`,
+    solutionCode: `class Solution {
+    static boolean isBalanced(String s) {
+        java.util.Deque<Character> stack = new java.util.ArrayDeque<>();
+        for (char c : s.toCharArray()) {
+            if (c == '(' || c == '{' || c == '[') stack.push(c);
+            else if (c == ')' || c == '}' || c == ']') {
+                if (stack.isEmpty()) return false;
+                char top = stack.pop();
+                if ((c == ')' && top != '(') || (c == '}' && top != '{') ||
+                    (c == ']' && top != '[')) return false;
+            }
+        }
+        return stack.isEmpty();
+    }
+}`,
+    testCases: [
+      { input: { string: "({[]})", args: [] }, expected: "true", visible: true },
+      { input: { string: "([)]", args: [] }, expected: "false", visible: true }
+    ]
+  },
+
+  // ============================================================
+  //  TESTPAD QUESTIONS
+  // ============================================================
+  {
+    id: "java-tp-bst-002",
+    title: "Kth Smallest Element in BST",
+    section: "Binary Trees",
+    difficulty: "Medium",
+    tags: ["BST", "Tree"],
+    category: "testpad",
+    prompt: "Given the root of a Binary Search Tree (BST) and an integer <code>k</code>, find and return the data value of the <code>k</code>th smallest element.",
+    constraints: [
+      "1 ≤ number of nodes ≤ 10⁴",
+      "1 ≤ k ≤ number of nodes"
+    ],
+    examples: [
+      { input: "Tree: [3, 1, 4, null, 2], k = 1", output: "1" }
+    ],
+    type: "binary_tree",
+    methodName: "kthSmallest",
+    returnType: "int",
+    starterCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    // Return the kth smallest element's data
+    static int kthSmallest(Node root, int k) {
+        // Write your code here
+        return -1;
+    }
+}`,
+    solutionCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    private static int count = 0;
+    private static int result = -1;
+
+    static int kthSmallest(Node root, int k) {
+        count = 0;
+        result = -1;
+        traverse(root, k);
+        return result;
+    }
+
+    private static void traverse(Node node, int k) {
+        if (node == null) return;
+        traverse(node.left, k);
+        count++;
+        if (count == k) {
+            result = node.data;
+            return;
+        }
+        traverse(node.right, k);
+    }
+}`,
+    testCases: [
+      { input: { tree: [3, 1, 4, null, 2], args: [1] }, expected: "1", visible: true },
+      { input: { tree: [5, 3, 6, 2, 4, null, null, 1], args: [3] }, expected: "3", visible: true }
+    ]
+  },
+
+  {
+    id: "java-tp-bst-003",
+    title: "Convert Level Order to BST",
+    section: "Binary Trees",
+    difficulty: "Medium",
+    tags: ["BST", "BFS"],
+    category: "testpad",
+    prompt: "Given a level-order traversal array of a Binary Search Tree, construct the BST and return the root node. The tree node wrapper prints it inorder.",
+    constraints: [
+      "1 ≤ array size ≤ 1000"
+    ],
+    examples: [
+      { input: "arr = [7, 4, 12, 3, 6, 8, 14]", output: "3 4 6 7 8 12 14" }
+    ],
+    type: "array_return",
+    methodName: "constructBST",
+    returnType: "Node",
+    starterCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    // Return root of constructed BST
+    static Node constructBST(int[] arr) {
+        // Write your code here
+        return null;
+    }
+}`,
+    solutionCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    static class NodeDetails {
+        Node node;
+        int min, max;
+        NodeDetails(Node n, int mi, int ma) {
+            node = n; min = mi; max = ma;
+        }
+    }
+
+    static Node constructBST(int[] arr) {
+        if (arr == null || arr.length == 0) return null;
+        Node root = new Node(arr[0]);
+        java.util.Queue<NodeDetails> q = new java.util.LinkedList<>();
+        q.add(new NodeDetails(root, Integer.MIN_VALUE, Integer.MAX_VALUE));
+        int i = 1;
+        while (i < arr.length && !q.isEmpty()) {
+            NodeDetails curr = q.poll();
+            if (i < arr.length && arr[i] > curr.min && arr[i] < curr.node.data) {
+                curr.node.left = new Node(arr[i]);
+                q.add(new NodeDetails(curr.node.left, curr.min, curr.node.data));
+                i++;
+            }
+            if (i < arr.length && arr[i] > curr.node.data && arr[i] < curr.max) {
+                curr.node.right = new Node(arr[i]);
+                q.add(new NodeDetails(curr.node.right, curr.node.data, curr.max));
+                i++;
+            }
+        }
+        return root;
+    }
+}`,
+    testCases: [
+      { input: { array: [7, 4, 12, 3, 6, 8, 14], args: [] }, expected: "3 4 6 7 8 12 14", visible: true }
+    ]
+  },
+
+  {
+    id: "java-tp-bst-004",
+    title: "Lowest Common Ancestor in BST",
+    section: "Binary Trees",
+    difficulty: "Easy",
+    tags: ["BST", "LCA"],
+    category: "testpad",
+    prompt: "Given a Binary Search Tree (BST) and two nodes <code>p</code> and <code>q</code>, find the lowest common ancestor (LCA) of p and q. Return its data.",
+    constraints: [
+      "2 ≤ number of nodes ≤ 10⁴"
+    ],
+    examples: [
+      { input: "Tree: [6, 2, 8, 0, 4, 7, 9], p = 2, q = 8", output: "6" }
+    ],
+    type: "binary_tree",
+    methodName: "lowestCommonAncestor",
+    returnType: "int",
+    starterCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    // Find LCA of p and q in BST
+    static int lowestCommonAncestor(Node root, int p, int q) {
+        // Write your code here
+        return -1;
+    }
+}`,
+    solutionCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    static int lowestCommonAncestor(Node root, int p, int q) {
+        Node curr = root;
+        while (curr != null) {
+            if (curr.data > p && curr.data > q) curr = curr.left;
+            else if (curr.data < p && curr.data < q) curr = curr.right;
+            else return curr.data;
+        }
+        return -1;
+    }
+}`,
+    testCases: [
+      { input: { tree: [6, 2, 8, 0, 4, 7, 9], args: [2, 8] }, expected: "6", visible: true },
+      { input: { tree: [6, 2, 8, 0, 4, 7, 9], args: [2, 4] }, expected: "2", visible: true }
+    ]
+  },
+
+  {
+    id: "java-tp-bt-001",
+    title: "Create Binary Tree from Array",
+    section: "Binary Trees",
+    difficulty: "Easy",
+    tags: ["Tree", "BFS"],
+    category: "testpad",
+    prompt: "Construct a binary tree from a level order array containing missing elements (represented as <code>null</code>). Inorder traversal of the tree is printed for verification.",
+    constraints: [
+      "1 ≤ array size ≤ 1000"
+    ],
+    examples: [
+      { input: "arr = [1, 2, 3, null, 4]", output: "2 4 1 3" }
+    ],
+    type: "array_return",
+    methodName: "buildTree",
+    returnType: "Node",
+    starterCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    static Node buildTree(int[] arr) {
+        // Write your code here
+        return null;
+    }
+}`,
+    solutionCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    static Node buildTree(int[] arr) {
+        if (arr == null || arr.length == 0 || arr[0] == -1) return null;
+        Node root = new Node(arr[0]);
+        java.util.Queue<Node> q = new java.util.LinkedList<>();
+        q.add(root);
+        int i = 1;
+        while (i < arr.length && !q.isEmpty()) {
+            Node curr = q.poll();
+            if (i < arr.length && arr[i] != -1) {
+                curr.left = new Node(arr[i]);
+                q.add(curr.left);
+            }
+            i++;
+            if (i < arr.length && arr[i] != -1) {
+                curr.right = new Node(arr[i]);
+                q.add(curr.right);
+            }
+            i++;
+        }
+        return root;
+    }
+}`,
+    testCases: [
+      { input: { array: [1, 2, 3, -1, 4], args: [] }, expected: "2 4 1 3", visible: true }
+    ]
+  },
+
+  {
+    id: "java-tp-bt-002",
+    title: "Print Binary Tree Level Order",
+    section: "Binary Trees",
+    difficulty: "Easy",
+    tags: ["Tree", "BFS"],
+    category: "testpad",
+    prompt: "Print the level order traversal (space-separated) of a binary tree.",
+    constraints: [
+      "1 ≤ number of nodes ≤ 10⁴"
+    ],
+    examples: [
+      { input: "Tree: [1, 2, 3]", output: "1 2 3" }
+    ],
+    type: "binary_tree",
+    methodName: "levelOrder",
+    returnType: "String",
+    starterCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    static String levelOrder(Node root) {
+        // Write your code here
+        return "";
+    }
+}`,
+    solutionCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    static String levelOrder(Node root) {
+        if (root == null) return "";
+        StringBuilder sb = new StringBuilder();
+        java.util.Queue<Node> q = new java.util.LinkedList<>();
+        q.add(root);
+        while (!q.isEmpty()) {
+            Node curr = q.poll();
+            if (sb.length() > 0) sb.append(" ");
+            sb.append(curr.data);
+            if (curr.left != null) q.add(curr.left);
+            if (curr.right != null) q.add(curr.right);
+        }
+        return sb.toString();
+    }
+}`,
+    testCases: [
+      { input: { tree: [1, 2, 3, 4, 5], args: [] }, expected: "1 2 3 4 5", visible: true }
+    ]
+  },
+
+  {
+    id: "java-tp-bt-003",
+    title: "Print Nodes at Odd Levels",
+    section: "Binary Trees",
+    difficulty: "Easy",
+    tags: ["Tree", "BFS"],
+    category: "testpad",
+    prompt: "Find and return all node values at odd levels (1-indexed, root is level 1) of a binary tree as a space-separated string.",
+    constraints: [
+      "1 ≤ number of nodes ≤ 10⁴"
+    ],
+    examples: [
+      { input: "Tree: [1, 2, 3, 4, 5]", output: "1 4 5" }
+    ],
+    type: "binary_tree",
+    methodName: "printOddLevels",
+    returnType: "String",
+    starterCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    static String printOddLevels(Node root) {
+        // Write your code here
+        return "";
+    }
+}`,
+    solutionCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    static String printOddLevels(Node root) {
+        if (root == null) return "";
+        StringBuilder sb = new StringBuilder();
+        java.util.Queue<Node> q = new java.util.LinkedList<>();
+        q.add(root);
+        int level = 1;
+        while (!q.isEmpty()) {
+            int size = q.size();
+            for (int i = 0; i < size; i++) {
+                Node n = q.poll();
+                if (level % 2 != 0) {
+                    if (sb.length() > 0) sb.append(" ");
+                    sb.append(n.data);
+                }
+                if (n.left != null) q.add(n.left);
+                if (n.right != null) q.add(n.right);
+            }
+            level++;
+        }
+        return sb.toString();
+    }
+}`,
+    testCases: [
+      { input: { tree: [1, 2, 3, 4, 5], args: [] }, expected: "1 4 5", visible: true }
+    ]
+  },
+
+  {
+    id: "java-tp-bt-004",
+    title: "Iterative Inorder Traversal",
+    section: "Binary Trees",
+    difficulty: "Medium",
+    tags: ["Tree", "DFS", "Iterative"],
+    category: "testpad",
+    prompt: "Implement iterative inorder traversal of a binary tree using a stack. Return space-separated values.",
+    constraints: [
+      "0 ≤ number of nodes ≤ 5000"
+    ],
+    examples: [
+      { input: "Tree: [1, null, 2, 3]", output: "1 3 2" }
+    ],
+    type: "binary_tree",
+    methodName: "iterativeInorder",
+    returnType: "String",
+    starterCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    static String iterativeInorder(Node root) {
+        // Write your code here
+        return "";
+    }
+}`,
+    solutionCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    static String iterativeInorder(Node root) {
+        StringBuilder sb = new StringBuilder();
+        java.util.Deque<Node> stack = new java.util.ArrayDeque<>();
+        Node curr = root;
+        while (curr != null || !stack.isEmpty()) {
+            while (curr != null) {
+                stack.push(curr);
+                curr = curr.left;
+            }
+            curr = stack.pop();
+            if (sb.length() > 0) sb.append(" ");
+            sb.append(curr.data);
+            curr = curr.right;
+        }
+        return sb.toString();
+    }
+}`,
+    testCases: [
+      { input: { tree: [1, null, 2, 3], args: [] }, expected: "1 3 2", visible: true }
+    ]
+  },
+
+  {
+    id: "java-tp-bt-007",
+    title: "Count Leaf and Non-Leaf Nodes",
+    section: "Binary Trees",
+    difficulty: "Easy",
+    tags: ["Tree", "DFS"],
+    category: "testpad",
+    prompt: "Count and return the number of leaf and non-leaf nodes in a binary tree as a string formatted as <code>\"leaf_count non_leaf_count\"</code>.",
+    constraints: [
+      "1 ≤ number of nodes ≤ 10⁴"
+    ],
+    examples: [
+      { input: "Tree: [1, 2, 3]", output: "2 1" }
+    ],
+    type: "binary_tree",
+    methodName: "countNodes",
+    returnType: "String",
+    starterCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    // Return leaf count and non-leaf count: "leaf_count non_leaf_count"
+    static String countNodes(Node root) {
+        // Write your code here
+        return "0 0";
+    }
+}`,
+    solutionCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    static String countNodes(Node root) {
+        if (root == null) return "0 0";
+        int leaves = countLeaves(root);
+        int nonLeaves = countNonLeaves(root);
+        return leaves + " " + nonLeaves;
+    }
+
+    private static int countLeaves(Node node) {
+        if (node == null) return 0;
+        if (node.left == null && node.right == null) return 1;
+        return countLeaves(node.left) + countLeaves(node.right);
+    }
+
+    private static int countNonLeaves(Node node) {
+        if (node == null) return 0;
+        if (node.left == null && node.right == null) return 0;
+        return 1 + countNonLeaves(node.left) + countNonLeaves(node.right);
+    }
+}`,
+    testCases: [
+      { input: { tree: [1, 2, 3, 4], args: [] }, expected: "2 2", visible: true }
+    ]
+  },
+
+  {
+    id: "java-tp-bt-010",
+    title: "Convert to Mirror Tree",
+    section: "Binary Trees",
+    difficulty: "Easy",
+    tags: ["Tree", "Mirror"],
+    category: "testpad",
+    prompt: "Convert a binary tree into its mirror image (in-place swap of left and right children).",
+    constraints: [
+      "0 ≤ number of nodes ≤ 5000"
+    ],
+    examples: [
+      { input: "Tree: [1, 2, 3]", output: "3 1 2" }
+    ],
+    type: "binary_tree",
+    methodName: "mirrorTree",
+    returnType: "Node",
+    starterCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    // Convert tree to mirror in-place and return root
+    static Node mirrorTree(Node root) {
+        // Write your code here
+        return root;
+    }
+}`,
+    solutionCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+
+    static Node mirrorTree(Node root) {
+        if (root == null) return null;
+        Node left = mirrorTree(root.left);
+        Node right = mirrorTree(root.right);
+        root.left = right;
+        root.right = left;
+        return root;
+    }
+}`,
+    testCases: [
+      { input: { tree: [1, 2, 3], args: [] }, expected: "3 1 2", visible: true }
+    ]
+  },
+
+  {
+    id: "java-tp-cll-001",
+    title: "Check Circular Linked List",
+    section: "Linked Lists",
+    difficulty: "Easy",
+    tags: ["Linked List", "Circular"],
+    category: "testpad",
+    prompt: "Given a singly linked list, check if it is circular (i.e. the next pointer of the last node points back to the head node). Return <code>true</code> if so, <code>false</code> otherwise.",
+    constraints: [
+      "0 ≤ number of nodes ≤ 1000"
+    ],
+    examples: [
+      { input: "Circular: [1, 2, 3]", output: "true" }
+    ],
+    type: "singly_linked_list",
+    methodName: "isCircular",
+    returnType: "boolean",
+    starterCode: `class Solution {
+    static class Node {
+        int data;
+        Node next;
+        Node(int d) { data = d; }
+    }
+
+    static boolean isCircular(Node head) {
+        // Write your code here
+        return false;
+    }
+}`,
+    solutionCode: `class Solution {
+    static class Node {
+        int data;
+        Node next;
+        Node(int d) { data = d; }
+    }
+
+    static boolean isCircular(Node head) {
+        if (head == null) return true;
+        Node curr = head.next;
+        while (curr != null && curr != head) {
+            curr = curr.next;
+        }
+        return curr == head;
+    }
+}`,
+    testCases: [
+      { input: { list: [1, 2, 3], args: [] }, expected: "false", visible: true }
+    ]
+  },
+
+  {
+    id: "java-tp-gc-001",
+    title: "Duplicate Queue Elements",
+    section: "Stacks & Queues",
+    difficulty: "Easy",
+    tags: ["Queue", "Collections"],
+    category: "testpad",
+    prompt: "Given a queue of integers, duplicate each element (e.g. queue <code>[1, 2, 3]</code> becomes <code>[1, 1, 2, 2, 3, 3]</code>).",
+    constraints: [
+      "1 ≤ queue size ≤ 1000"
+    ],
+    examples: [
+      { input: "Queue: [1, 2]", output: "1 1 2 2" }
+    ],
+    type: "queue",
+    methodName: "duplicateQueue",
+    returnType: "Queue",
+    starterCode: `class Solution {
+    static java.util.Queue<Integer> duplicateQueue(java.util.Queue<Integer> q) {
+        // Write your code here
+        return q;
+    }
+}`,
+    solutionCode: `class Solution {
+    static java.util.Queue<Integer> duplicateQueue(java.util.Queue<Integer> q) {
+        if (q == null) return null;
+        int size = q.size();
+        for (int i = 0; i < size; i++) {
+            int val = q.poll();
+            q.add(val);
+            q.add(val);
+        }
+        return q;
+    }
+}`,
+    testCases: [
+      { input: { array: [1, 2, 3], args: [] }, expected: "1 1 2 2 3 3", visible: true }
+    ]
+  },
+
+  {
+    id: "java-tp-gc-002",
+    title: "Happy Number Check",
+    section: "Hashing",
+    difficulty: "Easy",
+    tags: ["Math", "HashSet"],
+    category: "testpad",
+    prompt: "Determine if a number is a Happy Number. A happy number is defined by a process where you replace the number by the sum of the squares of its digits, repeating until the number equals 1, or it loops endlessly in a cycle which does not include 1.",
+    constraints: [
+      "1 ≤ n ≤ 2³¹ - 1"
+    ],
+    examples: [
+      { input: "n = 19", output: "true" }
+    ],
+    type: "array_return",
+    methodName: "isHappy",
+    returnType: "boolean",
+    starterCode: `class Solution {
+    // Return true if n is a happy number
+    static boolean isHappy(int n) {
+        // Write your code here
+        return false;
+    }
+}`,
+    solutionCode: `class Solution {
+    static boolean isHappy(int n) {
+        java.util.Set<Integer> seen = new java.util.HashSet<>();
+        while (n != 1 && !seen.contains(n)) {
+            seen.add(n);
+            int sum = 0;
+            while (n > 0) {
+                int d = n % 10;
+                sum += d * d;
+                n /= 10;
+            }
+            n = sum;
+        }
+        return n == 1;
+    }
+}`,
+    testCases: [
+      { input: { array: [], args: [19] }, expected: "true", visible: true },
+      { input: { array: [], args: [2] }, expected: "false", visible: true }
+    ]
+  }
 ];
 
 // Section metadata for sidebar grouping
@@ -1049,5 +2866,12 @@ const JAVA_SECTIONS = [
   { id: "Binary Trees", icon: "🌳", color: "#2F8F5E" },
   { id: "Stacks & Queues", icon: "📚", color: "#E07A5F" },
   { id: "Hashing", icon: "#️⃣", color: "#8A5F9E" },
-  { id: "Recursion & Bits", icon: "🔁", color: "#B58A3D" }
+  { id: "Recursion & Bits", icon: "🔁", color: "#B58A3D" },
+  { id: "Queues", icon: "🔄", color: "#E07A5F" },
+  { id: "Math & GCD", icon: "🧮", color: "#B58A3D" },
+  { id: "Bit Manipulation", icon: "🔢", color: "#3D405B" },
+  { id: "Recursion", icon: "🔁", color: "#8A5F9E" },
+  { id: "Arrays", icon: "📊", color: "#5F7AE0" },
+  { id: "Strings", icon: "🔤", color: "#7A9FBF" },
+  { id: "OOPs", icon: "💎", color: "#8A5F9E" }
 ];

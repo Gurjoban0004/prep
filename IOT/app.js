@@ -116,13 +116,19 @@ const CONFIG = {
       mcqs: null,
       javaProblems: null,
       themeColors: {
-        javaPractice: '#E07A5F',
+        javaFA: '#E07A5F',
+        javaExam: '#81B29A',
+        javaTestpad: '#3D405B'
       },
       sectionNames: {
-        javaPractice: 'Java DSA Practice',
+        javaFA: 'Formative Assessment (FA)',
+        javaExam: 'Recent Exam Questions',
+        javaTestpad: 'Testpad Practice'
       },
       tabs: [
-        { id: 'javaPractice', label: 'Practice' },
+        { id: 'javaFA', label: 'FA' },
+        { id: 'javaExam', label: 'Exam' },
+        { id: 'javaTestpad', label: 'Testpad' }
       ]
     }
   }
@@ -140,8 +146,9 @@ let state = {
     iot: { st1: [], st2: [], endTerm: [], cheatSheet: [], practice: [] },
     cn:  { unit1_2: [], unit3_4: [], unit5_6: [], unit7_8: [], unit9: [], notes: [], cheatSheet: [], practice: [] },
     linux: { notes: [], cheatSheet: [], linuxMcq: [], bashPractice: [], linuxPlayground: [], practiceTest1: [] },
-    java: { javaPractice: [] }
+    java: { javaFA: [], javaExam: [], javaTestpad: [] }
   },
+  expandedJavaSections: {},
   practiceAnswers: {
     iot: {},
     cn: {},
@@ -809,7 +816,7 @@ function isPlaygroundSection(sectionId = state.activeSection) {
 }
 
 function isJavaSection(sectionId = state.activeSection) {
-  return sectionId === 'javaPractice';
+  return sectionId === 'javaPractice' || sectionId === 'javaFA' || sectionId === 'javaExam' || sectionId === 'javaTestpad';
 }
 
 function getActiveMcqBank() {
@@ -821,7 +828,17 @@ function getActiveBashProblems() {
 }
 
 function getActiveJavaProblems() {
-  return CONFIG.subjects[state.activeSubject].javaProblems || [];
+  const allProblems = CONFIG.subjects[state.activeSubject].javaProblems || [];
+  if (state.activeSubject !== 'java') return allProblems;
+  
+  if (state.activeSection === 'javaExam') {
+    return allProblems.filter(p => p.category === 'exam');
+  } else if (state.activeSection === 'javaTestpad') {
+    return allProblems.filter(p => p.category === 'testpad');
+  } else {
+    // javaFA or javaPractice (default)
+    return allProblems.filter(p => !p.category || p.category === 'fa');
+  }
 }
 
 function setActiveSection(sectionId) {
@@ -1011,23 +1028,68 @@ function renderSidebar() {
       const sections = typeof JAVA_SECTIONS !== 'undefined' ? JAVA_SECTIONS : [];
       let lastSection = null;
 
+      // Add sub-heading banner for Exam tab
+      if (state.activeSection === 'javaExam') {
+        const banner = document.createElement('div');
+        banner.className = 'sidebar-info-banner';
+        banner.innerHTML = 'These questions appeared in exams yesterday and the day before yesterday';
+        elements.topicList.appendChild(banner);
+      }
+
       problems.forEach((problem, index) => {
         const searchText = `${problem.title} ${problem.section} ${problem.tags.join(' ')}`.toLowerCase();
         if (!searchText.includes(state.searchQuery)) return;
 
+        const isCollapsed = state.expandedJavaSections[problem.section] === false;
+        const isActive = index === state.activeTopicIndex;
+
+        // If the problem is active, ensure its section is expanded
+        if (isActive && isCollapsed) {
+          state.expandedJavaSections[problem.section] = true;
+        }
+
         // Section group divider
         if (problem.section !== lastSection) {
           lastSection = problem.section;
-          const sectionMeta = sections.find(s => s.id === problem.section);
+          const sectionId = problem.section;
+          const sectionMeta = sections.find(s => s.id === sectionId);
+          const currentCollapsed = state.expandedJavaSections[sectionId] === false;
+          
           const divider = document.createElement('div');
           divider.className = 'sidebar-group-label';
-          divider.textContent = (sectionMeta ? sectionMeta.icon + ' ' : '') + problem.section;
+          divider.style.cursor = 'pointer';
+          divider.style.display = 'flex';
+          divider.style.justifyContent = 'space-between';
+          divider.style.alignItems = 'center';
+          divider.style.userSelect = 'none';
+          
+          const labelSpan = document.createElement('span');
+          labelSpan.textContent = (sectionMeta ? sectionMeta.icon + ' ' : '') + sectionId;
+          divider.appendChild(labelSpan);
+          
+          const arrowSpan = document.createElement('span');
+          arrowSpan.className = 'group-arrow';
+          arrowSpan.style.transition = 'transform 0.2s ease';
+          arrowSpan.style.fontSize = '0.7rem';
+          arrowSpan.style.opacity = '0.6';
+          arrowSpan.innerHTML = currentCollapsed && !state.searchQuery ? '&#9654;' : '&#9660;'; // ▶ or ▼
+          divider.appendChild(arrowSpan);
+          
+          divider.addEventListener('click', () => {
+            state.expandedJavaSections[sectionId] = !state.expandedJavaSections[sectionId];
+            updateTopics();
+          });
+          
           elements.topicList.appendChild(divider);
+        }
+
+        // Skip rendering this item if its group is collapsed (and not currently searching)
+        if (state.expandedJavaSections[problem.section] === false && !state.searchQuery) {
+          return;
         }
 
         const progress = state.javaProgress[state.activeSubject]?.[problem.id] || {};
         const isSolved = progress.solved === true;
-        const isActive = index === state.activeTopicIndex;
 
         const button = document.createElement('button');
         button.className = `topic-item topic-item--rich ${isActive ? 'active' : ''} ${isSolved ? 'mastered' : ''}`;
@@ -1445,9 +1507,8 @@ function updateProgressBar() {
 // ============================================================
 
 function evaluateBashProblem(problem, script, mode) {
-  const tests = mode === 'run'
-    ? problem.tests.filter(test => test.visible)
-    : problem.tests;
+  // Always run all test cases
+  const tests = problem.tests;
 
   const usesEchoShortcut = problem.kind === 'terminal' && problem.id !== 'bash-040' && tokenizeBash(script).some(line => {
     const command = line.split('|')[0].trim();
@@ -1508,15 +1569,11 @@ function renderBashResults(results) {
         <strong>${escapeHtml(result.name)}</strong>
         <span>${result.passed ? 'Passed' : 'Failed'}</span>
       </div>
-      ${result.visible || !result.passed ? `
-        ${result.visible ? `
-        <div class="bash-result-grid">
-          <div><label>Input</label><pre>${escapeHtml(result.input)}</pre></div>
-          <div><label>Expected</label><pre>${escapeHtml(result.expectedOutput)}</pre></div>
-          <div><label>Your Output</label><pre>${escapeHtml(result.actualOutput || '(empty)')}</pre></div>
-        </div>
-        ` : '<p class="bash-hidden-case">Hidden case failed. Re-check your logic against edge cases without relying on the sample output.</p>'}
-      ` : '<p class="bash-hidden-case">Hidden case passed.</p>'}
+      <div class="bash-result-grid">
+        <div><label>Input</label><pre>${escapeHtml(result.input)}</pre></div>
+        <div><label>Expected</label><pre>${escapeHtml(result.expectedOutput)}</pre></div>
+        <div><label>Your Output</label><pre>${escapeHtml(result.actualOutput || '(empty)')}</pre></div>
+      </div>
     </div>
   `).join('');
 }
@@ -1524,6 +1581,15 @@ function renderBashResults(results) {
 function runBashProblem(problem, mode) {
   const editor = document.getElementById('bash-code-editor');
   const code = editor ? editor.value : '';
+  
+  // Auto-expand results panel
+  const resultsPane = document.getElementById('bash-results-pane');
+  if (resultsPane) {
+    const targetHeight = state.lastBashResultsHeight || 250;
+    resultsPane.style.height = targetHeight + 'px';
+    resultsPane.style.flex = 'none';
+  }
+
   const results = evaluateBashProblem(problem, code, mode);
   const passedCount = results.filter(result => result.passed).length;
   const solved = mode === 'submit' && passedCount === results.length;
@@ -1665,20 +1731,24 @@ function renderBashProblem(index) {
           <span class="bash-editor-title">${problem.kind === 'terminal' ? 'Linux Lab Editor' : 'Bash Script Editor'}</span>
           <div class="bash-editor-actions">
             <button class="bash-reset-btn" id="bash-reset-btn">Reset</button>
+            <button class="bash-reset-btn" id="bash-toggle-panel-btn" title="Toggle Console">Console</button>
             <button class="bash-run-btn" id="bash-run-btn">Run</button>
             <button class="bash-submit-btn" id="bash-submit-btn">Submit</button>
           </div>
         </div>
         <div class="bash-editor-wrapper">
-          <pre id="bash-highlighter" class="bash-highlighter" aria-hidden="true"><code class="language-bash"></code></pre>
-          <textarea class="bash-code-editor" id="bash-code-editor" spellcheck="false">${escapeHtml(currentCode)}</textarea>
+          <div class="editor-gutter" id="bash-gutter" aria-hidden="true"></div>
+          <div class="editor-textarea-container">
+            <pre id="bash-highlighter" class="bash-highlighter" aria-hidden="true"><code class="language-bash"></code></pre>
+            <textarea class="bash-code-editor" id="bash-code-editor" spellcheck="false">${escapeHtml(currentCode)}</textarea>
+          </div>
         </div>
         
         <div class="resizer-v" id="resizer-bash-v">
           <div class="resizer-notch"></div>
         </div>
 
-        <div class="bash-results-panel" id="bash-results-pane" style="height: 300px; min-height: 100px; display: flex; flex-direction: column;">
+        <div class="bash-results-panel" id="bash-results-pane" style="height: 0px; min-height: 0px; display: flex; flex-direction: column;">
           <div class="bash-results-header" style="padding: 0.75rem 1.5rem; background: #FAF8F6; border-bottom: 1px solid var(--border-color); flex-shrink: 0; display: flex; justify-content: space-between;">
             <strong style="font-size: 0.85rem;">Test Results</strong>
             <span id="bash-results-summary" style="font-size: 0.8rem; font-weight: 600;">${resultSummary}</span>
@@ -1699,13 +1769,39 @@ function renderBashProblem(index) {
   initResizer('resizer-bash-v', 'bash-results-pane', 'vertical', true);
 
   const editor = document.getElementById('bash-code-editor');
-  
-  // Syntax Highlighting & Syncing
-  const highlighterPre = document.getElementById('bash-highlighter');
-  if (editor && highlighterPre) {
+  const gutter = document.getElementById('bash-gutter');
+  const resultsPane = document.getElementById('bash-results-pane');
+  const togglePanelBtn = document.getElementById('bash-toggle-panel-btn');
+
+  // Sync scroll & active line numbers
+  const syncGutter = () => updateLineNumbers(editor, gutter);
+
+  if (editor && gutter) {
+    editor.addEventListener('input', syncGutter);
     editor.addEventListener('scroll', () => {
-      highlighterPre.scrollTop = editor.scrollTop;
-      highlighterPre.scrollLeft = editor.scrollLeft;
+      gutter.scrollTop = editor.scrollTop;
+      const highlighterPre = document.getElementById('bash-highlighter');
+      if (highlighterPre) {
+        highlighterPre.scrollTop = editor.scrollTop;
+        highlighterPre.scrollLeft = editor.scrollLeft;
+      }
+    });
+    editor.addEventListener('click', syncGutter);
+    editor.addEventListener('keyup', syncGutter);
+    syncGutter();
+  }
+
+  if (togglePanelBtn && resultsPane) {
+    togglePanelBtn.addEventListener('click', () => {
+      const curHeight = resultsPane.offsetHeight;
+      if (curHeight < 10) {
+        const targetHeight = state.lastBashResultsHeight || 250;
+        resultsPane.style.height = targetHeight + 'px';
+        resultsPane.style.flex = 'none';
+      } else {
+        resultsPane.style.height = '0px';
+        resultsPane.style.flex = 'none';
+      }
     });
   }
 
@@ -1836,16 +1932,12 @@ function renderJavaResults(results) {
         <strong>${escapeHtml(result.name)}</strong>
         <span>${result.passed ? 'Passed' : 'Failed'}</span>
       </div>
-      ${result.visible || !result.passed ? `
-        ${result.visible ? `
-        <div class="bash-result-grid">
-          <div><label>Input</label><pre>${escapeHtml(result.input)}</pre></div>
-          <div><label>Expected</label><pre>${escapeHtml(result.expectedOutput)}</pre></div>
-          <div><label>Your Output</label><pre>${escapeHtml(result.actualOutput || '(empty)')}</pre></div>
-        </div>
-        ` : '<p class="bash-hidden-case">Hidden case failed. Re-check your logic against edge cases.</p>'}
-        ${result.error ? `<div class="java-error-detail"><pre>${escapeHtml(result.error)}</pre></div>` : ''}
-      ` : '<p class="bash-hidden-case">Hidden case passed.</p>'}
+      <div class="bash-result-grid">
+        <div><label>Input</label><pre>${escapeHtml(result.input)}</pre></div>
+        <div><label>Expected</label><pre>${escapeHtml(result.expectedOutput)}</pre></div>
+        <div><label>Your Output</label><pre>${escapeHtml(result.actualOutput || '(empty)')}</pre></div>
+      </div>
+      ${result.error ? `<div class="java-error-detail"><pre>${escapeHtml(result.error)}</pre></div>` : ''}
     </div>
   `).join('');
 }
@@ -1958,20 +2050,24 @@ function renderJavaProblem(index) {
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
             </button>
             <button class="bash-reset-btn" id="java-reset-btn">Reset</button>
+            <button class="bash-reset-btn" id="java-toggle-panel-btn" title="Toggle Console">Console</button>
             <button class="bash-run-btn" id="java-run-btn">▶ Run</button>
             <button class="bash-submit-btn" id="java-submit-btn">Submit</button>
           </div>
         </div>
         <div class="bash-editor-wrapper">
-          <pre id="java-highlighter" class="bash-highlighter" aria-hidden="true"><code class="language-java"></code></pre>
-          <textarea class="bash-code-editor java-code-editor" id="java-code-editor" spellcheck="false">${escapeHtml(currentCode)}</textarea>
+          <div class="editor-gutter" id="java-gutter" aria-hidden="true"></div>
+          <div class="editor-textarea-container">
+            <pre id="java-highlighter" class="bash-highlighter" aria-hidden="true"><code class="language-java"></code></pre>
+            <textarea class="bash-code-editor java-code-editor" id="java-code-editor" spellcheck="false">${escapeHtml(currentCode)}</textarea>
+          </div>
         </div>
         
         <div class="resizer-v" id="resizer-java-v">
           <div class="resizer-notch"></div>
         </div>
 
-        <div class="bash-results-panel" id="java-results-pane" style="height: 300px; min-height: 100px; display: flex; flex-direction: column;">
+        <div class="bash-results-panel" id="java-results-pane" style="height: 0px; min-height: 0px; display: flex; flex-direction: column;">
           <div class="bash-results-header" style="padding: 0.75rem 1.5rem; background: #FAF8F6; border-bottom: 1px solid var(--border-color); flex-shrink: 0; display: flex; justify-content: space-between;">
             <strong style="font-size: 0.85rem;">Test Results</strong>
             <span id="java-results-summary" style="font-size: 0.8rem; font-weight: 600;">${resultSummary}${lastExecTime}</span>
@@ -1991,13 +2087,39 @@ function renderJavaProblem(index) {
   initResizer('resizer-java-v', 'java-results-pane', 'vertical', true);
 
   const editor = document.getElementById('java-code-editor');
+  const gutter = document.getElementById('java-gutter');
+  const resultsPane = document.getElementById('java-results-pane');
+  const togglePanelBtn = document.getElementById('java-toggle-panel-btn');
 
-  // Syntax Highlighting & Syncing
-  const highlighterPre = document.getElementById('java-highlighter');
-  if (editor && highlighterPre) {
+  // Sync scroll & active line numbers
+  const syncGutter = () => updateLineNumbers(editor, gutter);
+
+  if (editor && gutter) {
+    editor.addEventListener('input', syncGutter);
     editor.addEventListener('scroll', () => {
-      highlighterPre.scrollTop = editor.scrollTop;
-      highlighterPre.scrollLeft = editor.scrollLeft;
+      gutter.scrollTop = editor.scrollTop;
+      const highlighterPre = document.getElementById('java-highlighter');
+      if (highlighterPre) {
+        highlighterPre.scrollTop = editor.scrollTop;
+        highlighterPre.scrollLeft = editor.scrollLeft;
+      }
+    });
+    editor.addEventListener('click', syncGutter);
+    editor.addEventListener('keyup', syncGutter);
+    syncGutter();
+  }
+
+  if (togglePanelBtn && resultsPane) {
+    togglePanelBtn.addEventListener('click', () => {
+      const curHeight = resultsPane.offsetHeight;
+      if (curHeight < 10) {
+        const targetHeight = state.lastJavaResultsHeight || 250;
+        resultsPane.style.height = targetHeight + 'px';
+        resultsPane.style.flex = 'none';
+      } else {
+        resultsPane.style.height = '0px';
+        resultsPane.style.flex = 'none';
+      }
     });
   }
 
@@ -2173,6 +2295,14 @@ async function runJavaProblem(problem, mode) {
   const submitBtn = document.getElementById('java-submit-btn');
   const body = document.getElementById('java-results-body');
   const summary = document.getElementById('java-results-summary');
+
+  // Auto-expand results panel
+  const resultsPane = document.getElementById('java-results-pane');
+  if (resultsPane) {
+    const targetHeight = state.lastJavaResultsHeight || 250;
+    resultsPane.style.height = targetHeight + 'px';
+    resultsPane.style.flex = 'none';
+  }
 
   // Loading state
   const activeBtn = mode === 'run' ? runBtn : submitBtn;
@@ -2699,8 +2829,17 @@ function initResizer(resizerId, targetPaneId, direction, invert = false) {
     } else {
       const dy = invert ? startY - e.clientY : e.clientY - startY;
       const newHeight = startHeight + dy;
-      if (newHeight > 60 && newHeight < window.innerHeight * 0.8) {
-        targetPane.style.height = newHeight + 'px';
+      if (newHeight >= 0 && newHeight < window.innerHeight * 0.85) {
+        if (newHeight < 40) {
+          targetPane.style.height = '0px';
+        } else {
+          targetPane.style.height = newHeight + 'px';
+          if (targetPaneId === 'java-results-pane') {
+            state.lastJavaResultsHeight = newHeight;
+          } else if (targetPaneId === 'bash-results-pane') {
+            state.lastBashResultsHeight = newHeight;
+          }
+        }
         targetPane.style.flex = 'none'; // Ensure height is respected
       }
     }
@@ -2756,6 +2895,27 @@ window.updateBashHighlighting = function() {
     highlighter.textContent = editor.value;
   }
 };
+
+function updateLineNumbers(editor, gutter) {
+  if (!editor || !gutter) return;
+  const lines = editor.value.split('\n');
+  const lineCount = Math.max(lines.length, 1);
+  
+  // Find current active line based on cursor position
+  const selectionStart = editor.selectionStart || 0;
+  const textBeforeCursor = editor.value.substring(0, selectionStart);
+  const activeLineIndex = textBeforeCursor.split('\n').length - 1; // 0-indexed
+
+  let html = '';
+  for (let i = 0; i < lineCount; i++) {
+    const isActive = i === activeLineIndex;
+    html += `<div class="${isActive ? 'active-line-num' : ''}">${i + 1}</div>`;
+  }
+  gutter.innerHTML = html;
+  
+  // Keep scroll in sync
+  gutter.scrollTop = editor.scrollTop;
+}
 
 window.updateJavaHighlighting = function() {
   const editor = document.getElementById('java-code-editor');
