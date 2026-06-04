@@ -2617,16 +2617,25 @@ body.subject-linux .mobile-section-nav button.active[data-section="practiceTest1
   pointer-events: none;
   z-index: 1;
   overflow: hidden !important;
+  opacity: 0;
 }
 
 .bash-code-editor {
-  color: transparent !important;
+  color: #E9F1EA !important;
   background: transparent !important;
   caret-color: #aeafad; /* VS Code caret color */
   resize: none;
   outline: none;
   z-index: 2;
   overflow: auto !important;
+}
+
+.editor-highlight-ready .bash-highlighter {
+  opacity: 1;
+}
+
+.editor-highlight-ready .bash-code-editor {
+  color: transparent !important;
 }
 
 /* Custom Scrollbar for Editor (VS Code style) */

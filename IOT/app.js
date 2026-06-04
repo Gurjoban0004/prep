@@ -512,17 +512,45 @@ function setupCodeEditorBehavior(editor) {
 /**
  * Synchronizes the editor textarea with its syntax highlighter and line numbers.
  */
+function countEditorLines(value) {
+  let count = 1;
+  for (let i = 0; i < value.length; i++) {
+    if (value.charCodeAt(i) === 10) count++;
+  }
+  return count;
+}
+
+function markEditorHighlightPending(editor) {
+  const wrapper = editor?.closest?.('.bash-editor-wrapper');
+  if (wrapper) wrapper.classList.remove('editor-highlight-ready');
+}
+
+function markEditorHighlightReady(editor) {
+  const wrapper = editor?.closest?.('.bash-editor-wrapper');
+  if (wrapper) wrapper.classList.add('editor-highlight-ready');
+}
+
 function syncEditor(editor, highlighter, lineNumbers) {
   if (!editor) return;
   
   let lastLineCount = -1;
-  const update = () => {
+  let lineNumberFrame = null;
+  let previousEditorValue = editor.value;
+
+  const syncScroll = () => {
     if (highlighter) {
       highlighter.scrollTop = editor.scrollTop;
       highlighter.scrollLeft = editor.scrollLeft;
     }
     if (lineNumbers) {
-      const lines = editor.value.split('\n').length;
+      lineNumbers.scrollTop = editor.scrollTop;
+    }
+  };
+
+  const updateLineNumbers = () => {
+    lineNumberFrame = null;
+    if (lineNumbers) {
+      const lines = countEditorLines(editor.value);
       if (lines !== lastLineCount) {
         lastLineCount = lines;
         let numbers = '';
@@ -531,14 +559,44 @@ function syncEditor(editor, highlighter, lineNumbers) {
         }
         lineNumbers.innerHTML = numbers;
       }
-      lineNumbers.scrollTop = editor.scrollTop;
     }
+    syncScroll();
   };
 
-  editor.addEventListener('scroll', update);
-  editor.addEventListener('input', update);
+  const scheduleLineNumberUpdate = (event) => {
+    if (!lineNumbers) return;
+    const inputType = event?.inputType || '';
+    const data = event?.data || '';
+    let mayChangeLineCount =
+      !event ||
+      data.includes('\n') ||
+      /insertParagraph|insertLineBreak|insertFromPaste|insertFromDrop|history|insertReplacementText/.test(inputType);
+
+    if (!mayChangeLineCount && inputType === 'deleteContentBackward') {
+      const removedIndex = editor.selectionStart;
+      mayChangeLineCount =
+        previousEditorValue.length - editor.value.length !== 1 ||
+        previousEditorValue.charAt(removedIndex) === '\n';
+    } else if (!mayChangeLineCount && inputType === 'deleteContentForward') {
+      const removedIndex = editor.selectionStart;
+      mayChangeLineCount =
+        previousEditorValue.length - editor.value.length !== 1 ||
+        previousEditorValue.charAt(removedIndex) === '\n';
+    } else if (!mayChangeLineCount && inputType.startsWith('delete')) {
+      mayChangeLineCount = previousEditorValue.length - editor.value.length !== 1;
+    }
+
+    previousEditorValue = editor.value;
+
+    if (!mayChangeLineCount) return;
+    if (lineNumberFrame) return;
+    lineNumberFrame = requestAnimationFrame(updateLineNumbers);
+  };
+
+  editor.addEventListener('scroll', syncScroll, { passive: true });
+  editor.addEventListener('input', scheduleLineNumberUpdate);
   // Initial sync
-  setTimeout(update, 50);
+  setTimeout(updateLineNumbers, 50);
 }
 
 // ============================================================
@@ -2186,6 +2244,7 @@ function renderBashProblem(index) {
   }
 
   editor.addEventListener('input', event => {
+    markEditorHighlightPending(editor);
     state.bashProgress[state.activeSubject][problem.id] = {
       ...state.bashProgress[state.activeSubject][problem.id],
       code: event.target.value,
@@ -2476,6 +2535,7 @@ function renderJavaProblem(index) {
 
   // Draft persistence on input
   editor.addEventListener('input', event => {
+    markEditorHighlightPending(editor);
     if (!state.javaProgress[state.activeSubject]) state.javaProgress[state.activeSubject] = {};
     state.javaProgress[state.activeSubject][problem.id] = {
       ...state.javaProgress[state.activeSubject][problem.id],
@@ -3220,7 +3280,10 @@ window.updateBashHighlighting = debounce(function() {
   const highlighter = document.querySelector('#bash-highlighter code');
   if (!editor || !highlighter) return;
 
-  if (editor.value === lastBashHighlightSource) return;
+  if (editor.value === lastBashHighlightSource) {
+    markEditorHighlightReady(editor);
+    return;
+  }
   lastBashHighlightSource = editor.value;
 
   if (window.Prism) {
@@ -3228,6 +3291,7 @@ window.updateBashHighlighting = debounce(function() {
   } else {
     highlighter.textContent = editor.value;
   }
+  markEditorHighlightReady(editor);
 }, 220);
 
 
@@ -3237,7 +3301,10 @@ window.updateJavaHighlighting = debounce(function() {
   const highlighter = document.querySelector('#java-highlighter code');
   if (!editor || !highlighter) return;
 
-  if (editor.value === lastJavaHighlightSource) return;
+  if (editor.value === lastJavaHighlightSource) {
+    markEditorHighlightReady(editor);
+    return;
+  }
   lastJavaHighlightSource = editor.value;
 
   if (window.Prism && Prism.languages.java) {
@@ -3245,6 +3312,7 @@ window.updateJavaHighlighting = debounce(function() {
   } else {
     highlighter.textContent = editor.value;
   }
+  markEditorHighlightReady(editor);
 }, 220);
 
 window.addEventListener('DOMContentLoaded', () => {
