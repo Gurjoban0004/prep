@@ -149,16 +149,26 @@
     } finally {
       syncInProgress = false;
     }
+    // Always refresh profile panel so sync badge updates immediately
+    refreshProfilePanel();
   }
 
   // ─────────────────────────────────────────────────────────────
   //  INITIAL MERGE — Pull Firestore → merge into localStorage
+  //  Also handles new-user registration counter.
   // ─────────────────────────────────────────────────────────────
   async function mergeCloudToLocal(uid) {
     try {
       const doc = await window.fbDb.collection('users').doc(uid).get();
       if (!doc.exists || !doc.data()?.progress) {
-        await pushLocalToCloud(uid); // no cloud data yet — seed from local
+        // ── Brand new user — increment global student counter ──
+        try {
+          await window.fbDb.collection('stats').doc('global').set({
+            studentCount: firebase.firestore.FieldValue.increment(1),
+            lastJoined:   firebase.firestore.FieldValue.serverTimestamp(),
+          }, { merge: true });
+        } catch (e) { /* non-fatal */ }
+        await pushLocalToCloud(uid); // seed Firestore from local
         return;
       }
       applyCloudProgress(doc.data().progress);

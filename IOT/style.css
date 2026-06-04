@@ -6071,6 +6071,38 @@ body.dark-theme .auth-toast.auth-toast-error {
   border-radius: 20px;
 }
 
+/* ── Community Banner ──────────────────────────────────── */
+.profile-community-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.7rem 1.5rem;
+  background: linear-gradient(90deg, rgba(95, 122, 224, 0.07), rgba(129, 178, 154, 0.07));
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+.profile-community-banner svg {
+  flex-shrink: 0;
+  color: #5F7AE0;
+  opacity: 0.8;
+}
+.profile-community-banner strong {
+  color: #5F7AE0;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+body.dark-theme .profile-community-banner {
+  background: linear-gradient(90deg, rgba(95, 122, 224, 0.1), rgba(129, 178, 154, 0.08));
+  border-bottom-color: #38302C;
+}
+body.dark-theme .profile-community-banner {
+  color: #B5AAA0;
+}
+body.dark-theme .profile-community-banner strong {
+  color: #81A0E8;
+}
+
 /* ── Generic Section wrapper ───────────────────────────── */
 .profile-section {
   padding: 1.25rem 1.5rem;
