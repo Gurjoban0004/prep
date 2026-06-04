@@ -536,6 +536,9 @@ function saveJavaProgress() {
   if (typeof window.triggerCloudSync === 'function') window.triggerCloudSync();
 }
 
+const scheduleBashProgressSave = debounce(saveBashProgress, 600);
+const scheduleJavaProgressSave = debounce(saveJavaProgress, 600);
+
 // Smart Notes persistence
 function loadSmartNotes() {
   try {
@@ -2091,11 +2094,12 @@ function renderBashProblem(index) {
       code: event.target.value,
       codeVersion: problemVersion
     };
-    saveBashProgress();
+    scheduleBashProgressSave();
     if (window.updateBashHighlighting) window.updateBashHighlighting();
   });
   
   // Initial highlight
+  lastBashHighlightSource = null;
   if (window.updateBashHighlighting) window.updateBashHighlighting();
 
   document.getElementById('bash-run-btn').addEventListener('click', () => runBashProblem(problem, 'run'));
@@ -2380,11 +2384,12 @@ function renderJavaProblem(index) {
       ...state.javaProgress[state.activeSubject][problem.id],
       code: event.target.value
     };
-    saveJavaProgress();
+    scheduleJavaProgressSave();
     if (window.updateJavaHighlighting) window.updateJavaHighlighting();
   });
 
   // Initial highlight
+  lastJavaHighlightSource = null;
   if (window.updateJavaHighlighting) window.updateJavaHighlighting();
 
   // Settings Dialog Button Listener
@@ -3110,17 +3115,23 @@ document.getElementById('zoom-default')?.addEventListener('click', () => {
 // ============================================================
 //  SYNTAX HIGHLIGHTER HELPER
 // ============================================================
+let lastBashHighlightSource = null;
+let lastJavaHighlightSource = null;
+
 window.updateBashHighlighting = debounce(function() {
   const editor = document.getElementById('bash-code-editor');
   const highlighter = document.querySelector('#bash-highlighter code');
   if (!editor || !highlighter) return;
-  
+
+  if (editor.value === lastBashHighlightSource) return;
+  lastBashHighlightSource = editor.value;
+
   if (window.Prism) {
     highlighter.innerHTML = Prism.highlight(editor.value, Prism.languages.bash, 'bash');
   } else {
     highlighter.textContent = editor.value;
   }
-}, 100);
+}, 220);
 
 
 
@@ -3128,13 +3139,16 @@ window.updateJavaHighlighting = debounce(function() {
   const editor = document.getElementById('java-code-editor');
   const highlighter = document.querySelector('#java-highlighter code');
   if (!editor || !highlighter) return;
-  
+
+  if (editor.value === lastJavaHighlightSource) return;
+  lastJavaHighlightSource = editor.value;
+
   if (window.Prism && Prism.languages.java) {
     highlighter.innerHTML = Prism.highlight(editor.value, Prism.languages.java, 'java');
   } else {
     highlighter.textContent = editor.value;
   }
-}, 100);
+}, 220);
 
 window.addEventListener('DOMContentLoaded', () => {
   init();

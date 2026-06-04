@@ -11,6 +11,7 @@
   let syncInProgress      = false;
   let unsubscribeSnapshot = null;
   let lastSyncedAt        = null;
+  let cloudSyncTimer      = null;
 
   // ── All localStorage keys we sync ─────────────────────────────
   const LS_KEYS = [
@@ -633,7 +634,9 @@
   //  GLOBAL EXPORTS
   // ─────────────────────────────────────────────────────────────
   window.triggerCloudSync = function () {
-    if (currentUser) pushLocalToCloud(currentUser.uid);
+    if (!currentUser) return;
+    clearTimeout(cloudSyncTimer);
+    cloudSyncTimer = setTimeout(() => pushLocalToCloud(currentUser.uid), 1200);
   };
 
   window.openProfilePanel = openProfilePanel;
