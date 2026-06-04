@@ -404,22 +404,30 @@
           <div class="profile-section-label">STATISTICS</div>
           <div class="profile-stats-grid">
             <div class="profile-stat-card">
-              <div class="profile-stat-icon">📚</div>
+              <div class="profile-stat-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E07A5F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+              </div>
               <div class="profile-stat-value">${stats.totalMastered}</div>
               <div class="profile-stat-label">Topics Mastered</div>
             </div>
             <div class="profile-stat-card">
-              <div class="profile-stat-icon">📝</div>
+              <div class="profile-stat-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#81B29A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+              </div>
               <div class="profile-stat-value">${stats.notes}</div>
               <div class="profile-stat-label">Smart Notes</div>
             </div>
             <div class="profile-stat-card">
-              <div class="profile-stat-icon">⭐</div>
+              <div class="profile-stat-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B58A3D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              </div>
               <div class="profile-stat-value">${stats.starred}</div>
               <div class="profile-stat-label">Starred MCQs</div>
             </div>
             <div class="profile-stat-card">
-              <div class="profile-stat-icon">💻</div>
+              <div class="profile-stat-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5F7AE0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+              </div>
               <div class="profile-stat-value">${stats.codeSolved}</div>
               <div class="profile-stat-label">Code Solved</div>
             </div>
