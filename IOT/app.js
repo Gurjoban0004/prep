@@ -149,6 +149,106 @@ function debounce(func, wait) {
   };
 }
 
+const SUBJECT_SCRIPT_GROUPS = {
+  iot: ['data.js'],
+  cn: ['data.js', 'cn-data-st1.js', 'cn-data-st2.js', 'cn-data-endterm.js', 'cn-data-cheatsheet.js', 'cn-data.js', 'solver-engine.js'],
+  linux: ['linux-notes-data.js', 'linux-data.js', 'bash-engine.js'],
+  java: ['java-data.js', 'new-java-data.js', 'java-engine.js?v=3']
+};
+
+const loadedScriptSrcs = new Set();
+const subjectLoadPromises = {};
+const hydratedSubjects = {};
+
+function loadScriptOnce(src) {
+  if (loadedScriptSrcs.has(src)) return Promise.resolve();
+
+  return new Promise((resolve, reject) => {
+    const existing = document.querySelector(`script[data-lazy-src="${src}"]`);
+    if (existing) {
+      existing.addEventListener('load', () => {
+        loadedScriptSrcs.add(src);
+        resolve();
+      });
+      existing.addEventListener('error', () => reject(new Error(`Failed to load ${src}`)));
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = src;
+    script.defer = true;
+    script.dataset.lazySrc = src;
+    script.onload = () => {
+      loadedScriptSrcs.add(src);
+      resolve();
+    };
+    script.onerror = () => reject(new Error(`Failed to load ${src}`));
+    document.body.appendChild(script);
+  });
+}
+
+function hydrateSubjectData(subjectId) {
+  if (subjectId === 'iot') {
+    CONFIG.subjects.iot.data = typeof STUDY_DATA !== 'undefined' ? STUDY_DATA : {};
+    CONFIG.subjects.iot.mcqs = typeof IOT_MCQ_BANK !== 'undefined' ? IOT_MCQ_BANK : [];
+  } else if (subjectId === 'cn') {
+    CONFIG.subjects.cn.data = typeof CN_STUDY_DATA !== 'undefined' ? CN_STUDY_DATA : {};
+    CONFIG.subjects.cn.mcqs = typeof CN_MCQ_BANK !== 'undefined' ? CN_MCQ_BANK : [];
+  } else if (subjectId === 'linux') {
+    CONFIG.subjects.linux.mcqs = typeof LINUX_MCQ_BANK !== 'undefined' ? LINUX_MCQ_BANK : [];
+    CONFIG.subjects.linux.bashProblems = typeof LINUX_BASH_PROBLEMS !== 'undefined' ? LINUX_BASH_PROBLEMS : [];
+    CONFIG.subjects.linux.data = {
+      notes: typeof LINUX_NOTES !== 'undefined' ? LINUX_NOTES : [],
+      cheatSheet: typeof LINUX_CHEATSHEET !== 'undefined' ? LINUX_CHEATSHEET : [],
+      practiceTest1: typeof LINUX_PRACTICE_TEST_1 !== 'undefined' ? LINUX_PRACTICE_TEST_1 : []
+    };
+  } else if (subjectId === 'java') {
+    CONFIG.subjects.java.javaProblems = typeof JAVA_DSA_PROBLEMS !== 'undefined' ? JAVA_DSA_PROBLEMS : [];
+  }
+
+  hydratedSubjects[subjectId] = true;
+}
+
+async function ensureSubjectDataLoaded(subjectId) {
+  if (hydratedSubjects[subjectId]) return;
+  if (subjectLoadPromises[subjectId]) return subjectLoadPromises[subjectId];
+
+  subjectLoadPromises[subjectId] = (async () => {
+    const scripts = SUBJECT_SCRIPT_GROUPS[subjectId] || [];
+    for (const src of scripts) {
+      await loadScriptOnce(src);
+    }
+    hydrateSubjectData(subjectId);
+  })();
+
+  return subjectLoadPromises[subjectId];
+}
+
+function renderSubjectLoading(label) {
+  elements.welcomeScreen.style.display = 'flex';
+  elements.readingPane.style.display = 'none';
+  elements.topicList.innerHTML = '';
+  elements.progressPercent.textContent = 'Loading...';
+  elements.progressBar.style.width = '0%';
+  elements.welcomeScreen.innerHTML = `
+    <div class="bash-idle-state" style="max-width: 520px;">
+      <strong>Loading ${escapeHtml(label)}...</strong>
+      <p style="margin-top: 0.5rem;">Pulling in this subject's notes, questions, and practice tools.</p>
+    </div>
+  `;
+}
+
+function renderSubjectLoadError(label, error) {
+  elements.welcomeScreen.style.display = 'flex';
+  elements.readingPane.style.display = 'none';
+  elements.welcomeScreen.innerHTML = `
+    <div class="java-error-panel" style="max-width: 560px;">
+      <h4>Could not load ${escapeHtml(label)}</h4>
+      <p>${escapeHtml(error.message || String(error))}</p>
+    </div>
+  `;
+}
+
 // ============================================================
 //  STATE
 // ============================================================
@@ -239,22 +339,6 @@ const elements = {
 //  INITIALISATION
 // ============================================================
 function init() {
-  // Link data objects
-  CONFIG.subjects.iot.data = typeof STUDY_DATA !== 'undefined' ? STUDY_DATA : {};
-  CONFIG.subjects.cn.data = typeof CN_STUDY_DATA !== 'undefined' ? CN_STUDY_DATA : {};
-  CONFIG.subjects.iot.mcqs = typeof IOT_MCQ_BANK !== 'undefined' ? IOT_MCQ_BANK : [];
-  CONFIG.subjects.cn.mcqs = typeof CN_MCQ_BANK !== 'undefined' ? CN_MCQ_BANK : [];
-  CONFIG.subjects.linux.mcqs = typeof LINUX_MCQ_BANK !== 'undefined' ? LINUX_MCQ_BANK : [];
-  CONFIG.subjects.linux.bashProblems = typeof LINUX_BASH_PROBLEMS !== 'undefined' ? LINUX_BASH_PROBLEMS : [];
-  CONFIG.subjects.linux.data = {
-    notes: typeof LINUX_NOTES !== 'undefined' ? LINUX_NOTES : [],
-    cheatSheet: typeof LINUX_CHEATSHEET !== 'undefined' ? LINUX_CHEATSHEET : [],
-    practiceTest1: typeof LINUX_PRACTICE_TEST_1 !== 'undefined' ? LINUX_PRACTICE_TEST_1 : []
-  };
-
-  // Java data
-  CONFIG.subjects.java.javaProblems = typeof JAVA_DSA_PROBLEMS !== 'undefined' ? JAVA_DSA_PROBLEMS : [];
-
   loadAllProgress();
   loadSmartNotes();
   loadStarredMcqs();
@@ -887,7 +971,7 @@ notes --focus st2</pre>
 // ============================================================
 //  SUBJECT SWITCHING
 // ============================================================
-function setActiveSubject(subjectId) {
+async function setActiveSubject(subjectId) {
   document.body.classList.remove('landing-mode');
   document.body.classList.remove('subject-iot', 'subject-cn', 'subject-linux', 'subject-java');
   document.body.classList.add('subject-' + subjectId);
@@ -910,6 +994,19 @@ function setActiveSubject(subjectId) {
   if (elements.mobileBrandTitle) {
     elements.mobileBrandTitle.textContent = subjectConfig.label + " Prep";
   }
+
+  if (!hydratedSubjects[subjectId]) {
+    renderSubjectLoading(subjectConfig.label);
+  }
+
+  try {
+    await ensureSubjectDataLoaded(subjectId);
+  } catch (error) {
+    renderSubjectLoadError(subjectConfig.label, error);
+    return;
+  }
+
+  if (state.activeSubject !== subjectId) return;
 
   // Re-render top nav tabs for this subject
   renderTopNav(subjectId);

@@ -190,26 +190,13 @@
     
   </div>
 
-  <!-- Load files -->
-  <script defer src="data.js"></script>
-  <script defer src="cn-data-st1.js"></script>
-  <script defer src="cn-data-st2.js"></script>
-  <script defer src="cn-data-endterm.js"></script>
-  <script defer src="cn-data-cheatsheet.js"></script>
-  <script defer src="cn-data.js"></script>
-  <script defer src="linux-notes-data.js"></script>
-  <script defer src="linux-data.js"></script>
-  <script defer src="bash-engine.js"></script>
-  <script defer src="solver-engine.js"></script>
-  <script defer src="java-data.js"></script>
-  <script defer src="new-java-data.js"></script>
+  <!-- Subject data and practice engines are lazy-loaded by app.js on first subject open. -->
   <script>
     window.JAVA_EXECUTION_CONFIG = window.JAVA_EXECUTION_CONFIG || {
       apiUrl: '/api/execute',
       fallbackApiUrls: ['https://emkc.org/api/v2/piston/execute']
     };
   </script>
-  <script defer src="java-engine.js?v=3"></script>
   <script defer src="app.js?v=3"></script>
 
   <!-- Firebase: config must come before auth.js -->
