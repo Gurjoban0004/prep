@@ -852,6 +852,16 @@ function getActiveJavaProblems() {
     filtered = allProblems.filter(p => !p.category || p.category === 'fa');
   }
 
+  const currentSearch = state.searchQuery.trim().toLowerCase();
+  if (currentSearch) {
+    filtered = filtered.filter(p => {
+      const title = p.title.toLowerCase();
+      const section = p.section.toLowerCase();
+      const tags = p.tags.join(' ').toLowerCase();
+      return title.includes(currentSearch) || section.includes(currentSearch) || tags.includes(currentSearch);
+    });
+  }
+
   if (state.selectedSectionFilter && state.selectedSectionFilter !== 'All') {
     filtered = filtered.filter(p => p.section === state.selectedSectionFilter);
   }
@@ -1128,9 +1138,6 @@ function renderSidebar() {
       }
 
       problems.forEach((problem, index) => {
-        const searchText = `${problem.title} ${problem.section} ${problem.tags.join(' ')}`.toLowerCase();
-        if (!searchText.includes(state.searchQuery)) return;
-
         const isCollapsed = state.expandedJavaSections[problem.section] === false;
         const isActive = index === state.activeTopicIndex;
 
@@ -1401,6 +1408,12 @@ function selectTopic(index) {
 
   if (isJavaSection()) {
     renderJavaProblem(index);
+    // Explicitly update sidebar active state after rendering problem
+    const sidebarButtons = elements.topicList.querySelectorAll('.topic-item');
+    sidebarButtons.forEach(btn => {
+      const idx = parseInt(btn.getAttribute('data-index'));
+      btn.classList.toggle('active', idx === index);
+    });
     return;
   }
 

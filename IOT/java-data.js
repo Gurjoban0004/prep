@@ -2854,6 +2854,440 @@ class Solution {
       { input: { array: [], args: [19] }, expected: "true", visible: true },
       { input: { array: [], args: [2] }, expected: "false", visible: true }
     ]
+  },
+
+  {
+    id: "java-tp-bst-001",
+    title: "Check if Binary Tree is BST",
+    section: "Binary Trees",
+    difficulty: "Medium",
+    tags: ["BST", "Tree"],
+    category: "testpad",
+    prompt: "Check if a given binary tree is a Binary Search Tree (BST). <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
+    constraints: ["1 ≤ number of nodes ≤ 10⁴"],
+    examples: [{ input: "Tree: [2, 1, 3]", output: "true" }],
+    type: "binary_tree",
+    methodName: "isBST",
+    returnType: "boolean",
+    starterCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+    static boolean isBST(Node root) {
+        // Write your code here
+        return false;
+    }
+}`,
+    solutionCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+    static boolean isBST(Node root) {
+        return isBSTUtil(root, Long.MIN_VALUE, Long.MAX_VALUE);
+    }
+    static boolean isBSTUtil(Node node, long min, long max) {
+        if (node == null) return true;
+        if (node.data <= min || node.data >= max) return false;
+        return isBSTUtil(node.left, min, node.data) && isBSTUtil(node.right, node.data, max);
+    }
+}`,
+    testCases: [
+      { input: { tree: [2, 1, 3], args: [] }, expected: "true", visible: true },
+      { input: { tree: [1, 2, 3], args: [] }, expected: "false", visible: true }
+    ]
+  },
+  {
+    id: "java-tp-bst-005",
+    title: "Find Floor and Ceil in BST",
+    section: "Binary Trees",
+    difficulty: "Medium",
+    tags: ["BST", "Tree"],
+    category: "testpad",
+    prompt: "Find the floor and ceil of a key in a Binary Search Tree (BST). Return as <code>\"floor ceil\"</code>. If not found, use -1. <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
+    constraints: ["1 ≤ number of nodes ≤ 10⁴"],
+    examples: [{ input: "Tree: [8, 4, 12], key = 5", output: "4 8" }],
+    type: "binary_tree",
+    methodName: "findFloorCeil",
+    returnType: "String",
+    starterCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+    static String findFloorCeil(Node root, int key) {
+        // Write your code here
+        return "-1 -1";
+    }
+}`,
+    solutionCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+    static String findFloorCeil(Node root, int key) {
+        int floor = -1, ceil = -1;
+        Node curr = root;
+        while (curr != null) {
+            if (curr.data == key) { floor = ceil = curr.data; break; }
+            if (curr.data > key) { ceil = curr.data; curr = curr.left; }
+            else { floor = curr.data; curr = curr.right; }
+        }
+        return floor + " " + ceil;
+    }
+}`,
+    testCases: [
+      { input: { tree: [8, 4, 12, 2, 6, 10, 14], args: [5] }, expected: "4 6", visible: true },
+      { input: { tree: [8, 4, 12, 2, 6, 10, 14], args: [11] }, expected: "10 12", visible: true }
+    ]
+  },
+  {
+    id: "java-tp-bt-008",
+    title: "Print All Paths to Leaves",
+    section: "Binary Trees",
+    difficulty: "Medium",
+    tags: ["Tree", "DFS"],
+    category: "testpad",
+    prompt: "Print all paths from root to leaf nodes in a binary tree. Each path should be on a new line (use space-separated values for nodes in a path). <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
+    constraints: ["1 ≤ number of nodes ≤ 10⁴"],
+    examples: [{ input: "Tree: [1, 2, 3]", output: "1 2\n1 3" }],
+    type: "binary_tree",
+    methodName: "allPaths",
+    returnType: "String",
+    starterCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+    static String allPaths(Node root) {
+        // Write your code here
+        return "";
+    }
+}`,
+    solutionCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+    static String allPaths(Node root) {
+        StringBuilder sb = new StringBuilder();
+        findPaths(root, "", sb);
+        return sb.toString().trim();
+    }
+    static void findPaths(Node node, String path, StringBuilder sb) {
+        if (node == null) return;
+        path += (path.isEmpty() ? "" : " ") + node.data;
+        if (node.left == null && node.right == null) {
+            sb.append(path).append("\n");
+            return;
+        }
+        findPaths(node.left, path, sb);
+        findPaths(node.right, path, sb);
+    }
+}`,
+    testCases: [
+      { input: { tree: [1, 2, 3, 4, 5], args: [] }, expected: "1 2 4\n1 2 5\n1 3", visible: true }
+    ]
+  },
+  {
+    id: "java-tp-bt-009",
+    title: "Find Right Node of a Given Node",
+    section: "Binary Trees",
+    difficulty: "Medium",
+    tags: ["Tree", "BFS"],
+    category: "testpad",
+    prompt: "Find the right sibling (node at the same level to the immediate right) of a given node in a binary tree. Return its data, or -1 if no right sibling exists. <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
+    constraints: ["1 ≤ number of nodes ≤ 10⁴"],
+    examples: [{ input: "Tree: [1, 2, 3], target = 2", output: "3" }],
+    type: "binary_tree",
+    methodName: "findRightNode",
+    returnType: "int",
+    starterCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+    static int findRightNode(Node root, int target) {
+        // Write your code here
+        return -1;
+    }
+}`,
+    solutionCode: `class Solution {
+    static class Node {
+        int data;
+        Node left, right;
+        Node(int d) { data = d; }
+    }
+    static int findRightNode(Node root, int target) {
+        if (root == null) return -1;
+        java.util.Queue<Node> q = new java.util.LinkedList<>();
+        q.add(root);
+        while (!q.isEmpty()) {
+            int size = q.size();
+            for (int i = 0; i < size; i++) {
+                Node curr = q.poll();
+                if (curr.data == target) {
+                    if (i < size - 1) return q.peek().data;
+                    return -1;
+                }
+                if (curr.left != null) q.add(curr.left);
+                if (curr.right != null) q.add(curr.right);
+            }
+        }
+        return -1;
+    }
+}`,
+    testCases: [
+      { input: { tree: [1, 2, 3, 4, 5, 6, 7], args: [2] }, expected: "3", visible: true },
+      { input: { tree: [1, 2, 3, 4, 5, 6, 7], args: [5] }, expected: "6", visible: true }
+    ]
+  },
+  {
+    id: "java-tp-cll-002",
+    title: "Insert in Sorted Circular Linked List",
+    section: "Linked Lists",
+    difficulty: "Medium",
+    tags: ["Linked List", "Circular"],
+    category: "testpad",
+    prompt: "Insert a node with given data into a sorted circular linked list such that the list remains sorted. <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
+    constraints: ["0 ≤ number of nodes ≤ 1000"],
+    examples: [{ input: "List: [1, 4, 8], data = 5", output: "1 4 5 8" }],
+    type: "singly_linked_list",
+    methodName: "insertSorted",
+    returnType: "Node",
+    starterCode: `class Solution {
+    static class Node {
+        int data;
+        Node next;
+        Node(int d) { data = d; }
+    }
+    static Node insertSorted(Node head, int data) {
+        // Write your code here
+        return null;
+    }
+}`,
+    solutionCode: `class Solution {
+    static class Node {
+        int data;
+        Node next;
+        Node(int d) { data = d; }
+    }
+    static Node insertSorted(Node head, int data) {
+        Node newNode = new Node(data);
+        if (head == null) {
+            newNode.next = newNode;
+            return newNode;
+        }
+        Node curr = head;
+        while (curr.next != head && curr.next.data < data) {
+            curr = curr.next;
+        }
+        if (curr.next == head && (data >= curr.data || data <= head.data)) {
+            newNode.next = head;
+            curr.next = newNode;
+            return data < head.data ? newNode : head;
+        }
+        newNode.next = curr.next;
+        curr.next = newNode;
+        return head;
+    }
+}`,
+    testCases: [
+      { input: { list: [1, 4, 8], args: [5] }, expected: "1 4 5 8", visible: true }
+    ]
+  },
+  {
+    id: "java-tp-cll-003",
+    title: "Split Circular Linked List",
+    section: "Linked Lists",
+    difficulty: "Medium",
+    tags: ["Linked List", "Circular"],
+    category: "testpad",
+    prompt: "Split a circular linked list into two halves. If the list has an odd number of nodes, the first half should have the extra node. <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
+    constraints: ["2 ≤ number of nodes ≤ 1000"],
+    examples: [{ input: "List: [1, 2, 3, 4]", output: "1 2, 3 4" }],
+    type: "singly_linked_list",
+    methodName: "splitList",
+    returnType: "String",
+    starterCode: `class Solution {
+    static class Node {
+        int data;
+        Node next;
+        Node(int d) { data = d; }
+    }
+    static String splitList(Node head) {
+        // Write your code here
+        return "";
+    }
+}`,
+    solutionCode: `class Solution {
+    static class Node {
+        int data;
+        Node next;
+        Node(int d) { data = d; }
+    }
+    static String splitList(Node head) {
+        if (head == null) return "";
+        Node slow = head, fast = head;
+        while (fast.next != head && fast.next.next != head) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        if (fast.next.next == head) fast = fast.next;
+        Node head2 = slow.next;
+        fast.next = head2;
+        slow.next = head;
+        return listToString(head) + ", " + listToString(head2);
+    }
+    static String listToString(Node h) {
+        StringBuilder sb = new StringBuilder();
+        Node curr = h;
+        do {
+            if (sb.length() > 0) sb.append(" ");
+            sb.append(curr.data);
+            curr = curr.next;
+        } while (curr != h);
+        return sb.toString();
+    }
+}`,
+    testCases: [
+      { input: { list: [1, 2, 3, 4], args: [] }, expected: "1 2, 3 4", visible: true },
+      { input: { list: [1, 2, 3, 4, 5], args: [] }, expected: "1 2 3, 4 5", visible: true }
+    ]
+  },
+  {
+    id: "java-tp-dll-001",
+    title: "Swap Two Nodes of DLL",
+    section: "Linked Lists",
+    difficulty: "Medium",
+    tags: ["Linked List", "Doubly Linked List"],
+    category: "testpad",
+    prompt: "Swap two nodes at given positions (1-indexed) in a doubly linked list by changing links. <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
+    constraints: ["2 ≤ number of nodes ≤ 1000"],
+    examples: [{ input: "List: [1, 2, 3, 4], p1=2, p2=4", output: "1 4 3 2" }],
+    type: "doubly_linked_list",
+    methodName: "swapNodes",
+    returnType: "Node",
+    starterCode: `class Solution {
+    static class Node {
+        int data;
+        Node next, prev;
+        Node(int d) { data = d; }
+    }
+    static Node swapNodes(Node head, int p1, int p2) {
+        // Write your code here
+        return head;
+    }
+}`,
+    solutionCode: `class Solution {
+    static class Node {
+        int data;
+        Node next, prev;
+        Node(int d) { data = d; }
+    }
+    static Node swapNodes(Node head, int p1, int p2) {
+        if (p1 == p2) return head;
+        if (p1 > p2) { int tmp = p1; p1 = p2; p2 = tmp; }
+        Node node1 = head, node2 = head;
+        for (int i = 1; i < p1; i++) node1 = node1.next;
+        for (int i = 1; i < p2; i++) node2 = node2.next;
+        
+        Node prev1 = node1.prev, next1 = node1.next;
+        Node prev2 = node2.prev, next2 = node2.next;
+
+        if (node1.next == node2) {
+            node1.next = next2;
+            if (next2 != null) next2.prev = node1;
+            node2.prev = prev1;
+            if (prev1 != null) prev1.next = node2;
+            node2.next = node1;
+            node1.prev = node2;
+        } else {
+            if (prev1 != null) prev1.next = node2;
+            if (next1 != null) next1.prev = node2;
+            if (prev2 != null) prev2.next = node1;
+            if (next2 != null) next2.prev = node1;
+            node1.next = next2; node1.prev = prev2;
+            node2.next = next1; node2.prev = prev1;
+        }
+        return (p1 == 1) ? node2 : head;
+    }
+}`,
+    testCases: [
+      { input: { list: [1, 2, 3, 4], args: [2, 4] }, expected: "1 4 3 2", visible: true }
+    ]
+  },
+  {
+    id: "java-tp-bm-001",
+    title: "Count Set Bits",
+    section: "Bit Manipulation",
+    difficulty: "Easy",
+    tags: ["Bit Manipulation"],
+    category: "testpad",
+    prompt: "Count the number of set bits (1s) in the binary representation of a positive integer. <br/><br/><strong>Bitwise Operations:</strong> Solve this problem using bitwise operators like <code>&amp;</code>, <code>|</code>, <code>^</code>, <code>~</code>, <code>&lt;&lt;</code>, and <code>&gt;&gt;</code>. These operators work directly on the binary representation of integers.",
+    constraints: ["0 ≤ n ≤ 10^9"],
+    examples: [{ input: "n = 6 (110)", output: "2" }],
+    type: "array_return",
+    methodName: "countSetBits",
+    returnType: "int",
+    starterCode: `class Solution {
+    static int countSetBits(int n) {
+        // Write your code here
+        return 0;
+    }
+}`,
+    solutionCode: `class Solution {
+    static int countSetBits(int n) {
+        int count = 0;
+        while (n > 0) {
+            n &= (n - 1);
+            count++;
+        }
+        return count;
+    }
+}`,
+    testCases: [
+      { input: { array: [], args: [6] }, expected: "2", visible: true },
+      { input: { array: [], args: [15] }, expected: "4", visible: true }
+    ]
+  },
+  {
+    id: "java-tp-rec-001",
+    title: "Factorial using Recursion",
+    section: "Recursion",
+    difficulty: "Easy",
+    tags: ["Recursion"],
+    category: "testpad",
+    prompt: "Calculate the factorial of a non-negative integer <code>n</code> using recursion. <br/><br/><strong>Recursion:</strong> Solve this problem by breaking it down into smaller subproblems of the same type. Ensure you define a clear base case to prevent infinite recursion and stack overflow errors.",
+    constraints: ["0 ≤ n ≤ 12"],
+    examples: [{ input: "n = 5", output: "120" }],
+    type: "array_return",
+    methodName: "factorial",
+    returnType: "long",
+    starterCode: `class Solution {
+    static long factorial(int n) {
+        // Write your code here
+        return 1;
+    }
+}`,
+    solutionCode: `class Solution {
+    static long factorial(int n) {
+        if (n <= 1) return 1;
+        return n * factorial(n - 1);
+    }
+}`,
+    testCases: [
+      { input: { array: [], args: [5] }, expected: "120", visible: true },
+      { input: { array: [], args: [0] }, expected: "1", visible: true }
+    ]
   }
 ];
 
