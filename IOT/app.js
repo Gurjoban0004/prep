@@ -376,23 +376,27 @@ function loadAllProgress() {
 function saveProgress() {
   const subjectKey = CONFIG.subjects[state.activeSubject].storageKey;
   localStorage.setItem(subjectKey, JSON.stringify(state.mastered[state.activeSubject]));
+  if (typeof window.triggerCloudSync === 'function') window.triggerCloudSync();
 }
 
 function savePracticeProgress() {
   const subjectKeyPractice = CONFIG.subjects[state.activeSubject].storageKeyPractice;
   localStorage.setItem(subjectKeyPractice, JSON.stringify(state.practiceAnswers[state.activeSubject]));
+  if (typeof window.triggerCloudSync === 'function') window.triggerCloudSync();
 }
 
 function saveBashProgress() {
   const subjectConfig = CONFIG.subjects[state.activeSubject];
   if (!subjectConfig.storageKeyBash) return;
   localStorage.setItem(subjectConfig.storageKeyBash, JSON.stringify(state.bashProgress[state.activeSubject] || {}));
+  if (typeof window.triggerCloudSync === 'function') window.triggerCloudSync();
 }
 
 function saveJavaProgress() {
   const subjectConfig = CONFIG.subjects[state.activeSubject];
   if (!subjectConfig.storageKeyJava) return;
   localStorage.setItem(subjectConfig.storageKeyJava, JSON.stringify(state.javaProgress[state.activeSubject] || {}));
+  if (typeof window.triggerCloudSync === 'function') window.triggerCloudSync();
 }
 
 // Smart Notes persistence
@@ -411,6 +415,7 @@ function loadSmartNotes() {
 function saveSmartNotes() {
   try {
     localStorage.setItem('prep_smart_notes', JSON.stringify(state.smartNotes));
+    if (typeof window.triggerCloudSync === 'function') window.triggerCloudSync();
   } catch (e) {
     // localStorage may be full — silently fail
   }
@@ -434,6 +439,7 @@ function loadStarredMcqs() {
 function saveStarredMcqs() {
   try {
     localStorage.setItem('prep_starred_mcqs', JSON.stringify(state.starredMcqs));
+    if (typeof window.triggerCloudSync === 'function') window.triggerCloudSync();
   } catch (e) {
     // localStorage may be full — silently fail
   }
@@ -710,7 +716,7 @@ function renderLandingPage() {
               </span>
             </button>
             <button class="landing-subject-card" data-subject="java">
-              <span class="landing-card-icon">&lt;/&gt;</span>
+              <span class="landing-card-icon">{}</span>
               <span>
                 <strong>Java DSA</strong>
                 <small>LeetCode-style coding practice</small>
@@ -1133,7 +1139,7 @@ function renderSidebar() {
       if (state.activeSection === 'javaExam') {
         const banner = document.createElement('div');
         banner.className = 'sidebar-info-banner';
-        banner.innerHTML = 'These questions appeared in exams yesterday and the day before yesterday';
+        banner.innerHTML = 'These questions appeared in exams!';
         elements.topicList.appendChild(banner);
       }
 
@@ -1170,7 +1176,7 @@ function renderSidebar() {
           arrowSpan.style.transition = 'transform 0.2s ease';
           arrowSpan.style.fontSize = '0.7rem';
           arrowSpan.style.opacity = '0.6';
-          arrowSpan.innerHTML = currentCollapsed && !state.searchQuery ? '&#9654;' : '&#9660;'; // ▶ or ▼
+          arrowSpan.innerHTML = currentCollapsed && !state.searchQuery ? '>' : 'v';
           divider.appendChild(arrowSpan);
           
           divider.addEventListener('click', () => {
@@ -1521,14 +1527,14 @@ function updateNextButtonState() {
 
   if (isLastTopic) {
     if (isMastered) {
-      elements.nextBtn.innerHTML = 'Section Mastered! 🎉';
+      elements.nextBtn.innerHTML = 'Section Mastered!';
       elements.nextBtn.style.backgroundColor = '#EEF6F2';
       elements.nextBtn.style.borderColor = '#CDE3D5';
       elements.nextBtn.style.color = '#4A7A60';
       elements.nextBtn.style.opacity = '0.7';
       elements.nextBtn.style.cursor = 'default';
     } else {
-      elements.nextBtn.innerHTML = 'Complete & Finish Section 🏁';
+      elements.nextBtn.innerHTML = 'Complete & Finish Section';
       elements.nextBtn.style.backgroundColor = 'var(--active-accent)';
       elements.nextBtn.style.borderColor = 'var(--active-accent)';
       elements.nextBtn.style.color = '#FFFDFB';
@@ -2143,7 +2149,7 @@ function renderJavaProblem(index) {
             </button>
             <button class="bash-reset-btn" id="java-reset-btn">Reset</button>
             <button class="bash-reset-btn" id="java-toggle-panel-btn" title="Toggle Console">Console</button>
-            <button class="bash-run-btn" id="java-run-btn">▶ Run</button>
+            <button class="bash-run-btn" id="java-run-btn">Run</button>
             <button class="bash-submit-btn" id="java-submit-btn">Submit</button>
           </div>
         </div>
@@ -2647,7 +2653,7 @@ function renderPracticeUnit(unitIndex) {
       </div>
       <div class="quiz-controls" style="margin-top: 1rem; display: flex; gap: 0.5rem;">
         <button class="starred-filter-btn ${state.showStarredOnly ? 'active' : ''}" id="starred-filter-btn">
-          ★ Starred Only
+          Starred Only
         </button>
         <button class="quiz-reset-btn" id="quiz-reset-progress-btn" style="flex: 1; font-size: 0.8rem;">
           Reset Progress
@@ -2685,10 +2691,10 @@ function renderPracticeUnit(unitIndex) {
       if (isAnswered) {
         if (optLetter === q.correct) {
           optionClasses += ' correct';
-          badgeHtml = '<span class="correct-badge">Correct ✓</span>';
+          badgeHtml = '<span class="correct-badge">Correct</span>';
         } else if (optLetter === savedAns) {
           optionClasses += ' incorrect';
-          badgeHtml = '<span class="incorrect-badge">Incorrect ✗</span>';
+          badgeHtml = '<span class="incorrect-badge">Incorrect</span>';
         }
       }
 
@@ -2715,7 +2721,7 @@ function renderPracticeUnit(unitIndex) {
               Solve
             </button>
             ` : ''}
-            <button class="mcq-star-btn ${isStarred ? 'starred' : ''}" data-qid="${q.id}" title="Star this question">${isStarred ? '★' : '☆'}</button>
+            <button class="mcq-star-btn ${isStarred ? 'starred' : ''}" data-qid="${q.id}" title="Star this question">${isStarred ? 'Saved' : 'Save'}</button>
           </div>
         </div>
         <div class="mcq-options${answeredClass}" data-correct="${q.correct}">
@@ -2830,7 +2836,7 @@ function renderPracticeUnit(unitIndex) {
 
   const totalUnits = mcqBank.length;
   const isLastUnit = unitIndex === totalUnits - 1;
-  elements.nextBtn.innerHTML = isLastUnit ? 'Practice Bank Completed! 🎓' : 'Next Unit →';
+  elements.nextBtn.innerHTML = isLastUnit ? 'Practice Bank Completed!' : 'Next Unit →';
   elements.nextBtn.disabled = false;
   elements.nextBtn.style.opacity = '1';
 

@@ -17,6 +17,11 @@
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+
+  <!-- Firebase v10 Compat SDK (CDN — no bundler needed) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 </head>
 <body>
   <header>
@@ -55,6 +60,11 @@
     </nav>
     
     <div class="header-right" style="display: flex; align-items: center; gap: 1rem;">
+      <!-- Auth Button / User Chip -->
+      <div id="auth-container" class="auth-container">
+        <!-- Rendered dynamically by firebase-auth.js -->
+      </div>
+
       <div class="zoom-controls" style="margin: 0;">
         <button id="theme-toggle" aria-label="Toggle Dark/Light Theme">
           <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -201,6 +211,10 @@
   </script>
   <script src="java-engine.js?v=3"></script>
   <script src="app.js?v=3"></script>
+
+  <!-- Firebase: config must come before auth.js -->
+  <script src="firebase-config.js"></script>
+  <script src="firebase-auth.js"></script>
   <!-- Compiler Settings Dialog -->
   <dialog id="java-settings-dialog" class="java-dialog">
     <div class="java-dialog-content">
