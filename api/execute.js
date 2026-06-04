@@ -19,7 +19,11 @@ function getJudgeServiceUrl() {
 }
 
 function getJudgeApiKey() {
-  return process.env.JUDGE_API_KEY || (isProduction() ? '' : 'dsa_judge_secret_123');
+  return process.env.JUDGE_API_KEY ||
+    process.env.RAILWAY_JUDGE_API_KEY ||
+    process.env.JAVA_JUDGE_API_KEY ||
+    process.env.JUDGE_KEY ||
+    (isProduction() ? '' : 'dsa_judge_secret_123');
 }
 
 function buildJudgeExecuteUrl(rawUrl) {
@@ -92,6 +96,15 @@ module.exports = async function handler(req, res) {
     // If the judge service returns an error, pass it back
     if (!apiResponse.ok) {
       const errorText = await apiResponse.text();
+      if (apiResponse.status === 401 || apiResponse.status === 403) {
+        return res.status(502).json({
+          error: 'Railway judge rejected the proxy API key. Set JUDGE_API_KEY on the frontend host to the exact same value as JUDGE_API_KEY on the Railway judge service.',
+          code: 'JUDGE_PROXY_AUTH_FAILED',
+          details: errorText,
+          upstreamUrl: targetUrl
+        });
+      }
+
       const status = apiResponse.status >= 500 ? 502 : apiResponse.status;
       return res.status(status).json({
         error: `Judge service error: HTTP ${apiResponse.status}`,

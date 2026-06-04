@@ -2196,9 +2196,9 @@ async function runJavaProblem(problem, mode) {
           body.innerHTML = `
             <div class="java-error-panel">
               <h4>⚠️ Execution Service Unauthorized (HTTP 401)</h4>
-              <p style="margin-bottom: 0.75rem;">The compilation proxy is unauthorized. Please configure a custom URL or set the authorization key.</p>
+              <p style="margin-bottom: 0.75rem;">The judge rejected the execution key.</p>
               <p style="font-size: 0.82rem; margin-bottom: 1rem; color: var(--text-secondary);">
-                Ensure your proxy key matches the backend server, or point directly to a local compiler instance.
+                For Railway, set <code>JUDGE_API_KEY</code> on the frontend host to the exact same value as <code>JUDGE_API_KEY</code> on the Railway judge service. Do not expose that key in the browser for production.
               </p>
               
               <div class="java-settings-inline-panel">
