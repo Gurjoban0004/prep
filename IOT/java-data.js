@@ -15,7 +15,7 @@ const JAVA_DSA_PROBLEMS = [
     section: "Linked Lists",
     difficulty: "Medium",
     tags: ["Linked List", "Pointers"],
-    prompt: "Left-rotate a singly linked list by <code>k</code> positions. Move the first <code>k</code> nodes to the tail of the list. If <code>k &gt;= n</code> (length of list), leave the list unchanged.",
+    prompt: "Left-rotate a singly linked list by <code>k</code> positions. Move the first <code>k</code> nodes to the tail of the list. If <code>k &gt;= n</code> (length of list), leave the list unchanged. <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
     constraints: [
       "0 ≤ number of nodes ≤ 1000",
       "-10⁴ ≤ Node.data ≤ 10⁴",
@@ -253,7 +253,7 @@ const JAVA_DSA_PROBLEMS = [
     section: "Linked Lists",
     difficulty: "Easy",
     tags: ["Linked List", "Merge"],
-    prompt: "Merge two sorted singly linked lists into a single sorted list. Do this by splicing together the nodes of the first two lists.",
+    prompt: "Merge two sorted singly linked lists into a single sorted list. Do this by splicing together the nodes of the first two lists. <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
     constraints: [
       "Both lists are sorted in non-decreasing order.",
       "The merged list should also be sorted."
@@ -311,7 +311,7 @@ const JAVA_DSA_PROBLEMS = [
     section: "Linked Lists",
     difficulty: "Easy",
     tags: ["Linked List", "Iterative"],
-    prompt: "Reverse a singly linked list iteratively in O(n) time and O(1) space. Return the new head.",
+    prompt: "Reverse a singly linked list iteratively in O(n) time and O(1) space. Return the new head. <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
     constraints: [
       "0 ≤ number of nodes ≤ 5000",
       "-5000 ≤ Node.data ≤ 5000"
@@ -373,7 +373,7 @@ const JAVA_DSA_PROBLEMS = [
     section: "Binary Trees",
     difficulty: "Medium",
     tags: ["Binary Tree", "BFS", "Level Order"],
-    prompt: "Given a binary tree, find and print the maximum value at each level. Output space-separated values, one per level from root to leaves.",
+    prompt: "Given a binary tree, find and print the maximum value at each level. Output space-separated values, one per level from root to leaves. <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: [
       "Tree is given as a level-order array (null for missing nodes).",
       "1 ≤ number of nodes ≤ 10⁴"
@@ -443,7 +443,7 @@ const JAVA_DSA_PROBLEMS = [
     section: "Stacks & Queues",
     difficulty: "Easy",
     tags: ["Stack", "Strings"],
-    prompt: "Check if a string containing <code>()</code>, <code>{}</code>, and <code>[]</code> has balanced brackets. Return <code>true</code> if balanced, <code>false</code> otherwise.",
+    prompt: "Check if a string containing <code>()</code>, <code>{}</code>, and <code>[]</code> has balanced brackets. Return <code>true</code> if balanced, <code>false</code> otherwise. <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: [
       "0 ≤ string length ≤ 10⁴",
       "String contains only (){}[] characters."
@@ -492,7 +492,7 @@ const JAVA_DSA_PROBLEMS = [
     section: "Stacks & Queues",
     difficulty: "Medium",
     tags: ["Stack", "Math"],
-    prompt: "Evaluate a prefix (Polish notation) expression. Each character is either a single digit (0-9) or an operator (+, -, *, /). Scan from right to left using a stack. Return the result as a <code>long</code>.",
+    prompt: "Evaluate a prefix (Polish notation) expression. Each character is either a single digit (0-9) or an operator (+, -, *, /). Scan from right to left using a stack. Return the result as a <code>long</code>. <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: [
       "Expression contains only single-digit operands (0-9).",
       "Operators are +, -, *, /.",
@@ -547,7 +547,7 @@ const JAVA_DSA_PROBLEMS = [
     section: "Stacks & Queues",
     difficulty: "Medium",
     tags: ["Stack", "Greedy"],
-    prompt: "Given a string of only <code>{</code> and <code>}</code>, find the minimum number of bracket reversals needed to make the expression balanced. Return <code>-1</code> if it's not possible (odd length).",
+    prompt: "Given a string of only <code>{</code> and <code>}</code>, find the minimum number of bracket reversals needed to make the expression balanced. Return <code>-1</code> if it's not possible (odd length). <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: [
       "String contains only '{' and '}'.",
       "Return -1 if the string length is odd."
@@ -595,7 +595,7 @@ const JAVA_DSA_PROBLEMS = [
     section: "Stacks & Queues",
     difficulty: "Medium",
     tags: ["Stack", "Monotonic Stack"],
-    prompt: "For each building height in an array, find the next strictly taller building to the right. Sum all such next-greater values. If no taller building exists to the right, use <code>-1</code> for that position.",
+    prompt: "For each building height in an array, find the next strictly taller building to the right. Sum all such next-greater values. If no taller building exists to the right, use <code>-1</code> for that position. <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: [
       "1 ≤ array length ≤ 10⁵",
       "1 ≤ height ≤ 10⁶"
@@ -646,7 +646,7 @@ const JAVA_DSA_PROBLEMS = [
     section: "Stacks & Queues",
     difficulty: "Easy",
     tags: ["Stack", "Strings"],
-    prompt: "Reverse a given string using a stack. Push all characters onto a stack, then pop them off to build the reversed string.",
+    prompt: "Reverse a given string using a stack. Push all characters onto a stack, then pop them off to build the reversed string. <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: [
       "0 ≤ string length ≤ 10⁴",
       "String may contain any printable ASCII characters."
@@ -788,14 +788,13 @@ const JAVA_DSA_PROBLEMS = [
       { input: { string: "a", args: [1] }, expected: "1", visible: false }
     ]
   },
-
   {
     id: "java-ha-003",
     title: "Missing Number in Array (XOR)",
     section: "Hashing",
     difficulty: "Easy",
     tags: ["Bit Manipulation", "XOR"],
-    prompt: "An array contains numbers from 1 to N with exactly one number missing. Find the missing number using XOR. The array has <code>N-1</code> elements.",
+    prompt: "An array contains numbers from 1 to N with exactly one number missing. Find the missing number using XOR. The array has <code>N-1</code> elements. <br/><br/><strong>Java Collections Framework:</strong> Solve this problem by utilizing Java's built-in collections such as <code>Queue</code>, <code>Stack</code>, <code>ArrayList</code>, <code>HashMap</code>, or <code>HashSet</code>. Consider the time complexity of operations like search, insertion, and deletion.",
     constraints: [
       "1 ≤ N ≤ 10⁶",
       "Array contains N-1 distinct elements from [1, N]."
@@ -842,7 +841,7 @@ const JAVA_DSA_PROBLEMS = [
     section: "Recursion & Bits",
     difficulty: "Easy",
     tags: ["Recursion", "Math"],
-    prompt: "Calculate <code>base^exp</code> using recursive fast exponentiation. Both base and exponent are non-negative integers.",
+    prompt: "Calculate <code>base^exp</code> using recursive fast exponentiation. Both base and exponent are non-negative integers. <br/><br/><strong>Bitwise Operations:</strong> You should use bitwise operators (like <code>&amp;</code>, <code>|</code>, <code>^</code>, <code>~</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code>) to solve this problem. These operations are extremely fast and require $O(1)$ auxiliary space.",
     constraints: [
       "0 ≤ base ≤ 100",
       "0 ≤ exp ≤ 30",
@@ -887,7 +886,7 @@ const JAVA_DSA_PROBLEMS = [
     section: "Recursion & Bits",
     difficulty: "Easy",
     tags: ["Bit Manipulation"],
-    prompt: "Count the number of set bits (1s) in the binary representation of a given non-negative integer using Brian Kernighan's algorithm.",
+    prompt: "Count the number of set bits (1s) in the binary representation of a given non-negative integer using Brian Kernighan's algorithm. <br/><br/><strong>Bitwise Operations:</strong> You should use bitwise operators (like <code>&amp;</code>, <code>|</code>, <code>^</code>, <code>~</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code>) to solve this problem. These operations are extremely fast and require $O(1)$ auxiliary space.",
     constraints: [
       "0 ≤ n ≤ 2³¹ - 1"
     ],
@@ -927,7 +926,7 @@ const JAVA_DSA_PROBLEMS = [
     section: "Recursion & Bits",
     difficulty: "Easy",
     tags: ["Bit Manipulation"],
-    prompt: "Check if the k-th bit (1-indexed from the right) is set in the number <code>n</code>. Return <code>1</code> if set, <code>0</code> otherwise.",
+    prompt: "Check if the k-th bit (1-indexed from the right) is set in the number <code>n</code>. Return <code>1</code> if set, <code>0</code> otherwise. <br/><br/><strong>Bitwise Operations:</strong> You should use bitwise operators (like <code>&amp;</code>, <code>|</code>, <code>^</code>, <code>~</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code>) to solve this problem. These operations are extremely fast and require $O(1)$ auxiliary space.",
     constraints: [
       "1 ≤ k ≤ 32",
       "0 ≤ n ≤ 2³¹ - 1"
@@ -967,7 +966,7 @@ const JAVA_DSA_PROBLEMS = [
     section: "Recursion & Bits",
     difficulty: "Easy",
     tags: ["Recursion", "Math"],
-    prompt: "Implement the recurrence relation <code>T(n) = T(n-1) + 2*n</code> with base case <code>T(0) = 1</code>. Return the value of <code>T(n)</code>.",
+    prompt: "Implement the recurrence relation <code>T(n) = T(n-1) + 2*n</code> with base case <code>T(0) = 1</code>. Return the value of <code>T(n)</code>. <br/><br/><strong>Bitwise Operations:</strong> You should use bitwise operators (like <code>&amp;</code>, <code>|</code>, <code>^</code>, <code>~</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code>) to solve this problem. These operations are extremely fast and require $O(1)$ auxiliary space.",
     constraints: [
       "0 ≤ n ≤ 10⁴"
     ],
@@ -1006,7 +1005,7 @@ const JAVA_DSA_PROBLEMS = [
     section: "Recursion & Bits",
     difficulty: "Easy",
     tags: ["Bit Manipulation", "XOR"],
-    prompt: "In an array where every element appears exactly twice except one, find the element that appears exactly once. Use XOR.",
+    prompt: "In an array where every element appears exactly twice except one, find the element that appears exactly once. Use XOR. <br/><br/><strong>Bitwise Operations:</strong> You should use bitwise operators (like <code>&amp;</code>, <code>|</code>, <code>^</code>, <code>~</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code>) to solve this problem. These operations are extremely fast and require $O(1)$ auxiliary space.",
     constraints: [
       "1 ≤ array length ≤ 10⁵ (always odd)",
       "Every element appears twice except one."
@@ -1052,7 +1051,7 @@ const JAVA_DSA_PROBLEMS = [
     difficulty: "Easy",
     tags: ["Queue", "List"],
     category: "exam",
-    prompt: "Given a queue of integers, mirror it. That is, append all elements in reverse order to the tail of the queue.",
+    prompt: "Given a queue of integers, mirror it. That is, append all elements in reverse order to the tail of the queue. <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: [
       "1 ≤ Queue size ≤ 1000",
       "0 ≤ element value ≤ 10⁵"
@@ -1095,7 +1094,7 @@ const JAVA_DSA_PROBLEMS = [
     difficulty: "Medium",
     tags: ["Queue", "Reversal"],
     category: "exam",
-    prompt: "Given a queue of integers, reverse (flip) only the elements at odd positions (1-indexed, i.e., 1st, 3rd, 5th, ... elements). Even-positioned elements should remain in their original order.",
+    prompt: "Given a queue of integers, reverse (flip) only the elements at odd positions (1-indexed, i.e., 1st, 3rd, 5th, ... elements). Even-positioned elements should remain in their original order. <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: [
       "1 ≤ Queue size ≤ 1000",
       "0 ≤ element value ≤ 10⁵"
@@ -1147,7 +1146,7 @@ const JAVA_DSA_PROBLEMS = [
     difficulty: "Easy",
     tags: ["String", "Math"],
     category: "exam",
-    prompt: "Given a binary string, convert it to its decimal representation. This is a void function, so print the result directly to <code>System.out.println</code>.",
+    prompt: "Given a binary string, convert it to its decimal representation. This is a void function, so print the result directly to <code>System.out.println</code>. <br/><br/><strong>Bitwise Operations:</strong> You should use bitwise operators (like <code>&amp;</code>, <code>|</code>, <code>^</code>, <code>~</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code>) to solve this problem. These operations are extremely fast and require $O(1)$ auxiliary space.",
     constraints: [
       "1 ≤ binary string length ≤ 30",
       "String contains only '0' and '1' characters."
@@ -1190,7 +1189,7 @@ const JAVA_DSA_PROBLEMS = [
     difficulty: "Easy",
     tags: ["Recursion", "Bits"],
     category: "exam",
-    prompt: "Given a number <code>n</code> (represented as a <code>long</code>), return its binary representation as a string.",
+    prompt: "Given a number <code>n</code> (represented as a <code>long</code>), return its binary representation as a string. <br/><br/><strong>Bitwise Operations:</strong> You should use bitwise operators (like <code>&amp;</code>, <code>|</code>, <code>^</code>, <code>~</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code>) to solve this problem. These operations are extremely fast and require $O(1)$ auxiliary space.",
     constraints: [
       "0 ≤ n ≤ 2⁵⁰"
     ],
@@ -1228,7 +1227,7 @@ const JAVA_DSA_PROBLEMS = [
     difficulty: "Easy",
     tags: ["Math", "Recursion"],
     category: "exam",
-    prompt: "Given two non-negative integers <code>a</code> and <code>b</code>, find and return their Greatest Common Divisor (GCD) using the Euclidean algorithm.",
+    prompt: "Given two non-negative integers <code>a</code> and <code>b</code>, find and return their Greatest Common Divisor (GCD) using the Euclidean algorithm. <br/><br/><strong>Mathematical Principles:</strong> Apply arithmetic properties, number theory algorithms (like the Euclidean algorithm for GCD), or loop constructs to calculate the result accurately.",
     constraints: [
       "0 ≤ a, b ≤ 10⁶"
     ],
@@ -1267,7 +1266,7 @@ const JAVA_DSA_PROBLEMS = [
     difficulty: "Easy",
     tags: ["Math", "Recursion"],
     category: "exam",
-    prompt: "Given an integer <code>n</code>, print the first <code>n</code> Fibonacci numbers in reverse order (space-separated). Fibonacci sequence starts with <code>0, 1, 1, 2, 3, 5, ...</code>. This is a void function.",
+    prompt: "Given an integer <code>n</code>, print the first <code>n</code> Fibonacci numbers in reverse order (space-separated). Fibonacci sequence starts with <code>0, 1, 1, 2, 3, 5, ...</code>. This is a void function. <br/><br/><strong>Recursive Strategy:</strong> A recursive function calls itself to solve smaller instances of the same problem. Always define a clear base case to terminate recursion and prevent stack overflow errors.",
     constraints: [
       "1 ≤ n ≤ 50"
     ],
@@ -1320,7 +1319,7 @@ const JAVA_DSA_PROBLEMS = [
     difficulty: "Easy",
     tags: ["Array", "Searching"],
     category: "testpad",
-    prompt: "Given an array of integers, find and return the second largest element in the array. Return <code>-1</code> if no second largest element exists (e.g. array size < 2, or all elements are equal).",
+    prompt: "Given an array of integers, find and return the second largest element in the array. Return <code>-1</code> if no second largest element exists (e.g. array size < 2, or all elements are equal). <br/><br/><strong>Array Traversal:</strong> An array is a linear data structure containing elements of the same type. Use loops, pointers, or search algorithms (like binary search) to process array elements effectively.",
     constraints: [
       "1 ≤ array size ≤ 10⁵",
       "-10⁵ ≤ arr[i] ≤ 10⁵"
@@ -1369,7 +1368,7 @@ const JAVA_DSA_PROBLEMS = [
     difficulty: "Easy",
     tags: ["String", "Two Pointers"],
     category: "testpad",
-    prompt: "Check if a string is a palindrome. Ignore case. Return <code>true</code> if it is a palindrome, and <code>false</code> otherwise.",
+    prompt: "Check if a string is a palindrome. Ignore case. Return <code>true</code> if it is a palindrome, and <code>false</code> otherwise. <br/><br/><strong>String Manipulation:</strong> Java Strings are immutable. Use methods like <code>charAt()</code>, <code>substring()</code>, or the <code>StringBuilder</code> class for efficient string operations and concatenation.",
     constraints: [
       "0 ≤ string length ≤ 10⁴"
     ],
@@ -1413,7 +1412,7 @@ const JAVA_DSA_PROBLEMS = [
     difficulty: "Medium",
     tags: ["Array", "Sliding Window"],
     category: "exam",
-    prompt: "Given an array of positive integers <code>nums</code> and a positive integer <code>target</code>, return the minimal length of a contiguous subarray whose sum is greater than or equal to <code>target</code>. If there is no such subarray, return <code>0</code> instead.",
+    prompt: "Given an array of positive integers <code>nums</code> and a positive integer <code>target</code>, return the minimal length of a contiguous subarray whose sum is greater than or equal to <code>target</code>. If there is no such subarray, return <code>0</code> instead. <br/><br/><strong>Array Traversal:</strong> An array is a linear data structure containing elements of the same type. Use loops, pointers, or search algorithms (like binary search) to process array elements effectively.",
     constraints: [
       "1 ≤ nums.length ≤ 10⁵",
       "1 ≤ nums[i] ≤ 10⁴",
@@ -1464,7 +1463,7 @@ const JAVA_DSA_PROBLEMS = [
     difficulty: "Medium",
     tags: ["Stack", "Greedy"],
     category: "exam",
-    prompt: "Given a string of only <code>{</code> and <code>}</code>, find the minimum number of bracket reversals needed to make the expression balanced. Return <code>-1</code> if it's not possible (odd length).",
+    prompt: "Given a string of only <code>{</code> and <code>}</code>, find the minimum number of bracket reversals needed to make the expression balanced. Return <code>-1</code> if it's not possible (odd length). <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: [
       "String contains only '{' and '}'.",
       "Return -1 if the string length is odd."
@@ -1512,7 +1511,7 @@ const JAVA_DSA_PROBLEMS = [
     difficulty: "Easy",
     tags: ["HashMap", "Collection"],
     category: "exam",
-    prompt: "Write a function that checks if a <code>Map&lt;String, String&gt;</code> contains any two distinct keys mapping to the same value (range). Return <code>true</code> if so, <code>false</code> otherwise.",
+    prompt: "Write a function that checks if a <code>Map&lt;String, String&gt;</code> contains any two distinct keys mapping to the same value (range). Return <code>true</code> if so, <code>false</code> otherwise. <br/><br/><strong>Java Collections Framework:</strong> Solve this problem by utilizing Java's built-in collections such as <code>Queue</code>, <code>Stack</code>, <code>ArrayList</code>, <code>HashMap</code>, or <code>HashSet</code>. Consider the time complexity of operations like search, insertion, and deletion.",
     constraints: [
       "Keys and values are comma-separated strings for testing.",
       "Return true if duplicate values exist in the map."
@@ -1569,7 +1568,6 @@ class Solution {
       { input: { string: "one,two,three", args: ["\"1,2,3\""] }, expected: "false", visible: false }
     ]
   },
-
   {
     id: "java-exam-010",
     title: "Floor and Ceil of BST",
@@ -1577,7 +1575,7 @@ class Solution {
     difficulty: "Medium",
     tags: ["Binary Tree", "BST"],
     category: "exam",
-    prompt: "Given a Binary Search Tree (BST) and a key, find the floor (largest node value &le; key) and ceil (smallest node value &ge; key) of the key. Return them as a space-separated string: <code>\"floor ceil\"</code>. Use <code>-1</code> if not found.",
+    prompt: "Given a Binary Search Tree (BST) and a key, find the floor (largest node value &le; key) and ceil (smallest node value &ge; key) of the key. Return them as a space-separated string: <code>\"floor ceil\"</code>. Use <code>-1</code> if not found. <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: [
       "1 ≤ number of nodes ≤ 10⁴",
       "Values in BST are non-negative."
@@ -1653,7 +1651,7 @@ class Solution {
     difficulty: "Medium",
     tags: ["Binary Tree", "BST", "Validation"],
     category: "exam",
-    prompt: "Given a binary tree, check if it is a valid Binary Search Tree (BST).",
+    prompt: "Given a binary tree, check if it is a valid Binary Search Tree (BST). <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: [
       "1 ≤ number of nodes ≤ 10⁴"
     ],
@@ -1709,7 +1707,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Bit Manipulation", "Math"],
     category: "exam",
-    prompt: "Given an integer <code>n</code>, count and return the number of set bits (1s) in its binary representation.",
+    prompt: "Given an integer <code>n</code>, count and return the number of set bits (1s) in its binary representation. <br/><br/><strong>Bitwise Operations:</strong> You should use bitwise operators (like <code>&amp;</code>, <code>|</code>, <code>^</code>, <code>~</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code>) to solve this problem. These operations are extremely fast and require $O(1)$ auxiliary space.",
     constraints: [
       "0 ≤ n ≤ 10⁹"
     ],
@@ -1752,7 +1750,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Stack", "String"],
     category: "exam",
-    prompt: "Given a string containing parentheses <code>()</code>, <code>{}</code>, and <code>[]</code>, return <code>\"Success\"</code> if they are balanced, and <code>\"Error\"</code> otherwise.",
+    prompt: "Given a string containing parentheses <code>()</code>, <code>{}</code>, and <code>[]</code>, return <code>\"Success\"</code> if they are balanced, and <code>\"Error\"</code> otherwise. <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: [
       "0 ≤ string length ≤ 10⁴"
     ],
@@ -1800,7 +1798,7 @@ class Solution {
     difficulty: "Medium",
     tags: ["OOPs", "Inheritance"],
     category: "exam",
-    prompt: "Build an inheritance hierarchy representing family members. Implement a base class <code>FamilyMember</code> with fields <code>name</code> and <code>age</code>, and a method <code>getRole()</code>. Implement subclasses <code>Father</code>, <code>Mother</code>, and <code>Child</code> (which also has a <code>school</code> field) extending <code>FamilyMember</code>.",
+    prompt: "Build an inheritance hierarchy representing family members. Implement a base class <code>FamilyMember</code> with fields <code>name</code> and <code>age</code>, and a method <code>getRole()</code>. Implement subclasses <code>Father</code>, <code>Mother</code>, and <code>Child</code> (which also has a <code>school</code> field) extending <code>FamilyMember</code>. <br/><br/><strong>OOP Design Principle:</strong> Implement the class structure, methods, constructors, and instance variables exactly as defined. Utilize encapsulation, correct access modifiers, and clear object interactions.",
     constraints: [
       "Ensure Father's role is 'Father', Mother's is 'Mother', Child's is 'Child'."
     ],
@@ -1897,7 +1895,7 @@ class Solution {
     difficulty: "Medium",
     tags: ["OOPs", "Classes"],
     category: "exam",
-    prompt: "Create a class <code>Book</code> with <code>title</code>, <code>author</code>, and <code>isbn</code>. Create a class <code>Library</code> containing a list of <code>Book</code>s. Implement methods: <code>addBook(Book book)</code>, <code>removeBook(String isbn)</code> (returns <code>boolean</code>), and <code>getBookCount()</code>.",
+    prompt: "Create a class <code>Book</code> with <code>title</code>, <code>author</code>, and <code>isbn</code>. Create a class <code>Library</code> containing a list of <code>Book</code>s. Implement methods: <code>addBook(Book book)</code>, <code>removeBook(String isbn)</code> (returns <code>boolean</code>), and <code>getBookCount()</code>. <br/><br/><strong>OOP Design Principle:</strong> Implement the class structure, methods, constructors, and instance variables exactly as defined. Utilize encapsulation, correct access modifiers, and clear object interactions.",
     constraints: [
       "Book isbn must be unique in library checks."
     ],
@@ -1970,7 +1968,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["OOPs", "Class design"],
     category: "exam",
-    prompt: "Create a <code>SecurityGate</code> class that keeps track of the number of people inside a building. Implement methods: <code>enter()</code> (increments counter), <code>exit()</code> (decrements counter but never below 0), and <code>getCount()</code>.",
+    prompt: "Create a <code>SecurityGate</code> class that keeps track of the number of people inside a building. Implement methods: <code>enter()</code> (increments counter), <code>exit()</code> (decrements counter but never below 0), and <code>getCount()</code>. <br/><br/><strong>OOP Design Principle:</strong> Implement the class structure, methods, constructors, and instance variables exactly as defined. Utilize encapsulation, correct access modifiers, and clear object interactions.",
     constraints: [
       "Counter must never become negative."
     ],
@@ -2025,7 +2023,7 @@ class Solution {
     difficulty: "Medium",
     tags: ["Binary Tree", "BFS"],
     category: "exam",
-    prompt: "Given a binary tree, find and return the maximum value at each level as space-separated values.",
+    prompt: "Given a binary tree, find and return the maximum value at each level as space-separated values. <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: [
       "1 ≤ number of nodes ≤ 10⁴"
     ],
@@ -2086,7 +2084,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["OOPs", "Interface"],
     category: "exam",
-    prompt: "Implement an interface <code>Shape</code> with a method <code>double area()</code>. Create a class <code>Circle</code> that implements <code>Shape</code> and has a constructor taking a radius. Let the output area be formatted to 2 decimal places.",
+    prompt: "Implement an interface <code>Shape</code> with a method <code>double area()</code>. Create a class <code>Circle</code> that implements <code>Shape</code> and has a constructor taking a radius. Let the output area be formatted to 2 decimal places. <br/><br/><strong>OOP Design Principle:</strong> Implement the class structure, methods, constructors, and instance variables exactly as defined. Utilize encapsulation, correct access modifiers, and clear object interactions.",
     constraints: [
       "Use Math.PI for accurate circle area."
     ],
@@ -2140,7 +2138,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Stack", "String"],
     category: "exam",
-    prompt: "Check if a string containing parentheses <code>()</code>, <code>{}</code>, and <code>[]</code> is balanced. Return <code>true</code> if balanced, and <code>false</code> otherwise.",
+    prompt: "Check if a string containing parentheses <code>()</code>, <code>{}</code>, and <code>[]</code> is balanced. Return <code>true</code> if balanced, and <code>false</code> otherwise. <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: [
       "0 ≤ string length ≤ 10⁴"
     ],
@@ -2188,7 +2186,7 @@ class Solution {
     difficulty: "Medium",
     tags: ["BST", "Tree"],
     category: "testpad",
-    prompt: "Given the root of a Binary Search Tree (BST) and an integer <code>k</code>, find and return the data value of the <code>k</code>th smallest element.",
+    prompt: "Given the root of a Binary Search Tree (BST) and an integer <code>k</code>, find and return the data value of the <code>k</code>th smallest element. <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: [
       "1 ≤ number of nodes ≤ 10⁴",
       "1 ≤ k ≤ number of nodes"
@@ -2253,7 +2251,7 @@ class Solution {
     difficulty: "Medium",
     tags: ["BST", "BFS"],
     category: "testpad",
-    prompt: "Given a level-order traversal array of a Binary Search Tree, construct the BST and return the root node. The tree node wrapper prints it inorder.",
+    prompt: "Given a level-order traversal array of a Binary Search Tree, construct the BST and return the root node. The tree node wrapper prints it inorder. <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: [
       "1 ≤ array size ≤ 1000"
     ],
@@ -2325,7 +2323,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["BST", "LCA"],
     category: "testpad",
-    prompt: "Given a Binary Search Tree (BST) and two nodes <code>p</code> and <code>q</code>, find the lowest common ancestor (LCA) of p and q. Return its data.",
+    prompt: "Given a Binary Search Tree (BST) and two nodes <code>p</code> and <code>q</code>, find the lowest common ancestor (LCA) of p and q. Return its data. <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: [
       "2 ≤ number of nodes ≤ 10⁴"
     ],
@@ -2370,7 +2368,6 @@ class Solution {
       { input: { tree: [6, 2, 8, 0, 4, 7, 9], args: [2, 4] }, expected: "2", visible: true }
     ]
   },
-
   {
     id: "java-tp-bt-001",
     title: "Create Binary Tree from Array",
@@ -2378,7 +2375,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Tree", "BFS"],
     category: "testpad",
-    prompt: "Construct a binary tree from a level order array containing missing elements (represented as <code>null</code>). Inorder traversal of the tree is printed for verification.",
+    prompt: "Construct a binary tree from a level order array containing missing elements (represented as <code>null</code>). Inorder traversal of the tree is printed for verification. <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: [
       "1 ≤ array size ≤ 1000"
     ],
@@ -2441,7 +2438,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Tree", "BFS"],
     category: "testpad",
-    prompt: "Print the level order traversal (space-separated) of a binary tree.",
+    prompt: "Print the level order traversal (space-separated) of a binary tree. <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: [
       "1 ≤ number of nodes ≤ 10⁴"
     ],
@@ -2497,7 +2494,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Tree", "BFS"],
     category: "testpad",
-    prompt: "Find and return all node values at odd levels (1-indexed, root is level 1) of a binary tree as a space-separated string.",
+    prompt: "Find and return all node values at odd levels (1-indexed, root is level 1) of a binary tree as a space-separated string. <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: [
       "1 ≤ number of nodes ≤ 10⁴"
     ],
@@ -2560,7 +2557,7 @@ class Solution {
     difficulty: "Medium",
     tags: ["Tree", "DFS", "Iterative"],
     category: "testpad",
-    prompt: "Implement iterative inorder traversal of a binary tree using a stack. Return space-separated values.",
+    prompt: "Implement iterative inorder traversal of a binary tree using a stack. Return space-separated values. <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: [
       "0 ≤ number of nodes ≤ 5000"
     ],
@@ -2618,7 +2615,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Tree", "DFS"],
     category: "testpad",
-    prompt: "Count and return the number of leaf and non-leaf nodes in a binary tree as a string formatted as <code>\"leaf_count non_leaf_count\"</code>.",
+    prompt: "Count and return the number of leaf and non-leaf nodes in a binary tree as a string formatted as <code>\"leaf_count non_leaf_count\"</code>. <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: [
       "1 ≤ number of nodes ≤ 10⁴"
     ],
@@ -2679,7 +2676,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Tree", "Mirror"],
     category: "testpad",
-    prompt: "Convert a binary tree into its mirror image (in-place swap of left and right children).",
+    prompt: "Convert a binary tree into its mirror image (in-place swap of left and right children). <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: [
       "0 ≤ number of nodes ≤ 5000"
     ],
@@ -2730,7 +2727,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Linked List", "Circular"],
     category: "testpad",
-    prompt: "Given a singly linked list, check if it is circular (i.e. the next pointer of the last node points back to the head node). Return <code>true</code> if so, <code>false</code> otherwise.",
+    prompt: "Given a singly linked list, check if it is circular (i.e. the next pointer of the last node points back to the head node). Return <code>true</code> if so, <code>false</code> otherwise. <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
     constraints: [
       "0 ≤ number of nodes ≤ 1000"
     ],
@@ -2780,7 +2777,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Queue", "Collections"],
     category: "testpad",
-    prompt: "Given a queue of integers, duplicate each element (e.g. queue <code>[1, 2, 3]</code> becomes <code>[1, 1, 2, 2, 3, 3]</code>).",
+    prompt: "Given a queue of integers, duplicate each element (e.g. queue <code>[1, 2, 3]</code> becomes <code>[1, 1, 2, 2, 3, 3]</code>). <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: [
       "1 ≤ queue size ≤ 1000"
     ],
@@ -2820,7 +2817,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Math", "HashSet"],
     category: "testpad",
-    prompt: "Determine if a number is a Happy Number. A happy number is defined by a process where you replace the number by the sum of the squares of its digits, repeating until the number equals 1, or it loops endlessly in a cycle which does not include 1.",
+    prompt: "Determine if a number is a Happy Number. A happy number is defined by a process where you replace the number by the sum of the squares of its digits, repeating until the number equals 1, or it loops endlessly in a cycle which does not include 1. <br/><br/><strong>Java Collections Framework:</strong> Solve this problem by utilizing Java's built-in collections such as <code>Queue</code>, <code>Stack</code>, <code>ArrayList</code>, <code>HashMap</code>, or <code>HashSet</code>. Consider the time complexity of operations like search, insertion, and deletion.",
     constraints: [
       "1 ≤ n ≤ 2³¹ - 1"
     ],

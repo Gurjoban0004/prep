@@ -8,7 +8,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Medium",
     tags: ["BST", "Tree", "Validation"],
     category: "testpad",
-    prompt: "Given a binary tree, check if it is a valid Binary Search Tree (BST).",
+    prompt: "Given a binary tree, check if it is a valid Binary Search Tree (BST). <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: ["1 <= number of nodes <= 10^4"],
     examples: [
       { input: "Tree: [10, 5, 15, 2, 7, 12, 20]", output: "true" },
@@ -55,7 +55,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Medium",
     tags: ["BST", "Tree"],
     category: "testpad",
-    prompt: "Given a Binary Search Tree (BST) and a key, find the floor (largest node value <= key) and ceil (smallest node value >= key) of the key. Return them as a space-separated string: <code>\"floor ceil\"</code>. Use <code>-1</code> if not found.",
+    prompt: "Given a Binary Search Tree (BST) and a key, find the floor (largest node value <= key) and ceil (smallest node value >= key) of the key. Return them as a space-separated string: <code>\"floor ceil\"</code>. Use <code>-1</code> if not found. <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: ["1 <= number of nodes <= 10^4"],
     examples: [
       { input: "Tree: [8, 4, 12, 2, 6, 10, 14], key = 5", output: "4 6" }
@@ -111,7 +111,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Easy",
     tags: ["Tree", "DFS"],
     category: "testpad",
-    prompt: "Complete the inorder, preorder, and postorder traversal functions using recursion. Return them as a single string where each traversal is on a new line (values space-separated). Format: <code>\"inorder\\npreorder\\npostorder\"</code>.",
+    prompt: "Complete the inorder, preorder, and postorder traversal functions using recursion. Return them as a single string where each traversal is on a new line (values space-separated). Format: <code>\"inorder\\npreorder\\npostorder\"</code>. <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: ["1 <= number of nodes <= 10^3"],
     examples: [
       { input: "Tree: [1, 2, 3]", output: "2 1 3\\n1 2 3\\n2 3 1" }
@@ -178,7 +178,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Hard",
     tags: ["Tree", "DFS"],
     category: "testpad",
-    prompt: "Construct a binary tree from given inorder and postorder traversal arrays. Inorder values are passed as the array argument, and postorder values are passed as a comma-separated string in the second argument. Return the root node (the runner will verify it inorder).",
+    prompt: "Construct a binary tree from given inorder and postorder traversal arrays. Inorder values are passed as the array argument, and postorder values are passed as a comma-separated string in the second argument. Return the root node (the runner will verify it inorder). <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: ["1 <= array size <= 1000"],
     examples: [
       { input: "inorder = [2, 1, 3], postorder = \"2,3,1\"", output: "2 1 3" }
@@ -235,7 +235,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Medium",
     tags: ["Tree", "DFS"],
     category: "testpad",
-    prompt: "Find all root-to-leaf paths of a binary tree. Return them as a single string where each path is on a new line (values space-separated).",
+    prompt: "Find all root-to-leaf paths of a binary tree. Return them as a single string where each path is on a new line (values space-separated). <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: ["1 <= number of nodes <= 10^3"],
     examples: [
       { input: "Tree: [1, 2, 3]", output: "1 2\\n1 3" }
@@ -287,7 +287,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Medium",
     tags: ["Tree", "BFS"],
     category: "testpad",
-    prompt: "Given a binary tree and a target node value, find and return the value of the node immediately to its right at the same level. Return <code>-1</code> if no such node exists.",
+    prompt: "Given a binary tree and a target node value, find and return the value of the node immediately to its right at the same level. Return <code>-1</code> if no such node exists. <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: ["1 <= number of nodes <= 10^4"],
     examples: [
       { input: "Tree: [1, 2, 3, 4, 5, null, 6], target = 2", output: "3" }
@@ -343,7 +343,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Medium",
     tags: ["Tree", "BFS"],
     category: "testpad",
-    prompt: "Given a binary tree and a target node value, return all its cousins (nodes at the same level but with a different parent) as a space-separated string in ascending order. Return <code>\"-1\"</code> if none exist.",
+    prompt: "Given a binary tree and a target node value, return all its cousins (nodes at the same level but with a different parent) as a space-separated string in ascending order. Return <code>\"-1\"</code> if none exist. <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: ["1 <= number of nodes <= 10^4"],
     examples: [
       { input: "Tree: [1, 2, 3, 4, 5, null, 6], target = 5", output: "6" }
@@ -412,7 +412,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Medium",
     tags: ["Tree", "BFS"],
     category: "testpad",
-    prompt: "Find and return the top view of a binary tree as space-separated node values from left to right.",
+    prompt: "Find and return the top view of a binary tree as space-separated node values from left to right. <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: ["1 <= number of nodes <= 10^4"],
     examples: [
       { input: "Tree: [1, 2, 3, null, 4, null, null, null, 5]", output: "2 1 3 5" }
@@ -468,7 +468,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Medium",
     tags: ["Tree", "DFS"],
     category: "testpad",
-    prompt: "Determine if a binary tree is foldable. A tree is foldable if its left and right subtrees are structural mirrors of each other.",
+    prompt: "Determine if a binary tree is foldable. A tree is foldable if its left and right subtrees are structural mirrors of each other. <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: ["1 <= number of nodes <= 10^4"],
     examples: [
       { input: "Tree: [10, 7, 15, null, 9, 11, null]", output: "true" }
@@ -515,7 +515,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Easy",
     tags: ["Tree", "DFS"],
     category: "testpad",
-    prompt: "Given two binary trees, check if they are identical (same structure and same node values).",
+    prompt: "Given two binary trees, check if they are identical (same structure and same node values). <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: ["1 <= number of nodes <= 5000"],
     examples: [
       { input: "Tree1: [1, 2, 3], Tree2: [1, 2, 3]", output: "true" }
@@ -558,7 +558,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Easy",
     tags: ["Tree", "DFS"],
     category: "testpad",
-    prompt: "Given a binary tree, find and return its maximum depth (height).",
+    prompt: "Given a binary tree, find and return its maximum depth (height). <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: ["0 <= number of nodes <= 5000"],
     examples: [
       { input: "Tree: [3, 9, 20, null, null, 15, 7]", output: "3" }
@@ -600,7 +600,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Medium",
     tags: ["Tree", "Evaluation"],
     category: "testpad",
-    prompt: "Evaluate a binary expression tree. Nodes can contain operators (ASCII: + as 43, - as 45, * as 42, / as 47) or leaf nodes containing positive integer values.",
+    prompt: "Evaluate a binary expression tree. Nodes can contain operators (ASCII: + as 43, - as 45, * as 42, / as 47) or leaf nodes containing positive integer values. <br/><br/><strong>Tree Representation:</strong> The input tree is passed to your method as a <code>Node</code> object representing the root. In the test cases, tree structures are represented as an array in level-order traversal (e.g., <code>[1, 2, 3, null, 4]</code>, where <code>null</code> represents empty child positions). Make sure to handle the case where the root is <code>null</code>.",
     constraints: ["1 <= number of nodes <= 1000"],
     examples: [
       { input: "Tree: [43, 42, 5, 4, 10] (representing (4*10)+5)", output: "45" }
@@ -650,7 +650,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Easy",
     tags: ["Bit Manipulation"],
     category: "testpad",
-    prompt: "Given an integer <code>n</code>, return the number of set bits (1s) in its binary representation.",
+    prompt: "Given an integer <code>n</code>, return the number of set bits (1s) in its binary representation. <br/><br/><strong>Bitwise Operations:</strong> You should use bitwise operators (like <code>&amp;</code>, <code>|</code>, <code>^</code>, <code>~</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code>) to solve this problem. These operations are extremely fast and require $O(1)$ auxiliary space.",
     constraints: ["0 <= n <= 10^9"],
     examples: [
       { input: "n = 6", output: "2" }
@@ -686,7 +686,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Easy",
     tags: ["Bit Manipulation"],
     category: "testpad",
-    prompt: "Toggle all bits of a 32-bit integer except the <code>k</code>-th bit (0-indexed, from right).",
+    prompt: "Toggle all bits of a 32-bit integer except the <code>k</code>-th bit (0-indexed, from right). <br/><br/><strong>Bitwise Operations:</strong> You should use bitwise operators (like <code>&amp;</code>, <code>|</code>, <code>^</code>, <code>~</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code>) to solve this problem. These operations are extremely fast and require $O(1)$ auxiliary space.",
     constraints: ["0 <= k <= 30"],
     examples: [
       { input: "n = 10, k = 1", output: "-9" }
@@ -717,7 +717,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Easy",
     tags: ["Bit Manipulation"],
     category: "testpad",
-    prompt: "Given an array of integers where every element appears twice except for one, find and return that single unique element using bitwise XOR.",
+    prompt: "Given an array of integers where every element appears twice except for one, find and return that single unique element using bitwise XOR. <br/><br/><strong>Bitwise Operations:</strong> You should use bitwise operators (like <code>&amp;</code>, <code>|</code>, <code>^</code>, <code>~</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code>) to solve this problem. These operations are extremely fast and require $O(1)$ auxiliary space.",
     constraints: ["1 <= array size <= 10^5"],
     examples: [
       { input: "arr = [4, 1, 2, 1, 2]", output: "4" }
@@ -750,7 +750,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Medium",
     tags: ["Bit Manipulation"],
     category: "testpad",
-    prompt: "Given an array of integers where every element appears twice except for two unique elements, find and return those two elements. Return them as a space-separated string in ascending order: <code>\"a b\"</code>.",
+    prompt: "Given an array of integers where every element appears twice except for two unique elements, find and return those two elements. Return them as a space-separated string in ascending order: <code>\"a b\"</code>. <br/><br/><strong>Bitwise Operations:</strong> You should use bitwise operators (like <code>&amp;</code>, <code>|</code>, <code>^</code>, <code>~</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code>) to solve this problem. These operations are extremely fast and require $O(1)$ auxiliary space.",
     constraints: ["2 <= array size <= 10^5"],
     examples: [
       { input: "arr = [2, 4, 7, 9, 2, 4]", output: "7 9" }
@@ -791,7 +791,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Easy",
     tags: ["Bit Manipulation"],
     category: "testpad",
-    prompt: "To save the Earth, you need to reach a distance of <code>n</code> using the minimum number of jumps. You can only make jumps of lengths that are powers of 2 (1, 2, 4, 8, ...). Find the minimum number of jumps required.",
+    prompt: "To save the Earth, you need to reach a distance of <code>n</code> using the minimum number of jumps. You can only make jumps of lengths that are powers of 2 (1, 2, 4, 8, ...). Find the minimum number of jumps required. <br/><br/><strong>Bitwise Operations:</strong> You should use bitwise operators (like <code>&amp;</code>, <code>|</code>, <code>^</code>, <code>~</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code>) to solve this problem. These operations are extremely fast and require $O(1)$ auxiliary space.",
     constraints: ["1 <= n <= 10^9"],
     examples: [
       { input: "n = 7", output: "3" }
@@ -829,7 +829,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Easy",
     tags: ["Linked List", "Circular"],
     category: "testpad",
-    prompt: "Insert a new node with a given value at the end of a Circular Linked List (CLL). Return the head node of the modified circular list.",
+    prompt: "Insert a new node with a given value at the end of a Circular Linked List (CLL). Return the head node of the modified circular list. <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
     constraints: ["0 <= number of nodes <= 1000"],
     examples: [
       { input: "list = [1, 2, 3], val = 4", output: "1 2 3 4" }
@@ -879,7 +879,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Medium",
     tags: ["Linked List", "Circular"],
     category: "testpad",
-    prompt: "Delete a node with a given key from a Circular Linked List. Return the head node of the modified circular list.",
+    prompt: "Delete a node with a given key from a Circular Linked List. Return the head node of the modified circular list. <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
     constraints: ["0 <= number of nodes <= 1000"],
     examples: [
       { input: "list = [1, 2, 3], key = 2", output: "1 3" }
@@ -938,7 +938,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Easy",
     tags: ["Linked List", "Circular"],
     category: "testpad",
-    prompt: "Count and return the number of nodes in a Circular Linked List.",
+    prompt: "Count and return the number of nodes in a Circular Linked List. <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
     constraints: ["0 <= number of nodes <= 1000"],
     examples: [
       { input: "list = [10, 20, 30, 40]", output: "4" }
@@ -986,7 +986,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Medium",
     tags: ["Linked List", "Circular"],
     category: "testpad",
-    prompt: "Insert a new value into a sorted Circular Linked List such that the list remains sorted. Return the head node of the modified circular list.",
+    prompt: "Insert a new value into a sorted Circular Linked List such that the list remains sorted. Return the head node of the modified circular list. <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
     constraints: ["0 <= number of nodes <= 1000"],
     examples: [
       { input: "list = [1, 3, 5], val = 4", output: "1 3 4 5" }
@@ -1044,7 +1044,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Medium",
     tags: ["Linked List", "Circular"],
     category: "testpad",
-    prompt: "Split a Circular Linked List into two halves. If the number of nodes is odd, the first list should have one more node. Return the head of the second list.",
+    prompt: "Split a Circular Linked List into two halves. If the number of nodes is odd, the first list should have one more node. Return the head of the second list. <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
     constraints: ["2 <= number of nodes <= 1000"],
     examples: [
       { input: "list = [1, 2, 3, 4]", output: "3 4" }
@@ -1097,7 +1097,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Medium",
     tags: ["Linked List", "Doubly Linked List"],
     category: "testpad",
-    prompt: "Swap two nodes of a Doubly Linked List given their positions (1-indexed). Return the head node of the modified DLL.",
+    prompt: "Swap two nodes of a Doubly Linked List given their positions (1-indexed). Return the head node of the modified DLL. <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
     constraints: ["2 <= number of nodes <= 1000"],
     examples: [
       { input: "list = [1, 2, 3, 4], p1 = 2, p2 = 4", output: "1 4 3 2" }
@@ -1146,7 +1146,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Medium",
     tags: ["Linked List", "Doubly Linked List"],
     category: "testpad",
-    prompt: "Left-rotate a Doubly Linked List by <code>k</code> positions. Return the head of the rotated DLL.",
+    prompt: "Left-rotate a Doubly Linked List by <code>k</code> positions. Return the head of the rotated DLL. <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
     constraints: ["1 <= k <= number of nodes"],
     examples: [
       { input: "list = [1, 2, 3, 4, 5], k = 2", output: "3 4 5 1 2" }
@@ -1202,7 +1202,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Medium",
     tags: ["Linked List", "Doubly Linked List"],
     category: "testpad",
-    prompt: "Rearrange the nodes of a Doubly Linked List such that all nodes at odd positions are grouped together followed by nodes at even positions (1-indexed). Maintain relative order.",
+    prompt: "Rearrange the nodes of a Doubly Linked List such that all nodes at odd positions are grouped together followed by nodes at even positions (1-indexed). Maintain relative order. <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
     constraints: ["0 <= number of nodes <= 1000"],
     examples: [
       { input: "list = [1, 2, 3, 4, 5]", output: "1 3 5 2 4" }
@@ -1257,7 +1257,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Easy",
     tags: ["Queue", "Collections"],
     category: "testpad",
-    prompt: "Given a queue of integers, reverse the order of its elements to get its mirror image.",
+    prompt: "Given a queue of integers, reverse the order of its elements to get its mirror image. <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: ["0 <= queue size <= 1000"],
     examples: [
       { input: "Queue: [1, 2, 3]", output: "3 2 1" }
@@ -1290,7 +1290,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Easy",
     tags: ["Stack", "String"],
     category: "testpad",
-    prompt: "Check if a string containing parentheses <code>()</code>, <code>{}</code>, and <code>[]</code> is balanced. Return <code>true</code> if balanced, and <code>false</code> otherwise.",
+    prompt: "Check if a string containing parentheses <code>()</code>, <code>{}</code>, and <code>[]</code> is balanced. Return <code>true</code> if balanced, and <code>false</code> otherwise. <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: ["0 <= string length <= 10^4"],
     examples: [
       { input: "s = \"({[]})\"", output: "true" }
@@ -1331,7 +1331,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Easy",
     tags: ["Queue", "Collections"],
     category: "testpad",
-    prompt: "Given a queue of integers, reverse the order of elements located at odd indices (0-indexed).",
+    prompt: "Given a queue of integers, reverse the order of elements located at odd indices (0-indexed). <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: ["1 <= queue size <= 1000"],
     examples: [
       { input: "Queue: [1, 2, 3, 4, 5]", output: "1 4 3 2 5" }
@@ -1369,7 +1369,7 @@ if (typeof JAVA_DSA_PROBLEMS !== 'undefined') {
     difficulty: "Easy",
     tags: ["Vector", "Collections"],
     category: "testpad",
-    prompt: "Remove duplicate elements from a <code>Vector&lt;Integer&gt;</code> and return the Vector containing only distinct values. Maintain relative order. Comma-separated elements are passed in a string.",
+    prompt: "Remove duplicate elements from a <code>Vector&lt;Integer&gt;</code> and return the Vector containing only distinct values. Maintain relative order. Comma-separated elements are passed in a string. <br/><br/><strong>Java Collections Framework:</strong> Solve this problem by utilizing Java's built-in collections such as <code>Queue</code>, <code>Stack</code>, <code>ArrayList</code>, <code>HashMap</code>, or <code>HashSet</code>. Consider the time complexity of operations like search, insertion, and deletion.",
     constraints: ["0 <= vector size <= 1000"],
     examples: [
       { input: "s = \"1,2,2,3,1\"", output: "1 2 3" }
@@ -1414,7 +1414,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["HashMap", "Collections"],
     category: "testpad",
-    prompt: "Write a function that checks if a <code>Map&lt;String, String&gt;</code> contains any two distinct keys mapping to the same value (range). Return <code>true</code> if so, <code>false</code> otherwise.",
+    prompt: "Write a function that checks if a <code>Map&lt;String, String&gt;</code> contains any two distinct keys mapping to the same value (range). Return <code>true</code> if so, <code>false</code> otherwise. <br/><br/><strong>Java Collections Framework:</strong> Solve this problem by utilizing Java's built-in collections such as <code>Queue</code>, <code>Stack</code>, <code>ArrayList</code>, <code>HashMap</code>, or <code>HashSet</code>. Consider the time complexity of operations like search, insertion, and deletion.",
     constraints: ["Keys and values are comma-separated strings for testing."],
     examples: [
       { input: "keys = \"A,B,C\", values = \"X,Y,X\"", output: "true" }
@@ -1469,7 +1469,7 @@ class Solution {
     difficulty: "Medium",
     tags: ["OOPs", "Classes"],
     category: "testpad",
-    prompt: "Implement a custom dynamic array class <code>MyArrayList</code> that has methods: <code>add(int val)</code>, <code>get(int index)</code>, and <code>size()</code>. The tester will perform operations and return a space-separated string of results.",
+    prompt: "Implement a custom dynamic array class <code>MyArrayList</code> that has methods: <code>add(int val)</code>, <code>get(int index)</code>, and <code>size()</code>. The tester will perform operations and return a space-separated string of results. <br/><br/><strong>OOP Design Principle:</strong> Implement the class structure, methods, constructors, and instance variables exactly as defined. Utilize encapsulation, correct access modifiers, and clear object interactions.",
     constraints: ["Ensure capacity increases dynamically."],
     examples: [
       { input: "ops = \"add:10,add:20,size,get:1\"", output: "2 20" }
@@ -1542,7 +1542,6 @@ class Solution {
       { input: { string: "add:10,add:20,size,get:1", args: [] }, expected: "2 20", visible: true }
     ]
   },
-
   // --- Linked List ---
   {
     id: "java-tp-ll-001",
@@ -1551,7 +1550,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Linked List"],
     category: "testpad",
-    prompt: "Given a singly linked list, return its elements as a space-separated string.",
+    prompt: "Given a singly linked list, return its elements as a space-separated string. <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
     constraints: ["0 <= number of nodes <= 1000"],
     examples: [
       { input: "list = [1, 2, 3]", output: "1 2 3" }
@@ -1598,7 +1597,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Linked List"],
     category: "testpad",
-    prompt: "Copy the elements of the first singly linked list into a new second linked list and return the head of the copy.",
+    prompt: "Copy the elements of the first singly linked list into a new second linked list and return the head of the copy. <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
     constraints: ["0 <= number of nodes <= 1000"],
     examples: [
       { input: "list = [1, 2, 3]", output: "1 2 3" }
@@ -1647,7 +1646,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Linked List", "MCQ"],
     category: "testpad",
-    prompt: "In a singly linked list, inserting a node at the beginning takes what time complexity?<br>A) O(1)<br>B) O(N)<br>C) O(log N)<br>D) O(N log N)<br><br>Return the correct option character ('A', 'B', 'C', or 'D').",
+    prompt: "In a singly linked list, inserting a node at the beginning takes what time complexity?<br>A) O(1)<br>B) O(N)<br>C) O(log N)<br>D) O(N log N)<br><br>Return the correct option character ('A <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.', 'B', 'C', or 'D').",
     constraints: ["Return char A, B, C, or D."],
     examples: [
       { input: "", output: "A" }
@@ -1677,7 +1676,7 @@ class Solution {
     difficulty: "Medium",
     tags: ["Linked List"],
     category: "testpad",
-    prompt: "Find the smallest and largest elements in a singly linked list. Move the smallest element to the head and the largest element to the tail of the list. Return the head of the modified list.",
+    prompt: "Find the smallest and largest elements in a singly linked list. Move the smallest element to the head and the largest element to the tail of the list. Return the head of the modified list. <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
     constraints: ["1 <= number of nodes <= 1000"],
     examples: [
       { input: "list = [3, 1, 5, 2, 4]", output: "1 3 2 4 5" }
@@ -1749,7 +1748,7 @@ class Solution {
     difficulty: "Medium",
     tags: ["Linked List", "Two Pointers"],
     category: "testpad",
-    prompt: "Check if a singly linked list is a palindrome (reads same forward and backward).",
+    prompt: "Check if a singly linked list is a palindrome (reads same forward and backward). <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
     constraints: ["0 <= number of nodes <= 10^4"],
     examples: [
       { input: "list = [1, 2, 2, 1]", output: "true" }
@@ -1809,7 +1808,7 @@ class Solution {
     difficulty: "Medium",
     tags: ["Linked List", "Cycle Detection"],
     category: "testpad",
-    prompt: "Detect if there is a cycle (loop) in a singly linked list. Return <code>true</code> if a loop exists, and <code>false</code> otherwise.",
+    prompt: "Detect if there is a cycle (loop) in a singly linked list. Return <code>true</code> if a loop exists, and <code>false</code> otherwise. <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
     constraints: ["0 <= number of nodes <= 1000"],
     examples: [
       { input: "list = [1, 2, 3] (circular)", output: "true" }
@@ -1856,7 +1855,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Linked List"],
     category: "testpad",
-    prompt: "Reverse a singly linked list in-place and return the new head node.",
+    prompt: "Reverse a singly linked list in-place and return the new head node. <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
     constraints: ["0 <= number of nodes <= 5000"],
     examples: [
       { input: "list = [1, 2, 3]", output: "3 2 1" }
@@ -1903,7 +1902,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Linked List", "MCQ"],
     category: "testpad",
-    prompt: "Which of the following is an advantage of adjacency list representation over adjacency matrix representation of a graph?<br>A) Space complexity is O(V+E) instead of O(V²)<br>B) Finding if there is an edge between two vertices takes O(1) time<br>C) Both A and B<br>D) None of the above<br><br>Return the correct option character ('A', 'B', 'C', or 'D').",
+    prompt: "Which of the following is an advantage of adjacency list representation over adjacency matrix representation of a graph?<br>A) Space complexity is O(V+E) instead of O(V²)<br>B) Finding if there is an edge between two vertices takes O(1) time<br>C) Both A and B<br>D) None of the above<br><br>Return the correct option character ('A <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.', 'B', 'C', or 'D').",
     constraints: ["Return char A, B, C, or D."],
     examples: [
       { input: "", output: "A" }
@@ -1933,7 +1932,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Linked List", "MCQ"],
     category: "testpad",
-    prompt: "What is the worst-case time complexity to search an element in a singly linked list?<br>A) O(1)<br>B) O(N)<br>C) O(log N)<br>D) O(N²)<br><br>Return the correct option character ('A', 'B', 'C', or 'D').",
+    prompt: "What is the worst-case time complexity to search an element in a singly linked list?<br>A) O(1)<br>B) O(N)<br>C) O(log N)<br>D) O(N²)<br><br>Return the correct option character ('A <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.', 'B', 'C', or 'D').",
     constraints: ["Return char A, B, C, or D."],
     examples: [
       { input: "", output: "B" }
@@ -1963,7 +1962,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Linked List", "MCQ"],
     category: "testpad",
-    prompt: "What is the time complexity to insert a new node after a given node in a singly linked list?<br>A) O(1)<br>B) O(N)<br>C) O(log N)<br>D) O(N²)<br><br>Return the correct option character ('A', 'B', 'C', or 'D').",
+    prompt: "What is the time complexity to insert a new node after a given node in a singly linked list?<br>A) O(1)<br>B) O(N)<br>C) O(log N)<br>D) O(N²)<br><br>Return the correct option character ('A <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.', 'B', 'C', or 'D').",
     constraints: ["Return char A, B, C, or D."],
     examples: [
       { input: "", output: "A" }
@@ -1993,7 +1992,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Linked List", "MCQ"],
     category: "testpad",
-    prompt: "In a circular linked list, the last node's next pointer points to:<br>A) NULL<br>B) The middle node<br>C) The head node<br>D) Itself<br><br>Return the correct option character ('A', 'B', 'C', or 'D').",
+    prompt: "In a circular linked list, the last node's next pointer points to:<br>A) NULL<br>B) The middle node<br>C) The head node<br>D) Itself<br><br>Return the correct option character ('A <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.', 'B', 'C', or 'D').",
     constraints: ["Return char A, B, C, or D."],
     examples: [
       { input: "", output: "C" }
@@ -2023,7 +2022,7 @@ class Solution {
     difficulty: "Medium",
     tags: ["Linked List", "Math"],
     category: "testpad",
-    prompt: "Given two numbers represented by two singly linked lists (where each node contains a single digit, and digits are stored in reverse order), add the two numbers and return the sum as a linked list.",
+    prompt: "Given two numbers represented by two singly linked lists (where each node contains a single digit, and digits are stored in reverse order), add the two numbers and return the sum as a linked list. <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
     constraints: ["List lengths <= 100"],
     examples: [
       { input: "l1 = [2, 4, 3], l2 = [5, 6, 4]", output: "7 0 8" }
@@ -2073,7 +2072,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Linked List"],
     category: "testpad",
-    prompt: "Delete a node from a singly linked list given access only to that node (which is guaranteed not to be the tail node).",
+    prompt: "Delete a node from a singly linked list given access only to that node (which is guaranteed not to be the tail node). <br/><br/><strong>List Representation:</strong> The input is represented as a sequence of linked list nodes. The custom Node structure has <code>data</code> (int) and pointer fields like <code>next</code> (and <code>prev</code> for doubly linked lists). You should modify node pointers directly to update the list structure.",
     constraints: ["The node to delete will not be a tail node."],
     examples: [
       { input: "list = [4, 5, 1, 9], val = 5", output: "4 1 9" }
@@ -2127,7 +2126,7 @@ class Solution {
     difficulty: "Medium",
     tags: ["Queue", "Array"],
     category: "testpad",
-    prompt: "Implement a Queue using a static array. It should support: <code>enqueue(int val)</code>, <code>dequeue()</code> (returns value, or -1 if empty), and <code>isEmpty()</code>. Operations are passed as a comma-separated string.",
+    prompt: "Implement a Queue using a static array. It should support: <code>enqueue(int val)</code>, <code>dequeue()</code> (returns value, or -1 if empty), and <code>isEmpty()</code>. Operations are passed as a comma-separated string. <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: ["Array size <= 100"],
     examples: [
       { input: "ops = \"en:10,en:20,de,en:30,de,de\"", output: "10 20 30" }
@@ -2188,7 +2187,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Queue", "Recursion"],
     category: "testpad",
-    prompt: "Reverse the elements in a Queue. Return the reversed queue.",
+    prompt: "Reverse the elements in a Queue. Return the reversed queue. <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: ["0 <= queue size <= 1000"],
     examples: [
       { input: "Queue: [1, 2, 3]", output: "3 2 1" }
@@ -2221,7 +2220,7 @@ class Solution {
     difficulty: "Medium",
     tags: ["Queue", "Stack"],
     category: "testpad",
-    prompt: "Reverse only the first <code>k</code> elements of a queue. Return the modified queue.",
+    prompt: "Reverse only the first <code>k</code> elements of a queue. Return the modified queue. <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: ["1 <= k <= queue size"],
     examples: [
       { input: "Queue: [1, 2, 3, 4, 5], k = 3", output: "3 2 1 4 5" }
@@ -2250,7 +2249,6 @@ class Solution {
       { input: { array: [1, 2, 3, 4, 5], args: [3] }, expected: "3 2 1 4 5", visible: true }
     ]
   },
-
   // --- Recursion ---
   {
     id: "java-tp-rec-001",
@@ -2259,7 +2257,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Recursion", "Math"],
     category: "testpad",
-    prompt: "Find the factorial of a non-negative integer using recursion.",
+    prompt: "Find the factorial of a non-negative integer using recursion. <br/><br/><strong>Recursive Strategy:</strong> A recursive function calls itself to solve smaller instances of the same problem. Always define a clear base case to terminate recursion and prevent stack overflow errors.",
     constraints: ["0 <= n <= 20"],
     examples: [
       { input: "n = 5", output: "120" }
@@ -2291,7 +2289,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Recursion", "Math"],
     category: "testpad",
-    prompt: "Find the sum of all digits of a positive integer using recursion.",
+    prompt: "Find the sum of all digits of a positive integer using recursion. <br/><br/><strong>Recursive Strategy:</strong> A recursive function calls itself to solve smaller instances of the same problem. Always define a clear base case to terminate recursion and prevent stack overflow errors.",
     constraints: ["1 <= n <= 2^31 - 1"],
     examples: [
       { input: "n = 1234", output: "10" }
@@ -2323,7 +2321,7 @@ class Solution {
     difficulty: "Medium",
     tags: ["Recursion", "Math"],
     category: "testpad",
-    prompt: "Find and return the prime factors of a positive integer using recursion. Return them as a space-separated string.",
+    prompt: "Find and return the prime factors of a positive integer using recursion. Return them as a space-separated string. <br/><br/><strong>Recursive Strategy:</strong> A recursive function calls itself to solve smaller instances of the same problem. Always define a clear base case to terminate recursion and prevent stack overflow errors.",
     constraints: ["2 <= n <= 10^6"],
     examples: [
       { input: "n = 12", output: "2 2 3" }
@@ -2366,7 +2364,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Recursion", "Math"],
     category: "testpad",
-    prompt: "Compute <code>base</code> raised to the power <code>exp</code> using recursion.",
+    prompt: "Compute <code>base</code> raised to the power <code>exp</code> using recursion. <br/><br/><strong>Recursive Strategy:</strong> A recursive function calls itself to solve smaller instances of the same problem. Always define a clear base case to terminate recursion and prevent stack overflow errors.",
     constraints: ["0 <= exp <= 30"],
     examples: [
       { input: "base = 2, exp = 10", output: "1024" }
@@ -2398,7 +2396,7 @@ class Solution {
     difficulty: "Medium",
     tags: ["Recursion"],
     category: "testpad",
-    prompt: "Given an integer, form a new number by selecting only even digits and reversing them using recursion.",
+    prompt: "Given an integer, form a new number by selecting only even digits and reversing them using recursion. <br/><br/><strong>Recursive Strategy:</strong> A recursive function calls itself to solve smaller instances of the same problem. Always define a clear base case to terminate recursion and prevent stack overflow errors.",
     constraints: ["0 <= n <= 10^9"],
     examples: [
       { input: "n = 12345", output: "42" }
@@ -2438,7 +2436,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Recursion", "Math"],
     category: "testpad",
-    prompt: "Return the binary representation of a non-negative decimal integer as a string using recursion.",
+    prompt: "Return the binary representation of a non-negative decimal integer as a string using recursion. <br/><br/><strong>Recursive Strategy:</strong> A recursive function calls itself to solve smaller instances of the same problem. Always define a clear base case to terminate recursion and prevent stack overflow errors.",
     constraints: ["0 <= n <= 10^9"],
     examples: [
       { input: "n = 10", output: "1010" }
@@ -2471,7 +2469,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Recursion", "Math"],
     category: "testpad",
-    prompt: "Find and return the Greatest Common Divisor (GCD) of two non-negative integers using recursion.",
+    prompt: "Find and return the Greatest Common Divisor (GCD) of two non-negative integers using recursion. <br/><br/><strong>Recursive Strategy:</strong> A recursive function calls itself to solve smaller instances of the same problem. Always define a clear base case to terminate recursion and prevent stack overflow errors.",
     constraints: ["0 <= a, b <= 10^9"],
     examples: [
       { input: "a = 48, b = 18", output: "6" }
@@ -2505,7 +2503,7 @@ class Solution {
     difficulty: "Medium",
     tags: ["Stack", "Array"],
     category: "testpad",
-    prompt: "Implement a Stack using a static array. It should support: <code>push(int val)</code>, <code>pop()</code> (returns value, or -1 if empty), and <code>isEmpty()</code>. Operations are passed as a comma-separated string.",
+    prompt: "Implement a Stack using a static array. It should support: <code>push(int val)</code>, <code>pop()</code> (returns value, or -1 if empty), and <code>isEmpty()</code>. Operations are passed as a comma-separated string. <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: ["Array size <= 100"],
     examples: [
       { input: "ops = \"pu:10,pu:20,po,pu:30,po,po\"", output: "20 30 10" }
@@ -2566,7 +2564,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Stack", "String"],
     category: "testpad",
-    prompt: "Reverse a string using a stack. Return the reversed string.",
+    prompt: "Reverse a string using a stack. Return the reversed string. <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: ["0 <= string length <= 10^4"],
     examples: [
       { input: "s = \"hello\"", output: "olleh" }
@@ -2600,7 +2598,7 @@ class Solution {
     difficulty: "Medium",
     tags: ["Stack", "Linked List"],
     category: "testpad",
-    prompt: "Implement a Stack using a singly linked list. It should support: <code>push(int val)</code>, <code>pop()</code> (returns value, or -1 if empty). Operations are passed as a comma-separated string.",
+    prompt: "Implement a Stack using a singly linked list. It should support: <code>push(int val)</code>, <code>pop()</code> (returns value, or -1 if empty). Operations are passed as a comma-separated string. <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: ["Dynamic memory insertion."],
     examples: [
       { input: "ops = \"pu:10,pu:20,po,pu:30,po,po\"", output: "20 30 10" }
@@ -2675,7 +2673,7 @@ class Solution {
     difficulty: "Medium",
     tags: ["Stack", "Design"],
     category: "testpad",
-    prompt: "Design a Stack that supports <code>push(int val)</code>, <code>pop()</code>, <code>top()</code>, and retrieving the minimum element in constant time <code>getMin()</code>.",
+    prompt: "Design a Stack that supports <code>push(int val)</code>, <code>pop()</code>, <code>top()</code>, and retrieving the minimum element in constant time <code>getMin()</code>. <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: ["All methods must take O(1) time complexity."],
     examples: [
       { input: "ops = \"pu:-2,pu:0,pu:-3,min,po,top,min\"", output: "-3 0 -2" }
@@ -2751,7 +2749,7 @@ class Solution {
     difficulty: "Medium",
     tags: ["Stack"],
     category: "testpad",
-    prompt: "Given an array of integers, find the Next Greater Element (NGE) for every element. The Next Greater Element for an element <code>x</code> is the first greater element on the right side of <code>x</code>. If no greater element exists, output <code>-1</code>. Return as a space-separated string.",
+    prompt: "Given an array of integers, find the Next Greater Element (NGE) for every element. The Next Greater Element for an element <code>x</code> is the first greater element on the right side of <code>x</code>. If no greater element exists, output <code>-1</code>. Return as a space-separated string. <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: ["1 <= array size <= 10^5"],
     examples: [
       { input: "arr = [4, 5, 2, 25]", output: "5 25 25 -1" }
@@ -2789,7 +2787,7 @@ class Solution {
     difficulty: "Medium",
     tags: ["Stack", "Greedy"],
     category: "testpad",
-    prompt: "Given a string of only <code>{</code> and <code>}</code>, find the minimum number of bracket reversals needed to make the expression balanced. Return <code>-1</code> if it is not possible.",
+    prompt: "Given a string of only <code>{</code> and <code>}</code>, find the minimum number of bracket reversals needed to make the expression balanced. Return <code>-1</code> if it is not possible. <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: ["String contains only '{' and '}'."],
     examples: [
       { input: "s = \"}{\"", output: "2" }
@@ -2829,7 +2827,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Stack"],
     category: "testpad",
-    prompt: "Evaluate a postfix expression containing digits and operators <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>. Return the integer result.",
+    prompt: "Evaluate a postfix expression containing digits and operators <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>. Return the integer result. <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: ["Expression contains valid digits and operators."],
     examples: [
       { input: "s = \"231*+9-\"", output: "-4" }
@@ -2874,7 +2872,7 @@ class Solution {
     difficulty: "Easy",
     tags: ["Stack"],
     category: "testpad",
-    prompt: "Evaluate a prefix expression containing digits and operators <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>. Return the integer result.",
+    prompt: "Evaluate a prefix expression containing digits and operators <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>. Return the integer result. <br/><br/><strong>Queue Properties:</strong> A Queue follows the First-In-First-Out (FIFO) principle. Use standard queue methods like enqueue (offer/add) and dequeue (poll/remove) to solve the problem.",
     constraints: ["Expression contains valid digits and operators."],
     examples: [
       { input: "s = \"-+8/632\"", output: "8" }

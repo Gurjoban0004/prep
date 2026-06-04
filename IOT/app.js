@@ -142,6 +142,7 @@ let state = {
   activeSection: 'st1',
   activeTopicIndex: 0,
   searchQuery: '',
+  selectedSectionFilter: 'All',
   mastered: {
     iot: { st1: [], st2: [], endTerm: [], cheatSheet: [], practice: [] },
     cn:  { unit1_2: [], unit3_4: [], unit5_6: [], unit7_8: [], unit9: [], notes: [], cheatSheet: [], practice: [] },
@@ -479,6 +480,16 @@ function setupEventListeners() {
     state.searchQuery = e.target.value.toLowerCase();
     renderSidebar();
   });
+
+  // Sidebar section filter
+  const filterSelect = document.getElementById('sidebar-section-filter');
+  if (filterSelect) {
+    filterSelect.addEventListener('change', (e) => {
+      state.selectedSectionFilter = e.target.value;
+      state.activeTopicIndex = 0; // reset active topic to the first matching topic
+      updateTopics();
+    });
+  }
 
   // Prev navigation
   elements.prevBtn.addEventListener('click', () => {
@@ -831,20 +842,41 @@ function getActiveJavaProblems() {
   const allProblems = CONFIG.subjects[state.activeSubject].javaProblems || [];
   if (state.activeSubject !== 'java') return allProblems;
   
+  let filtered = [];
+  if (state.activeSection === 'javaExam') {
+    filtered = allProblems.filter(p => p.category === 'exam');
+  } else if (state.activeSection === 'javaTestpad') {
+    filtered = allProblems.filter(p => p.category === 'testpad');
+  } else {
+    // javaFA or javaPractice (default)
+    filtered = allProblems.filter(p => !p.category || p.category === 'fa');
+  }
+
+  if (state.selectedSectionFilter && state.selectedSectionFilter !== 'All') {
+    filtered = filtered.filter(p => p.section === state.selectedSectionFilter);
+  }
+  return filtered;
+}
+
+function getUnfilteredJavaProblemsForSection() {
+  const allProblems = CONFIG.subjects[state.activeSubject].javaProblems || [];
+  if (state.activeSubject !== 'java') return allProblems;
+  
   if (state.activeSection === 'javaExam') {
     return allProblems.filter(p => p.category === 'exam');
   } else if (state.activeSection === 'javaTestpad') {
     return allProblems.filter(p => p.category === 'testpad');
   } else {
-    // javaFA or javaPractice (default)
     return allProblems.filter(p => !p.category || p.category === 'fa');
   }
 }
+
 
 function setActiveSection(sectionId) {
   state.activeSection = sectionId;
   state.activeTopicIndex = 0;
   state.searchQuery = '';
+  state.selectedSectionFilter = 'All';
   elements.searchInput.value = '';
 
   const pgContainer = document.getElementById('playground-workspace-container');
@@ -961,11 +993,70 @@ function setActiveSection(sectionId) {
 // ============================================================
 //  SIDEBAR RENDERING
 // ============================================================
+let lastActiveSectionForFilter = null;
+let lastActiveSubjectForFilter = null;
+
+function updateSidebarFilterDropdown() {
+  const wrapper = document.getElementById('sidebar-filter-wrapper');
+  if (!wrapper) return;
+
+  if (state.activeSubject === 'java' && !isPlaygroundSection()) {
+    wrapper.style.display = 'block';
+    
+    // Only rebuild if the tab actually changed
+    if (state.activeSection === lastActiveSectionForFilter && state.activeSubject === lastActiveSubjectForFilter) {
+      const select = document.getElementById('sidebar-section-filter');
+      if (select) select.value = state.selectedSectionFilter || 'All';
+      return;
+    }
+    
+    lastActiveSectionForFilter = state.activeSection;
+    lastActiveSubjectForFilter = state.activeSubject;
+
+    const select = document.getElementById('sidebar-section-filter');
+    if (!select) return;
+
+    // Get current section filter
+    const currentFilter = state.selectedSectionFilter || 'All';
+
+    // Get all unique sections in the active problems
+    const problems = getUnfilteredJavaProblemsForSection();
+    const sections = new Set();
+    problems.forEach(p => {
+      if (p.section) sections.add(p.section);
+    });
+
+    // Populate dropdown
+    select.innerHTML = '<option value="All">All Sections</option>';
+    Array.from(sections).sort().forEach(sec => {
+      const option = document.createElement('option');
+      option.value = sec;
+      option.textContent = sec;
+      select.appendChild(option);
+    });
+
+    // Restore selected value
+    if (sections.has(currentFilter)) {
+      select.value = currentFilter;
+    } else {
+      state.selectedSectionFilter = 'All';
+      select.value = 'All';
+    }
+  } else {
+    wrapper.style.display = 'none';
+    state.selectedSectionFilter = 'All';
+    lastActiveSectionForFilter = null;
+    lastActiveSubjectForFilter = null;
+  }
+}
+
 function renderSidebar() {
   if (isPlaygroundSection()) {
     renderPlaygroundSidebar();
     return;
   }
+
+  updateSidebarFilterDropdown();
 
   elements.topicList.innerHTML = '';
 
@@ -1737,11 +1828,8 @@ function renderBashProblem(index) {
           </div>
         </div>
         <div class="bash-editor-wrapper">
-          <div class="editor-gutter" id="bash-gutter" aria-hidden="true"></div>
-          <div class="editor-textarea-container">
-            <pre id="bash-highlighter" class="bash-highlighter" aria-hidden="true"><code class="language-bash"></code></pre>
-            <textarea class="bash-code-editor" id="bash-code-editor" spellcheck="false">${escapeHtml(currentCode)}</textarea>
-          </div>
+          <pre id="bash-highlighter" class="bash-highlighter" aria-hidden="true"><code class="language-bash"></code></pre>
+          <textarea class="bash-code-editor" id="bash-code-editor" spellcheck="false">${escapeHtml(currentCode)}</textarea>
         </div>
         
         <div class="resizer-v" id="resizer-bash-v">
@@ -1769,26 +1857,17 @@ function renderBashProblem(index) {
   initResizer('resizer-bash-v', 'bash-results-pane', 'vertical', true);
 
   const editor = document.getElementById('bash-code-editor');
-  const gutter = document.getElementById('bash-gutter');
   const resultsPane = document.getElementById('bash-results-pane');
   const togglePanelBtn = document.getElementById('bash-toggle-panel-btn');
 
-  // Sync scroll & active line numbers
-  const syncGutter = () => updateLineNumbers(editor, gutter);
-
-  if (editor && gutter) {
-    editor.addEventListener('input', syncGutter);
+  if (editor) {
     editor.addEventListener('scroll', () => {
-      gutter.scrollTop = editor.scrollTop;
       const highlighterPre = document.getElementById('bash-highlighter');
       if (highlighterPre) {
         highlighterPre.scrollTop = editor.scrollTop;
         highlighterPre.scrollLeft = editor.scrollLeft;
       }
     });
-    editor.addEventListener('click', syncGutter);
-    editor.addEventListener('keyup', syncGutter);
-    syncGutter();
   }
 
   if (togglePanelBtn && resultsPane) {
@@ -2056,11 +2135,8 @@ function renderJavaProblem(index) {
           </div>
         </div>
         <div class="bash-editor-wrapper">
-          <div class="editor-gutter" id="java-gutter" aria-hidden="true"></div>
-          <div class="editor-textarea-container">
-            <pre id="java-highlighter" class="bash-highlighter" aria-hidden="true"><code class="language-java"></code></pre>
-            <textarea class="bash-code-editor java-code-editor" id="java-code-editor" spellcheck="false">${escapeHtml(currentCode)}</textarea>
-          </div>
+          <pre id="java-highlighter" class="bash-highlighter" aria-hidden="true"><code class="language-java"></code></pre>
+          <textarea class="bash-code-editor java-code-editor" id="java-code-editor" spellcheck="false">${escapeHtml(currentCode)}</textarea>
         </div>
         
         <div class="resizer-v" id="resizer-java-v">
@@ -2087,26 +2163,17 @@ function renderJavaProblem(index) {
   initResizer('resizer-java-v', 'java-results-pane', 'vertical', true);
 
   const editor = document.getElementById('java-code-editor');
-  const gutter = document.getElementById('java-gutter');
   const resultsPane = document.getElementById('java-results-pane');
   const togglePanelBtn = document.getElementById('java-toggle-panel-btn');
 
-  // Sync scroll & active line numbers
-  const syncGutter = () => updateLineNumbers(editor, gutter);
-
-  if (editor && gutter) {
-    editor.addEventListener('input', syncGutter);
+  if (editor) {
     editor.addEventListener('scroll', () => {
-      gutter.scrollTop = editor.scrollTop;
       const highlighterPre = document.getElementById('java-highlighter');
       if (highlighterPre) {
         highlighterPre.scrollTop = editor.scrollTop;
         highlighterPre.scrollLeft = editor.scrollLeft;
       }
     });
-    editor.addEventListener('click', syncGutter);
-    editor.addEventListener('keyup', syncGutter);
-    syncGutter();
   }
 
   if (togglePanelBtn && resultsPane) {
@@ -2896,26 +2963,7 @@ window.updateBashHighlighting = function() {
   }
 };
 
-function updateLineNumbers(editor, gutter) {
-  if (!editor || !gutter) return;
-  const lines = editor.value.split('\n');
-  const lineCount = Math.max(lines.length, 1);
-  
-  // Find current active line based on cursor position
-  const selectionStart = editor.selectionStart || 0;
-  const textBeforeCursor = editor.value.substring(0, selectionStart);
-  const activeLineIndex = textBeforeCursor.split('\n').length - 1; // 0-indexed
 
-  let html = '';
-  for (let i = 0; i < lineCount; i++) {
-    const isActive = i === activeLineIndex;
-    html += `<div class="${isActive ? 'active-line-num' : ''}">${i + 1}</div>`;
-  }
-  gutter.innerHTML = html;
-  
-  // Keep scroll in sync
-  gutter.scrollTop = editor.scrollTop;
-}
 
 window.updateJavaHighlighting = function() {
   const editor = document.getElementById('java-code-editor');
