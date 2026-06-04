@@ -135,6 +135,21 @@ const CONFIG = {
 };
 
 // ============================================================
+//  UTILITIES
+// ============================================================
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+// ============================================================
 //  STATE
 // ============================================================
 let state = {
@@ -281,15 +296,15 @@ function setupSecurity() {
     }
   });
 
-  // Simple "Anti-Tamper" check - reduced sensitivity
+  // Simple "Anti-Tamper" check - reduced frequency to minimize performance impact
   const check = () => {
     const start = Date.now();
-    // debugger; // Removed to prevent potential layout issues in some browsers during init
+    // debugger; // Removed to prevent potential layout issues
     if (Date.now() - start > 100) {
-      // document.body.innerHTML = ... // Disabled for now to ensure layout fix visibility
+      // document.body.innerHTML = ... 
     }
   };
-  setInterval(check, 2000);
+  setInterval(check, 10000); // Check every 10 seconds instead of 2
 }
 
 /**
@@ -416,6 +431,7 @@ function setupCodeEditorBehavior(editor) {
 function syncEditor(editor, highlighter, lineNumbers) {
   if (!editor) return;
   
+  let lastLineCount = -1;
   const update = () => {
     if (highlighter) {
       highlighter.scrollTop = editor.scrollTop;
@@ -423,11 +439,14 @@ function syncEditor(editor, highlighter, lineNumbers) {
     }
     if (lineNumbers) {
       const lines = editor.value.split('\n').length;
-      let numbers = '';
-      for (let i = 1; i <= lines; i++) {
-        numbers += `<div>${i}</div>`;
+      if (lines !== lastLineCount) {
+        lastLineCount = lines;
+        let numbers = '';
+        for (let i = 1; i <= lines; i++) {
+          numbers += `<div>${i}</div>`;
+        }
+        lineNumbers.innerHTML = numbers;
       }
-      lineNumbers.innerHTML = numbers;
       lineNumbers.scrollTop = editor.scrollTop;
     }
   };
@@ -601,10 +620,10 @@ function setupEventListeners() {
   }
 
   // Search filter
-  elements.searchInput.addEventListener('input', (e) => {
+  elements.searchInput.addEventListener('input', debounce((e) => {
     state.searchQuery = e.target.value.toLowerCase();
     renderSidebar();
-  });
+  }, 250));
 
   // Sidebar section filter
   const filterSelect = document.getElementById('sidebar-section-filter');
@@ -1226,6 +1245,7 @@ function renderSidebar() {
     // ── Bash Practice: number badge + title ─────────────────────────────
     if (isBashSection()) {
       const problems = getActiveBashProblems();
+      const fragment = document.createDocumentFragment();
       problems.forEach((problem, index) => {
         const searchText = `${problem.title} ${problem.tags.join(' ')}`.toLowerCase();
         if (!searchText.includes(state.searchQuery)) return;
@@ -1263,8 +1283,9 @@ function renderSidebar() {
 
         button.appendChild(inner);
         button.addEventListener('click', () => { selectTopic(index); closeMobileSidebar(); });
-        elements.topicList.appendChild(button);
+        fragment.appendChild(button);
       });
+      elements.topicList.appendChild(fragment);
       return;
     }
 
@@ -1272,6 +1293,7 @@ function renderSidebar() {
     if (isJavaSection()) {
       const problems = getActiveJavaProblems();
       const sections = typeof JAVA_SECTIONS !== 'undefined' ? JAVA_SECTIONS : [];
+      const fragment = document.createDocumentFragment();
       let lastSection = null;
 
       // Add sub-heading banner for Exam tab
@@ -1279,7 +1301,7 @@ function renderSidebar() {
         const banner = document.createElement('div');
         banner.className = 'sidebar-info-banner';
         banner.innerHTML = 'These questions appeared in exams!';
-        elements.topicList.appendChild(banner);
+        fragment.appendChild(banner);
       }
 
       problems.forEach((problem, index) => {
@@ -1323,7 +1345,7 @@ function renderSidebar() {
             updateTopics();
           });
           
-          elements.topicList.appendChild(divider);
+          fragment.appendChild(divider);
         }
 
         // Skip rendering this item if its group is collapsed (and not currently searching)
@@ -1361,14 +1383,16 @@ function renderSidebar() {
 
         button.appendChild(inner);
         button.addEventListener('click', () => { selectTopic(index); closeMobileSidebar(); });
-        elements.topicList.appendChild(button);
+        fragment.appendChild(button);
       });
+      elements.topicList.appendChild(fragment);
       return;
     }
 
     // ── MCQ Sections: keep existing checkbox style but add question count subtitle ──
     if (isMcqSection()) {
       const mcqBank = getActiveMcqBank();
+      const fragment = document.createDocumentFragment();
       mcqBank.forEach((unitObj, index) => {
         const titleLower = unitObj.unitName.toLowerCase();
         if (!titleLower.includes(state.searchQuery)) return;
@@ -1411,8 +1435,9 @@ function renderSidebar() {
 
         button.appendChild(inner);
         button.addEventListener('click', () => { selectTopic(index); closeMobileSidebar(); });
-        elements.topicList.appendChild(button);
+        fragment.appendChild(button);
       });
+      elements.topicList.appendChild(fragment);
       return;
     }
 
@@ -1480,6 +1505,7 @@ function renderSidebar() {
   // ── Generic Reading Topics (IoT / CN): number badge + title + section hint ──
   const subjectData = CONFIG.subjects[state.activeSubject].data;
   const topics = subjectData[state.activeSection] || [];
+  const fragment = document.createDocumentFragment();
 
   topics.forEach((topic, index) => {
     const titleLower = topic.title.toLowerCase();
@@ -1520,14 +1546,31 @@ function renderSidebar() {
 
     button.appendChild(inner);
     button.addEventListener('click', () => { selectTopic(index); closeMobileSidebar(); });
-    elements.topicList.appendChild(button);
+    fragment.appendChild(button);
   });
+  elements.topicList.appendChild(fragment);
 }
 
 
 // ============================================================
 //  TOPIC SELECTION
 // ============================================================
+function updateActiveSidebarItem(index) {
+  const sidebarButtons = elements.topicList.querySelectorAll('.topic-item');
+  // Optimization: If there are many buttons, we could store the active element,
+  // but querySelectorAll is still faster than recreating the whole sidebar.
+  // For now, let's at least make the loop efficient.
+  for (let i = 0; i < sidebarButtons.length; i++) {
+    const btn = sidebarButtons[i];
+    const idx = parseInt(btn.getAttribute('data-index'));
+    if (idx === index) {
+      if (!btn.classList.contains('active')) btn.classList.add('active');
+    } else {
+      if (btn.classList.contains('active')) btn.classList.remove('active');
+    }
+  }
+}
+
 function selectTopic(index) {
   state.activeTopicIndex = index;
 
@@ -1554,11 +1597,7 @@ function selectTopic(index) {
   if (isJavaSection()) {
     renderJavaProblem(index);
     // Explicitly update sidebar active state after rendering problem
-    const sidebarButtons = elements.topicList.querySelectorAll('.topic-item');
-    sidebarButtons.forEach(btn => {
-      const idx = parseInt(btn.getAttribute('data-index'));
-      btn.classList.toggle('active', idx === index);
-    });
+    updateActiveSidebarItem(index);
     return;
   }
 
@@ -1603,11 +1642,7 @@ function selectTopic(index) {
   shuffleMcqOptions(elements.contentArea);
 
   // Update sidebar active state
-  const sidebarButtons = elements.topicList.querySelectorAll('.topic-item');
-  sidebarButtons.forEach(btn => {
-    const idx = parseInt(btn.getAttribute('data-index'));
-    btn.classList.toggle('active', idx === index);
-  });
+  updateActiveSidebarItem(index);
 
   elements.prevBtn.disabled = index === 0;
   elements.prevBtn.style.opacity = index === 0 ? '0.5' : '1';
@@ -3003,31 +3038,37 @@ function initResizer(resizerId, targetPaneId, direction, invert = false) {
     document.addEventListener('mouseup', mouseupHandler);
   };
 
+  let animationFrameId = null;
   const mousemoveHandler = function(e) {
-    if (direction === 'horizontal') {
-      const dx = invert ? startX - e.clientX : e.clientX - startX;
-      const newWidth = startWidth + dx;
-      if (newWidth > 150 && newWidth < window.innerWidth * 0.85) {
-        targetPane.style.width = newWidth + 'px';
-        targetPane.style.flex = 'none'; // Ensure width is respected
-      }
-    } else {
-      const dy = invert ? startY - e.clientY : e.clientY - startY;
-      const newHeight = startHeight + dy;
-      if (newHeight >= 0 && newHeight < window.innerHeight * 0.85) {
-        if (newHeight < 40) {
-          targetPane.style.height = '0px';
-        } else {
-          targetPane.style.height = newHeight + 'px';
-          if (targetPaneId === 'java-results-pane') {
-            state.lastJavaResultsHeight = newHeight;
-          } else if (targetPaneId === 'bash-results-pane') {
-            state.lastBashResultsHeight = newHeight;
-          }
+    if (animationFrameId) return;
+    
+    animationFrameId = requestAnimationFrame(() => {
+      if (direction === 'horizontal') {
+        const dx = invert ? startX - e.clientX : e.clientX - startX;
+        const newWidth = startWidth + dx;
+        if (newWidth > 150 && newWidth < window.innerWidth * 0.85) {
+          targetPane.style.width = newWidth + 'px';
+          targetPane.style.flex = 'none'; // Ensure width is respected
         }
-        targetPane.style.flex = 'none'; // Ensure height is respected
+      } else {
+        const dy = invert ? startY - e.clientY : e.clientY - startY;
+        const newHeight = startHeight + dy;
+        if (newHeight >= 0 && newHeight < window.innerHeight * 0.85) {
+          if (newHeight < 40) {
+            targetPane.style.height = '0px';
+          } else {
+            targetPane.style.height = newHeight + 'px';
+            if (targetPaneId === 'java-results-pane') {
+              state.lastJavaResultsHeight = newHeight;
+            } else if (targetPaneId === 'bash-results-pane') {
+              state.lastBashResultsHeight = newHeight;
+            }
+          }
+          targetPane.style.flex = 'none'; // Ensure height is respected
+        }
       }
-    }
+      animationFrameId = null;
+    });
   };
 
   const mouseupHandler = function() {
@@ -3069,7 +3110,7 @@ document.getElementById('zoom-default')?.addEventListener('click', () => {
 // ============================================================
 //  SYNTAX HIGHLIGHTER HELPER
 // ============================================================
-window.updateBashHighlighting = function() {
+window.updateBashHighlighting = debounce(function() {
   const editor = document.getElementById('bash-code-editor');
   const highlighter = document.querySelector('#bash-highlighter code');
   if (!editor || !highlighter) return;
@@ -3079,11 +3120,11 @@ window.updateBashHighlighting = function() {
   } else {
     highlighter.textContent = editor.value;
   }
-};
+}, 100);
 
 
 
-window.updateJavaHighlighting = function() {
+window.updateJavaHighlighting = debounce(function() {
   const editor = document.getElementById('java-code-editor');
   const highlighter = document.querySelector('#java-highlighter code');
   if (!editor || !highlighter) return;
@@ -3093,7 +3134,7 @@ window.updateJavaHighlighting = function() {
   } else {
     highlighter.textContent = editor.value;
   }
-};
+}, 100);
 
 window.addEventListener('DOMContentLoaded', () => {
   init();
