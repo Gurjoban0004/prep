@@ -2246,7 +2246,7 @@ async function runJavaProblem(problem, mode) {
               <h4>⚠️ Connection Error</h4>
               <p>${escapeHtml(result.networkError)}</p>
               <p style="font-size: 0.82rem; margin-top: 0.65rem; color: var(--text-secondary);">
-                Please check your internet connection or backend configuration and try again.
+                If you are using Railway, make sure the frontend host has <code>JUDGE_SERVICE_URL</code> set to your Railway judge URL and <code>JUDGE_API_KEY</code> matches the judge service.
               </p>
             </div>
           `;

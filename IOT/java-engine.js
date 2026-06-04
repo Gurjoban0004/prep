@@ -82,6 +82,28 @@ function buildJavaExecutionHeaders(settings, apiUrl) {
   return headers;
 }
 
+function isSameOriginApiEndpoint(apiUrl) {
+  return apiUrl.startsWith('/');
+}
+
+function shouldRetryJavaEndpoint(apiUrl, status, attemptedCount, totalEndpoints) {
+  if (attemptedCount >= totalEndpoints) return false;
+  if (status === 404) return true;
+  return isSameOriginApiEndpoint(apiUrl) && status >= 500;
+}
+
+function formatJavaApiError(status, apiUrl, responseText) {
+  let detail = responseText || '';
+  try {
+    const parsed = JSON.parse(responseText);
+    detail = parsed.error || parsed.message || parsed.details || responseText;
+  } catch (e) {}
+
+  return detail
+    ? `API error: HTTP ${status} at ${apiUrl}. ${detail}`
+    : `API error: HTTP ${status} at ${apiUrl}`;
+}
+
 /**
  * Count lines in a string (for compiler error line mapping)
  */
@@ -309,11 +331,12 @@ async function callPistonAPI(wrappedCode) {
       clearTimeout(timeoutId);
 
       if (!response.ok) {
+        const errorText = await response.text();
         attempted.push(`${apiUrl} (HTTP ${response.status})`);
 
-        // A 404 commonly means the static frontend host has no serverless proxy.
-        // Try the next compatible endpoint before surfacing the connection error.
-        if (response.status === 404 && endpoints.length > attempted.length) {
+        // 404 usually means the static host has no proxy; 5xx on the same-origin
+        // proxy means the upstream judge is unavailable or misconfigured.
+        if (shouldRetryJavaEndpoint(apiUrl, response.status, attempted.length, endpoints.length)) {
           continue;
         }
 
@@ -322,7 +345,7 @@ async function callPistonAPI(wrappedCode) {
           stderr: '',
           exitCode: -1,
           timedOut: false,
-          error: `API error: HTTP ${response.status} at ${apiUrl}`
+          error: formatJavaApiError(response.status, apiUrl, errorText)
         };
       }
 

@@ -1,6 +1,38 @@
-const JUDGE_SERVICE_URL = process.env.JUDGE_SERVICE_URL || 'http://localhost:5005';
-const JUDGE_API_KEY = process.env.JUDGE_API_KEY || 'dsa_judge_secret_123';
+const DEFAULT_LOCAL_JUDGE_SERVICE_URL = 'http://localhost:5005';
 const EXECUTION_TIMEOUT_MS = 15000;
+
+function isProduction() {
+  return process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
+}
+
+function getJudgeServiceUrl() {
+  const configuredUrl = process.env.JUDGE_SERVICE_URL ||
+    process.env.RAILWAY_JUDGE_URL ||
+    process.env.JAVA_JUDGE_URL ||
+    process.env.JUDGE_URL;
+
+  if (configuredUrl && configuredUrl.trim()) {
+    return configuredUrl.trim();
+  }
+
+  return isProduction() ? '' : DEFAULT_LOCAL_JUDGE_SERVICE_URL;
+}
+
+function getJudgeApiKey() {
+  return process.env.JUDGE_API_KEY || (isProduction() ? '' : 'dsa_judge_secret_123');
+}
+
+function buildJudgeExecuteUrl(rawUrl) {
+  const trimmedUrl = rawUrl.trim().replace(/\/+$/, '');
+
+  if (!trimmedUrl) return '';
+  if (trimmedUrl.endsWith('/execute')) return trimmedUrl;
+  if (trimmedUrl.endsWith('/judge/execute')) {
+    return `${trimmedUrl.slice(0, -'/judge/execute'.length)}/execute`;
+  }
+
+  return `${trimmedUrl}/execute`;
+}
 
 module.exports = async function handler(req, res) {
   // Only allow POST requests
@@ -10,24 +42,37 @@ module.exports = async function handler(req, res) {
 
   try {
     const { language, version, files, compile_timeout, run_timeout } = req.body;
+    const judgeServiceUrl = getJudgeServiceUrl();
+    const judgeApiKey = getJudgeApiKey();
 
     if (language !== 'java') {
       return res.status(400).json({ error: 'Unsupported language. The custom judge engine only supports Java.' });
     }
 
+    if (!judgeServiceUrl) {
+      return res.status(503).json({
+        error: 'JUDGE_SERVICE_URL is not configured. Set it to your Railway judge URL, for example https://your-service.up.railway.app',
+        code: 'JUDGE_PROXY_NOT_CONFIGURED'
+      });
+    }
+
+    if (!judgeApiKey) {
+      return res.status(503).json({
+        error: 'JUDGE_API_KEY is not configured. Set it to the same value used by your Railway judge service.',
+        code: 'JUDGE_PROXY_KEY_NOT_CONFIGURED'
+      });
+    }
+
     const headers = {
       'Content-Type': 'application/json',
-      'X-API-Key': JUDGE_API_KEY
+      'X-API-Key': judgeApiKey
     };
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), EXECUTION_TIMEOUT_MS);
 
     // Call the custom hosted judge service
-    const targetUrl = `${JUDGE_SERVICE_URL}/execute`;
-    
-    console.log('[DEBUG] Target URL:', targetUrl);
-    console.log('[DEBUG] API Key mask:', JUDGE_API_KEY ? JUDGE_API_KEY.substring(0, 4) + '...' + (JUDGE_API_KEY.length > 8 ? JUDGE_API_KEY.substring(JUDGE_API_KEY.length - 4) : '') : 'undefined');
+    const targetUrl = buildJudgeExecuteUrl(judgeServiceUrl);
 
     const apiResponse = await fetch(targetUrl, {
       method: 'POST',
@@ -47,9 +92,11 @@ module.exports = async function handler(req, res) {
     // If the judge service returns an error, pass it back
     if (!apiResponse.ok) {
       const errorText = await apiResponse.text();
-      return res.status(apiResponse.status).json({
+      const status = apiResponse.status >= 500 ? 502 : apiResponse.status;
+      return res.status(status).json({
         error: `Judge service error: HTTP ${apiResponse.status}`,
-        details: errorText
+        details: errorText,
+        upstreamUrl: targetUrl
       });
     }
 
@@ -60,7 +107,15 @@ module.exports = async function handler(req, res) {
     if (err.name === 'AbortError') {
       return res.status(504).json({ error: 'Judge service request timed out.' });
     }
-    return res.status(500).json({ error: `Server proxy error: ${err.message}` });
+    return res.status(502).json({
+      error: `Judge proxy could not reach the Railway judge service: ${err.message}`,
+      code: 'JUDGE_PROXY_UPSTREAM_UNAVAILABLE'
+    });
   }
 }
 
+module.exports._private = {
+  buildJudgeExecuteUrl,
+  getJudgeServiceUrl,
+  getJudgeApiKey
+};
