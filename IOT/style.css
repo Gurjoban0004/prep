@@ -2561,16 +2561,38 @@ body.subject-linux .mobile-section-nav button.active[data-section="practiceTest1
   position: relative;
   flex: 1;
   width: 100%;
-  background-color: #1F2421;
+  background-color: #1e1e1e; /* VS Code dark theme background */
   overflow: hidden;
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* Horizontal layout for line numbers and editor */
+}
+
+.editor-line-numbers {
+  width: 50px;
+  background-color: #1e1e1e;
+  color: #858585; /* VS Code line number color */
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  padding: 1.5rem 0.5rem 1.5rem 0;
+  text-align: right;
+  border-right: 1px solid #333;
+  user-select: none;
+  overflow: hidden;
+  z-index: 3;
+}
+
+.editor-line-numbers div {
+  height: 1.6em;
 }
 
 .bash-code-editor, .bash-highlighter {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  width: 100% !important;
+  top: 0; 
+  left: 50px; /* Offset for line numbers */
+  right: 0; 
+  bottom: 0;
+  width: calc(100% - 50px) !important;
   height: 100% !important;
   margin: 0 !important;
   border: none !important;
@@ -2586,27 +2608,40 @@ body.subject-linux .mobile-section-nav button.active[data-section="practiceTest1
   border-radius: 0 !important;
   box-sizing: border-box;
 }
+
 .bash-highlighter {
-  color: #E9F1EA;
+  color: #d4d4d4; /* VS Code default text color */
   background: transparent;
   pointer-events: none;
   z-index: 1;
-  overflow: hidden !important; /* Syncs with textarea scroll */
+  overflow: hidden !important;
 }
-.bash-highlighter code {
-  font-family: inherit !important;
-  font-size: inherit !important;
-  line-height: inherit !important;
-  text-shadow: none !important;
-}
+
 .bash-code-editor {
-  color: transparent !important; /* Make text transparent so highlighter shows */
+  color: transparent !important;
   background: transparent !important;
-  caret-color: #E9F1EA;
+  caret-color: #aeafad; /* VS Code caret color */
   resize: none;
   outline: none;
   z-index: 2;
   overflow: auto !important;
+}
+
+/* Custom Scrollbar for Editor (VS Code style) */
+.bash-code-editor::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+.bash-code-editor::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+.bash-code-editor::-webkit-scrollbar-thumb {
+  background: #424242;
+  border: 3px solid #1e1e1e;
+  border-radius: 6px;
+}
+.bash-code-editor::-webkit-scrollbar-thumb:hover {
+  background: #4f4f4f;
 }
 
 /* Exam Sidebar Info Banner */
@@ -2644,10 +2679,28 @@ body.dark-theme {
 body.dark-theme header,
 body.dark-theme .container,
 body.dark-theme .mobile-header,
-body.dark-theme .topic-bottom-nav {
+body.dark-theme .topic-bottom-nav,
+body.dark-theme .bash-editor-toolbar,
+body.dark-theme .bash-results-header {
   background-color: var(--sidebar-bg) !important;
   color: var(--text-primary) !important;
   border-color: var(--border-color) !important;
+}
+
+body.dark-theme .bash-description-pane,
+body.dark-theme .bash-editor-pane,
+body.dark-theme .bash-results-panel {
+  background-color: var(--bg-color) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark-theme .bash-editor-toolbar,
+body.dark-theme .bash-results-header {
+  border-bottom-color: var(--border-color) !important;
+}
+
+body.dark-theme .bash-results-body {
+  background-color: var(--bg-color) !important;
 }
 
 body.dark-theme .content-pane,

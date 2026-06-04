@@ -292,84 +292,202 @@ function setupSecurity() {
   setInterval(check, 2000);
 }
 
+/**
+ * Enhances a standard textarea to behave more like a code editor.
+ * Features: Tab handling, Auto-indentation on Enter, Auto-closing brackets/quotes.
+ */
+function setupCodeEditorBehavior(editor) {
+  if (!editor) return;
+
+  const AUTO_CLOSE_PAIRS = {
+    '(': ')',
+    '[': ']',
+    '{': '}',
+    '"': '"',
+    "'": "'",
+    '`': '`'
+  };
+
+  editor.addEventListener('keydown', (e) => {
+    const start = editor.selectionStart;
+    const end = editor.selectionEnd;
+    const value = editor.value;
+
+    // 1. Tab Key: Insert 4 spaces or handle indentation
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      
+      if (start !== end) {
+        const startOfFirstLine = value.slice(0, start).lastIndexOf('\n') + 1;
+        const endOfLastLine = value.indexOf('\n', end);
+        const actualEnd = endOfLastLine === -1 ? value.length : endOfLastLine;
+        
+        const selection = value.slice(startOfFirstLine, actualEnd);
+        const lines = selection.split('\n');
+        
+        let newSelection;
+        if (e.shiftKey) {
+          newSelection = lines.map(line => line.startsWith('    ') ? line.slice(4) : (line.startsWith('\t') ? line.slice(1) : line)).join('\n');
+        } else {
+          newSelection = lines.map(line => '    ' + line).join('\n');
+        }
+        
+        editor.value = value.slice(0, startOfFirstLine) + newSelection + value.slice(actualEnd);
+        editor.setSelectionRange(startOfFirstLine, startOfFirstLine + newSelection.length);
+      } else {
+        const before = value.slice(0, start);
+        const after = value.slice(end);
+        editor.value = before + '    ' + after;
+        editor.setSelectionRange(start + 4, start + 4);
+      }
+      editor.dispatchEvent(new Event('input'));
+      return;
+    }
+
+    // 2. Enter Key: Maintain Indentation
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      
+      const before = value.slice(0, start);
+      const after = value.slice(end);
+      
+      const lines = before.split('\n');
+      const currentLine = lines[lines.length - 1];
+      const indentation = currentLine.match(/^\s*/)[0];
+      
+      let newText = '\n' + indentation;
+      let cursorOffset = newText.length;
+
+      const trimmedLine = currentLine.trim();
+      if (trimmedLine.endsWith('{') || trimmedLine.endsWith('(') || trimmedLine.endsWith(':')) {
+        newText += '    ';
+        cursorOffset += 4;
+        
+        const charAfter = after.trim().charAt(0);
+        if ((trimmedLine.endsWith('{') && charAfter === '}') || (trimmedLine.endsWith('(') && charAfter === ')')) {
+          newText += '\n' + indentation;
+        }
+      }
+
+      editor.value = before + newText + after;
+      editor.setSelectionRange(start + cursorOffset, start + cursorOffset);
+      editor.dispatchEvent(new Event('input'));
+      return;
+    }
+
+    // 3. Auto-close pairs
+    const open = e.key;
+    if (AUTO_CLOSE_PAIRS.hasOwnProperty(open)) {
+      const close = AUTO_CLOSE_PAIRS[open];
+      
+      if (start !== end) {
+        e.preventDefault();
+        const selected = value.slice(start, end);
+        editor.value = value.slice(0, start) + open + selected + close + value.slice(end);
+        editor.setSelectionRange(start + 1, end + 1);
+        editor.dispatchEvent(new Event('input'));
+        return;
+      }
+
+      e.preventDefault();
+      editor.value = value.slice(0, start) + open + close + value.slice(end);
+      editor.setSelectionRange(start + 1, start + 1);
+      editor.dispatchEvent(new Event('input'));
+      return;
+    }
+
+    // 4. Backspace: Remove pairs if empty
+    if (e.key === 'Backspace' && start === end && start > 0) {
+      const charBefore = value.slice(start - 1, start);
+      const charAfter = value.slice(start, start + 1);
+      if (AUTO_CLOSE_PAIRS[charBefore] === charAfter) {
+        e.preventDefault();
+        editor.value = value.slice(0, start - 1) + value.slice(start + 1);
+        editor.setSelectionRange(start - 1, start - 1);
+        editor.dispatchEvent(new Event('input'));
+      }
+    }
+  });
+}
+
+/**
+ * Synchronizes the editor textarea with its syntax highlighter and line numbers.
+ */
+function syncEditor(editor, highlighter, lineNumbers) {
+  if (!editor) return;
+  
+  const update = () => {
+    if (highlighter) {
+      highlighter.scrollTop = editor.scrollTop;
+      highlighter.scrollLeft = editor.scrollLeft;
+    }
+    if (lineNumbers) {
+      const lines = editor.value.split('\n').length;
+      let numbers = '';
+      for (let i = 1; i <= lines; i++) {
+        numbers += `<div>${i}</div>`;
+      }
+      lineNumbers.innerHTML = numbers;
+      lineNumbers.scrollTop = editor.scrollTop;
+    }
+  };
+
+  editor.addEventListener('scroll', update);
+  editor.addEventListener('input', update);
+  // Initial sync
+  setTimeout(update, 50);
+}
+
 // ============================================================
 //  LOCAL STORAGE PROGRESS
 // ============================================================
 function loadAllProgress() {
-  // Load IoT progress
-  const iotSaved = localStorage.getItem(CONFIG.subjects.iot.storageKey);
-  if (iotSaved) {
-    try {
-      const parsed = JSON.parse(iotSaved);
-      Object.keys(state.mastered.iot).forEach(k => {
-        if (parsed[k]) state.mastered.iot[k] = parsed[k];
-      });
-    } catch (e) { console.error("Error loading IoT progress", e); }
-  }
-  // Load CN progress
-  const cnSaved = localStorage.getItem(CONFIG.subjects.cn.storageKey);
-  if (cnSaved) {
-    try {
-      const parsed = JSON.parse(cnSaved);
-      Object.keys(state.mastered.cn).forEach(k => {
-        if (parsed[k]) state.mastered.cn[k] = parsed[k];
-      });
-    } catch (e) { console.error("Error loading CN progress", e); }
-  }
+  // Load Mastered topics progress
+  ['iot', 'cn', 'linux', 'java'].forEach(sub => {
+    const key = CONFIG.subjects[sub]?.storageKey;
+    if (key) {
+      const saved = localStorage.getItem(key);
+      if (saved) {
+        try {
+          state.mastered[sub] = JSON.parse(saved) || {};
+        } catch (e) { console.error(`Error loading ${sub} mastered progress`, e); }
+      }
+    }
+  });
 
-  // Load practice progress
-  const iotPracticeSaved = localStorage.getItem(CONFIG.subjects.iot.storageKeyPractice);
-  if (iotPracticeSaved) {
-    try {
-      state.practiceAnswers.iot = JSON.parse(iotPracticeSaved) || {};
-    } catch (e) { console.error("Error loading IoT practice progress", e); }
-  }
-  const cnPracticeSaved = localStorage.getItem(CONFIG.subjects.cn.storageKeyPractice);
-  if (cnPracticeSaved) {
-    try {
-      state.practiceAnswers.cn = JSON.parse(cnPracticeSaved) || {};
-    } catch (e) { console.error("Error loading CN practice progress", e); }
-  }
-  const linuxPracticeSaved = localStorage.getItem(CONFIG.subjects.linux.storageKeyPractice);
-  if (linuxPracticeSaved) {
-    try {
-      state.practiceAnswers.linux = JSON.parse(linuxPracticeSaved) || {};
-    } catch (e) { console.error("Error loading Linux MCQ progress", e); }
-  }
+  // Load Practice/MCQ progress
+  ['iot', 'cn', 'linux', 'java'].forEach(sub => {
+    const key = CONFIG.subjects[sub]?.storageKeyPractice;
+    if (key) {
+      const saved = localStorage.getItem(key);
+      if (saved) {
+        try {
+          state.practiceAnswers[sub] = JSON.parse(saved) || {};
+        } catch (e) { console.error(`Error loading ${sub} practice progress`, e); }
+      }
+    }
+  });
 
-  const linuxSaved = localStorage.getItem(CONFIG.subjects.linux.storageKey);
-  if (linuxSaved) {
-    try {
-      const parsed = JSON.parse(linuxSaved);
-      Object.keys(state.mastered.linux).forEach(k => {
-        if (parsed[k]) state.mastered.linux[k] = parsed[k];
-      });
-    } catch (e) { console.error("Error loading Linux progress", e); }
-  }
-
-  const linuxBashSaved = localStorage.getItem(CONFIG.subjects.linux.storageKeyBash);
-  if (linuxBashSaved) {
-    try {
-      state.bashProgress.linux = JSON.parse(linuxBashSaved) || {};
-    } catch (e) { console.error("Error loading Linux Bash progress", e); }
+  // Load Bash progress (Linux)
+  const linuxBashKey = CONFIG.subjects.linux.storageKeyBash;
+  if (linuxBashKey) {
+    const saved = localStorage.getItem(linuxBashKey);
+    if (saved) {
+      try {
+        state.bashProgress.linux = JSON.parse(saved) || {};
+      } catch (e) { console.error("Error loading Linux Bash progress", e); }
+    }
   }
 
   // Load Java DSA progress
-  const javaDsaSaved = localStorage.getItem(CONFIG.subjects.java.storageKeyJava);
-  if (javaDsaSaved) {
-    try {
-      state.javaProgress.java = JSON.parse(javaDsaSaved) || {};
-    } catch (e) { console.error("Error loading Java DSA progress", e); }
-  }
-
-  const javaSaved = localStorage.getItem(CONFIG.subjects.java.storageKey);
-  if (javaSaved) {
-    try {
-      const parsed = JSON.parse(javaSaved);
-      Object.keys(state.mastered.java).forEach(k => {
-        if (parsed[k]) state.mastered.java[k] = parsed[k];
-      });
-    } catch (e) { console.error("Error loading Java general progress", e); }
+  const javaDsaKey = CONFIG.subjects.java.storageKeyJava;
+  if (javaDsaKey) {
+    const saved = localStorage.getItem(javaDsaKey);
+    if (saved) {
+      try {
+        state.javaProgress.java = JSON.parse(saved) || {};
+      } catch (e) { console.error("Error loading Java DSA progress", e); }
+    }
   }
 }
 
@@ -430,6 +548,7 @@ function loadStarredMcqs() {
       if (parsed.iot) state.starredMcqs.iot = parsed.iot;
       if (parsed.cn) state.starredMcqs.cn = parsed.cn;
       if (parsed.linux) state.starredMcqs.linux = parsed.linux;
+      if (parsed.java) state.starredMcqs.java = parsed.java;
     }
   } catch (e) {
     // TODO(security): Log only non-sensitive error context
@@ -1003,6 +1122,26 @@ function setActiveSection(sectionId) {
   } else {
     elements.welcomeScreen.style.display = 'flex';
     elements.readingPane.style.display = 'none';
+  }
+}
+
+function refreshCurrentTopic() {
+  if (isPlaygroundSection()) {
+    // Playground handles its own state
+    return;
+  }
+
+  if (isMcqSection()) {
+    renderPracticeUnit(state.activeTopicIndex);
+  } else if (isBashSection()) {
+    renderBashProblem(state.activeTopicIndex);
+  } else if (isJavaSection()) {
+    renderJavaProblem(state.activeTopicIndex);
+  } else {
+    const subjectData = CONFIG.subjects[state.activeSubject].data;
+    if (subjectData[state.activeSection]) {
+      renderTopic(state.activeSection, state.activeTopicIndex);
+    }
   }
 }
 
@@ -1673,19 +1812,30 @@ function renderBashResults(results) {
     return '<p class="bash-idle-state">Run sample tests or submit all tests to see output comparison.</p>';
   }
 
-  return results.map(result => `
+  return results.map(result => {
+    const isVisible = result.visible !== false;
+
+    return `
     <div class="bash-result-card ${result.passed ? 'passed' : 'failed'}">
       <div class="bash-result-title">
         <strong>${escapeHtml(result.name)}</strong>
         <span>${result.passed ? 'Passed' : 'Failed'}</span>
       </div>
-      <div class="bash-result-grid">
-        <div><label>Input</label><pre>${escapeHtml(result.input)}</pre></div>
-        <div><label>Expected</label><pre>${escapeHtml(result.expectedOutput)}</pre></div>
-        <div><label>Your Output</label><pre>${escapeHtml(result.actualOutput || '(empty)')}</pre></div>
-      </div>
+      ${isVisible ? `
+        <div class="bash-result-grid">
+          <div><label>Input</label><pre>${escapeHtml(result.input)}</pre></div>
+          <div><label>Expected</label><pre>${escapeHtml(result.expectedOutput)}</pre></div>
+          <div><label>Your Output</label><pre>${escapeHtml(result.actualOutput || '(empty)')}</pre></div>
+        </div>
+      ` : `
+        <div class="bash-result-grid" style="grid-template-columns: 1fr;">
+          <div style="padding: 0.5rem; color: var(--text-secondary); font-size: 0.85rem; font-style: italic;">
+            Details are hidden for this test case.
+          </div>
+        </div>
+      `}
     </div>
-  `).join('');
+  `}).join('');
 }
 
 function runBashProblem(problem, mode) {
@@ -1847,8 +1997,9 @@ function renderBashProblem(index) {
           </div>
         </div>
         <div class="bash-editor-wrapper">
+          <div class="editor-line-numbers" id="bash-line-numbers">1</div>
           <pre id="bash-highlighter" class="bash-highlighter" aria-hidden="true"><code class="language-bash"></code></pre>
-          <textarea class="bash-code-editor" id="bash-code-editor" spellcheck="false">${escapeHtml(currentCode)}</textarea>
+          <textarea class="bash-code-editor" id="bash-code-editor" spellcheck="false" wrap="off">${escapeHtml(currentCode)}</textarea>
         </div>
         
         <div class="resizer-v" id="resizer-bash-v">
@@ -1878,16 +2029,12 @@ function renderBashProblem(index) {
   const editor = document.getElementById('bash-code-editor');
   const resultsPane = document.getElementById('bash-results-pane');
   const togglePanelBtn = document.getElementById('bash-toggle-panel-btn');
+  const highlighter = document.getElementById('bash-highlighter');
+  const lineNumbers = document.getElementById('bash-line-numbers');
 
-  if (editor) {
-    editor.addEventListener('scroll', () => {
-      const highlighterPre = document.getElementById('bash-highlighter');
-      if (highlighterPre) {
-        highlighterPre.scrollTop = editor.scrollTop;
-        highlighterPre.scrollLeft = editor.scrollLeft;
-      }
-    });
-  }
+  // Setup enhanced behavior & sync
+  setupCodeEditorBehavior(editor);
+  syncEditor(editor, highlighter, lineNumbers);
 
   if (togglePanelBtn && resultsPane) {
     togglePanelBtn.addEventListener('click', () => {
@@ -1911,33 +2058,6 @@ function renderBashProblem(index) {
     };
     saveBashProgress();
     if (window.updateBashHighlighting) window.updateBashHighlighting();
-  });
-
-  // Auto-closing bracket/quote pairs
-  const AUTO_CLOSE_PAIRS = {
-    '(': ')',
-    '[': ']',
-    '{': '}',
-    '"': '"',
-    "'": "'",
-    '`': '`'
-  };
-  editor.addEventListener('keydown', (e) => {
-    const open = e.key;
-    if (!AUTO_CLOSE_PAIRS.hasOwnProperty(open)) return;
-    const close = AUTO_CLOSE_PAIRS[open];
-    const start = editor.selectionStart;
-    const end = editor.selectionEnd;
-    const selected = editor.value.slice(start, end);
-    e.preventDefault();
-    const before = editor.value.slice(0, start);
-    const after = editor.value.slice(end);
-    editor.value = before + open + selected + close + after;
-    // Place cursor between the pair (or after selection)
-    const newCursor = start + 1 + selected.length;
-    editor.setSelectionRange(newCursor, newCursor);
-    // Trigger input event so state/highlighting updates
-    editor.dispatchEvent(new Event('input'));
   });
   
   // Initial highlight
@@ -2024,20 +2144,32 @@ function renderJavaResults(results) {
     return '<p class="bash-idle-state">Run sample tests or submit all tests to see output comparison.</p>';
   }
 
-  return results.map(result => `
+  return results.map(result => {
+    // If test case is hidden, we only show its pass/fail status but hide details
+    const isVisible = result.visible !== false;
+
+    return `
     <div class="bash-result-card ${result.passed ? 'passed' : 'failed'}">
       <div class="bash-result-title">
         <strong>${escapeHtml(result.name)}</strong>
         <span>${result.passed ? 'Passed' : 'Failed'}</span>
       </div>
-      <div class="bash-result-grid">
-        <div><label>Input</label><pre>${escapeHtml(result.input)}</pre></div>
-        <div><label>Expected</label><pre>${escapeHtml(result.expectedOutput)}</pre></div>
-        <div><label>Your Output</label><pre>${escapeHtml(result.actualOutput || '(empty)')}</pre></div>
-      </div>
-      ${result.error ? `<div class="java-error-detail"><pre>${escapeHtml(result.error)}</pre></div>` : ''}
+      ${isVisible ? `
+        <div class="bash-result-grid">
+          <div><label>Input</label><pre>${escapeHtml(result.input)}</pre></div>
+          <div><label>Expected</label><pre>${escapeHtml(result.expectedOutput)}</pre></div>
+          <div><label>Your Output</label><pre>${escapeHtml(result.actualOutput || '(empty)')}</pre></div>
+        </div>
+        ${result.error ? `<div class="java-error-detail"><pre>${escapeHtml(result.error)}</pre></div>` : ''}
+      ` : `
+        <div class="bash-result-grid" style="grid-template-columns: 1fr;">
+          <div style="padding: 0.5rem; color: var(--text-secondary); font-size: 0.85rem; font-style: italic;">
+            Details are hidden for this test case.
+          </div>
+        </div>
+      `}
     </div>
-  `).join('');
+  `}).join('');
 }
 
 function getDefaultJavaExecutionSettings() {
@@ -2154,8 +2286,9 @@ function renderJavaProblem(index) {
           </div>
         </div>
         <div class="bash-editor-wrapper">
+          <div class="editor-line-numbers" id="java-line-numbers">1</div>
           <pre id="java-highlighter" class="bash-highlighter" aria-hidden="true"><code class="language-java"></code></pre>
-          <textarea class="bash-code-editor java-code-editor" id="java-code-editor" spellcheck="false">${escapeHtml(currentCode)}</textarea>
+          <textarea class="bash-code-editor java-code-editor" id="java-code-editor" spellcheck="false" wrap="off">${escapeHtml(currentCode)}</textarea>
         </div>
         
         <div class="resizer-v" id="resizer-java-v">
@@ -2184,16 +2317,12 @@ function renderJavaProblem(index) {
   const editor = document.getElementById('java-code-editor');
   const resultsPane = document.getElementById('java-results-pane');
   const togglePanelBtn = document.getElementById('java-toggle-panel-btn');
+  const highlighter = document.getElementById('java-highlighter');
+  const lineNumbers = document.getElementById('java-line-numbers');
 
-  if (editor) {
-    editor.addEventListener('scroll', () => {
-      const highlighterPre = document.getElementById('java-highlighter');
-      if (highlighterPre) {
-        highlighterPre.scrollTop = editor.scrollTop;
-        highlighterPre.scrollLeft = editor.scrollLeft;
-      }
-    });
-  }
+  // Setup enhanced behavior & sync
+  setupCodeEditorBehavior(editor);
+  syncEditor(editor, highlighter, lineNumbers);
 
   if (togglePanelBtn && resultsPane) {
     togglePanelBtn.addEventListener('click', () => {
@@ -2218,36 +2347,6 @@ function renderJavaProblem(index) {
     };
     saveJavaProgress();
     if (window.updateJavaHighlighting) window.updateJavaHighlighting();
-  });
-
-  // Auto-closing bracket/quote pairs
-  const AUTO_CLOSE_PAIRS = { '(': ')', '[': ']', '{': '}', '"': '"', "'": "'" };
-  editor.addEventListener('keydown', (e) => {
-    // Tab key → insert 4 spaces
-    if (e.key === 'Tab') {
-      e.preventDefault();
-      const start = editor.selectionStart;
-      const end = editor.selectionEnd;
-      const before = editor.value.slice(0, start);
-      const after = editor.value.slice(end);
-      editor.value = before + '    ' + after;
-      editor.setSelectionRange(start + 4, start + 4);
-      editor.dispatchEvent(new Event('input'));
-      return;
-    }
-    const open = e.key;
-    if (!AUTO_CLOSE_PAIRS.hasOwnProperty(open)) return;
-    const close = AUTO_CLOSE_PAIRS[open];
-    const start = editor.selectionStart;
-    const end = editor.selectionEnd;
-    const selected = editor.value.slice(start, end);
-    e.preventDefault();
-    const before = editor.value.slice(0, start);
-    const after = editor.value.slice(end);
-    editor.value = before + open + selected + close + after;
-    const newCursor = start + 1 + selected.length;
-    editor.setSelectionRange(newCursor, newCursor);
-    editor.dispatchEvent(new Event('input'));
   });
 
   // Initial highlight

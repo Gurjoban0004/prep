@@ -3293,16 +3293,16 @@ class Solution {
 
 // Section metadata for sidebar grouping
 const JAVA_SECTIONS = [
-  { id: "Linked Lists", icon: "🔗", color: "#5F7AE0" },
-  { id: "Binary Trees", icon: "🌳", color: "#2F8F5E" },
-  { id: "Stacks & Queues", icon: "📚", color: "#E07A5F" },
-  { id: "Hashing", icon: "#️⃣", color: "#8A5F9E" },
-  { id: "Recursion & Bits", icon: "🔁", color: "#B58A3D" },
-  { id: "Queues", icon: "🔄", color: "#E07A5F" },
-  { id: "Math & GCD", icon: "🧮", color: "#B58A3D" },
-  { id: "Bit Manipulation", icon: "🔢", color: "#3D405B" },
-  { id: "Recursion", icon: "🔁", color: "#8A5F9E" },
-  { id: "Arrays", icon: "📊", color: "#5F7AE0" },
-  { id: "Strings", icon: "🔤", color: "#7A9FBF" },
-  { id: "OOPs", icon: "💎", color: "#8A5F9E" }
+  { id: "Linked Lists", icon: "", color: "#5F7AE0" },
+  { id: "Binary Trees", icon: "", color: "#2F8F5E" },
+  { id: "Stacks & Queues", icon: "", color: "#E07A5F" },
+  { id: "Hashing", icon: "", color: "#8A5F9E" },
+  { id: "Recursion & Bits", icon: "", color: "#B58A3D" },
+  { id: "Queues", icon: "", color: "#E07A5F" },
+  { id: "Math & GCD", icon: "", color: "#B58A3D" },
+  { id: "Bit Manipulation", icon: "", color: "#3D405B" },
+  { id: "Recursion", icon: "", color: "#8A5F9E" },
+  { id: "Arrays", icon: "", color: "#5F7AE0" },
+  { id: "Strings", icon: "", color: "#7A9FBF" },
+  { id: "OOPs", icon: "", color: "#8A5F9E" }
 ];

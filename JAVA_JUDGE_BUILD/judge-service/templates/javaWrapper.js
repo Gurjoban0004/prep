@@ -28,16 +28,24 @@
 const SUPPORTED_TYPES = {
     // Primitives
     'int': 'convertToInt',
+    'Integer': 'convertToInt',
     'long': 'convertToLong',
+    'Long': 'convertToLong',
     'double': 'convertToDouble',
+    'Double': 'convertToDouble',
+    'float': 'convertToFloat',
+    'Float': 'convertToFloat',
     'boolean': 'convertToBoolean',
+    'Boolean': 'convertToBoolean',
     'char': 'convertToChar',
+    'Character': 'convertToChar',
     'String': 'convertToString',
 
     // Arrays
     'int[]': 'convertToIntArray',
     'long[]': 'convertToLongArray',
     'double[]': 'convertToDoubleArray',
+    'float[]': 'convertToFloatArray',
     'boolean[]': 'convertToBooleanArray',
     'char[]': 'convertToCharArray',
     'String[]': 'convertToStringArray',
@@ -389,8 +397,14 @@ function generateHelperMethods() {
         if (raw instanceof Long) return (Long) raw;
         if (raw instanceof Number) return ((Number) raw).longValue();
         if (raw instanceof String) {
+            String str = ((String) raw).trim();
+            if (str.isEmpty()) return 0L;
+            // Handle optional 'L' suffix from some input formats
+            if (str.toUpperCase().endsWith("L")) {
+                str = str.substring(0, str.length() - 1);
+            }
             try {
-                return Long.parseLong(((String) raw).trim());
+                return Long.parseLong(str);
             } catch (NumberFormatException e) {
                 throw new RuntimeException("Cannot parse long from String: '" + raw + "'");
             }
@@ -403,13 +417,38 @@ function generateHelperMethods() {
         if (raw instanceof Double) return (Double) raw;
         if (raw instanceof Number) return ((Number) raw).doubleValue();
         if (raw instanceof String) {
+            String str = ((String) raw).trim();
+            if (str.isEmpty()) return 0.0;
+            // Handle optional 'f' or 'd' suffix
+            if (str.toLowerCase().endsWith("f") || str.toLowerCase().endsWith("d")) {
+                str = str.substring(0, str.length() - 1);
+            }
             try {
-                return Double.parseDouble(((String) raw).trim());
+                return Double.parseDouble(str);
             } catch (NumberFormatException e) {
                 throw new RuntimeException("Cannot parse double from String: '" + raw + "'");
             }
         }
         throw new RuntimeException("Cannot convert " + raw.getClass().getName() + " to double");
+    }
+    
+    private static float convertToFloat(Object raw) {
+        if (raw == null) return 0.0f;
+        if (raw instanceof Float) return (Float) raw;
+        if (raw instanceof Number) return ((Number) raw).floatValue();
+        if (raw instanceof String) {
+            String str = ((String) raw).trim();
+            if (str.isEmpty()) return 0.0f;
+            if (str.toLowerCase().endsWith("f")) {
+                str = str.substring(0, str.length() - 1);
+            }
+            try {
+                return Float.parseFloat(str);
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("Cannot parse float from String: '" + raw + "'");
+            }
+        }
+        throw new RuntimeException("Cannot convert " + raw.getClass().getName() + " to float");
     }
     
     private static boolean convertToBoolean(Object raw) {
@@ -550,6 +589,30 @@ function generateHelperMethods() {
             return result;
         }
         throw new RuntimeException("Cannot convert to long[]: " + raw.getClass().getName());
+    }
+    
+    private static float[] convertToFloatArray(Object raw) {
+        if (raw == null) return new float[0];
+        if (raw.getClass().isArray() && raw.getClass().getComponentType() == float.class) {
+            return (float[]) raw;
+        }
+        if (raw instanceof Float[]) {
+            Float[] arr = (Float[]) raw;
+            float[] result = new float[arr.length];
+            for (int i = 0; i < arr.length; i++) result[i] = arr[i] != null ? arr[i] : 0.0f;
+            return result;
+        }
+        if (raw instanceof String) {
+            Object parsed = safeParseArray((String) raw);
+            return convertToFloatArray(parsed);
+        }
+        if (raw instanceof List) {
+            List<?> list = (List<?>) raw;
+            float[] result = new float[list.size()];
+            for (int i = 0; i < list.size(); i++) result[i] = convertToFloat(list.get(i));
+            return result;
+        }
+        throw new RuntimeException("Cannot convert to float[]: " + raw.getClass().getName());
     }
     
     private static double[] convertToDoubleArray(Object raw) {
@@ -972,10 +1035,33 @@ function generateHelperMethods() {
             return Arrays.toString(treeToArray((TreeNode) result));
         }
         
-        // Primitive arrays
+        // Primitive arrays with type-specific literal formatting
         if (result instanceof int[]) return Arrays.toString((int[]) result);
-        if (result instanceof long[]) return Arrays.toString((long[]) result);
+        
+        if (result instanceof long[]) {
+            long[] arr = (long[]) result;
+            StringBuilder sb = new StringBuilder("[");
+            for (int i = 0; i < arr.length; i++) {
+                if (i > 0) sb.append(",");
+                sb.append(arr[i]).append("L");
+            }
+            sb.append("]");
+            return sb.toString();
+        }
+        
         if (result instanceof double[]) return Arrays.toString((double[]) result);
+        
+        if (result instanceof float[]) {
+            float[] arr = (float[]) result;
+            StringBuilder sb = new StringBuilder("[");
+            for (int i = 0; i < arr.length; i++) {
+                if (i > 0) sb.append(",");
+                sb.append(arr[i]).append("f");
+            }
+            sb.append("]");
+            return sb.toString();
+        }
+        
         if (result instanceof boolean[]) return Arrays.toString((boolean[]) result);
         
         if (result instanceof char[]) {
@@ -998,6 +1084,20 @@ function generateHelperMethods() {
             }
             sb.append("]");
             return sb.toString();
+        }
+        
+        // Single value literal formatting
+        if (result instanceof Long || "long".equals(returnType) || "Long".equals(returnType)) {
+            return result.toString() + "L";
+        }
+        if (result instanceof Float || "float".equals(returnType) || "Float".equals(returnType)) {
+            return result.toString() + "f";
+        }
+        if (result instanceof Character || "char".equals(returnType) || "Character".equals(returnType)) {
+            return "'" + result.toString() + "'";
+        }
+        if (result instanceof String || "String".equals(returnType)) {
+            return "\\"" + result.toString() + "\\"";
         }
         
         // 2D arrays
@@ -1167,6 +1267,12 @@ function generateHelperMethods() {
         if (value.equals("false")) return false;
 
         try {
+            if (value.toLowerCase().endsWith("f")) {
+                return Float.parseFloat(value.substring(0, value.length() - 1));
+            }
+            if (value.toLowerCase().endsWith("l")) {
+                return Long.parseLong(value.substring(0, value.length() - 1));
+            }
             if (value.contains(".")) return Double.parseDouble(value);
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
@@ -1275,8 +1381,29 @@ function generateHelperMethods() {
             return result;
         }
 
-        // Try parsing as int array
+        // Try parsing as numeric arrays
         try {
+            // Check for float literals
+            if (first.toLowerCase().endsWith("f")) {
+                float[] result = new float[elements.length];
+                for (int i = 0; i < elements.length; i++) {
+                    String el = elements[i].trim();
+                    if (el.toLowerCase().endsWith("f")) el = el.substring(0, el.length() - 1);
+                    result[i] = Float.parseFloat(el);
+                }
+                return result;
+            }
+            // Check for long literals
+            if (first.toLowerCase().endsWith("l")) {
+                long[] result = new long[elements.length];
+                for (int i = 0; i < elements.length; i++) {
+                    String el = elements[i].trim();
+                    if (el.toLowerCase().endsWith("l")) el = el.substring(0, el.length() - 1);
+                    result[i] = Long.parseLong(el);
+                }
+                return result;
+            }
+
             int[] result = new int[elements.length];
             for (int i = 0; i < elements.length; i++) {
                 result[i] = Integer.parseInt(elements[i].trim());
@@ -1287,7 +1414,9 @@ function generateHelperMethods() {
             try {
                 double[] result = new double[elements.length];
                 for (int i = 0; i < elements.length; i++) {
-                    result[i] = Double.parseDouble(elements[i].trim());
+                    String el = elements[i].trim();
+                    if (el.toLowerCase().endsWith("d")) el = el.substring(0, el.length() - 1);
+                    result[i] = Double.parseDouble(el);
                 }
                 return result;
             } catch (NumberFormatException e2) {

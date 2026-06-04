@@ -117,6 +117,7 @@
     if (typeof loadSmartNotes  === 'function')  loadSmartNotes();
     if (typeof loadStarredMcqs === 'function')  loadStarredMcqs();
     if (typeof renderSidebar   === 'function')  renderSidebar();
+    if (typeof refreshCurrentTopic === 'function') refreshCurrentTopic();
     if (typeof updateProgressBar === 'function') updateProgressBar();
   }
 
