@@ -20,3 +20,7 @@ Thumbs.db
 .tempmediaStorage/
 *~
 *.swp
+
+# Ignore backup archives
+archive/
+scratch/

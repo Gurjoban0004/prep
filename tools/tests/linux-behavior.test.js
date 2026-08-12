@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const vm = require('vm');
 const assert = require('assert');
 
@@ -35,24 +36,43 @@ function loadSandbox() {
     confirm() { return false; }
   };
   vm.createContext(sandbox);
-  const dataSource = fs.readFileSync('IOT/linux-data.js', 'utf8')
+  const dataSource = fs.readFileSync(path.join(__dirname, '../../IOT/linux-data.js'), 'utf8')
     .replace('const LINUX_MCQ_BANK', 'var LINUX_MCQ_BANK')
     .replace('const LINUX_BASH_PROBLEMS', 'var LINUX_BASH_PROBLEMS');
   vm.runInContext(dataSource, sandbox);
-  vm.runInContext(fs.readFileSync('IOT/bash-engine.js', 'utf8'), sandbox);
-  vm.runInContext(fs.readFileSync('IOT/app.js', 'utf8'), sandbox);
+  vm.runInContext(fs.readFileSync(path.join(__dirname, '../../IOT/bash-engine.js'), 'utf8'), sandbox);
+  vm.runInContext(fs.readFileSync(path.join(__dirname, '../../IOT/app.js'), 'utf8'), sandbox);
   return sandbox;
 }
 
 const sandbox = loadSandbox();
 const problems = sandbox.LINUX_BASH_PROBLEMS;
-const appSource = fs.readFileSync('IOT/app.js', 'utf8');
-const styleSource = fs.readFileSync('IOT/style.css', 'utf8');
+const appSource = fs.readFileSync(path.join(__dirname, '../../IOT/app.js'), 'utf8');
+const styleSource = fs.readFileSync(path.join(__dirname, '../../IOT/style.css'), 'utf8');
+const indexSource = fs.readFileSync(path.join(__dirname, '../../IOT/index.html'), 'utf8');
 
 assert(appSource.includes('renderLandingPage'), 'App should render a distinctive landing page before subject study.');
 assert(appSource.includes('bash-reset-btn'), 'Bash practice should include a reset editor button.');
 assert(styleSource.includes('resize: horizontal'), 'Bash question panel should be horizontally resizable to expand editor space.');
 assert(styleSource.includes('.landing-page'), 'Landing page styles should be present.');
+assert(!indexSource.includes('renderMathInElement(document.body'), 'Startup should not KaTeX-render the entire document body.');
+[
+  'data.js',
+  'cn-data-st1.js',
+  'linux-data.js',
+  'java-data.js',
+  'new-java-data.js',
+  'bash-engine.js',
+  'java-engine.js'
+].forEach(src => {
+  assert(!indexSource.includes(`src="${src}`), `${src} should be lazy-loaded instead of parsed on startup.`);
+});
+assert(appSource.includes('scheduleBashProgressSave'), 'Bash editor draft saves should be debounced.');
+assert(appSource.includes('scheduleJavaProgressSave'), 'Java editor draft saves should be debounced.');
+assert(styleSource.includes('.editor-highlight-ready .bash-code-editor'), 'Editor should only hide native textarea text after syntax highlighting is ready.');
+assert(!/(^|\n)\.bash-code-editor\s*\{[^}]*color:\s*transparent\s*!important;/.test(styleSource), 'Textarea text should stay native-visible while typing.');
+assert(appSource.includes('markEditorHighlightPending'), 'Typing should immediately fall back to native textarea rendering before delayed syntax highlighting.');
+assert(!appSource.includes("editor.value.split('\\n').length"), 'Editor line counting should avoid allocating a full split array on the typing path.');
 
 const mcqCount = sandbox.LINUX_MCQ_BANK.flatMap(unit => unit.questions).length;
 assert.strictEqual(mcqCount, 90, 'Linux MCQs should include all 90 organized prep + practice test questions.');
@@ -329,4 +349,3 @@ assert(playState.lvm.vgs['vg_test'], 'vg_test Volume Group should be created');
 assert(playState.lvm.vgs['vg_test'].pvs.includes('/dev/sda1'), 'vg_test should map to PV /dev/sda1');
 
 console.log('linux behavior checks passed');
-

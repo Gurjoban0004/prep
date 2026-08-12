@@ -5,8 +5,39 @@
 // ============================================================
 const CONFIG = {
   subjects: {
+    java_abstractions: {
+      label: "Programming Abstractions in Java",
+      shortLabel: "Java PA",
+      icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>',
+      examTime: new Date("2026-12-10T09:30:00+05:30").getTime(),
+      storageKey: "java_abstractions_mastered_topics",
+      storageKeyPractice: "java_abstractions_mcq_answers",
+      scripts: ["java_abstractions-data.js"],
+      data: {},
+      mcqs: null,
+      themeColors: {
+        st1: '#5F7AE0',
+        st2: '#81B29A',
+        endTerm: '#B58A3D',
+        practice: '#8C4735'
+      },
+      sectionNames: {
+        st1: 'ST-1 (Collections, Streams & JVM)',
+        st2: 'ST-2 (SQL, JDBC & DAO)',
+        endTerm: 'End Term (Multithreading & Concurrency)',
+        practice: 'Topic-Wise MCQs'
+      },
+      tabs: [
+        { id: 'st1', label: 'ST-1' },
+        { id: 'st2', label: 'ST-2' },
+        { id: 'endTerm', label: 'End Term' },
+        { id: 'practice', label: 'MCQs' }
+      ]
+    },
     iot: {
       label: "ES & IoT",
+      shortLabel: "IoT",
+      icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"></path></svg>',
       examTime: new Date("2026-05-29T09:30:00+05:30").getTime(),
       storageKey: "es_iot_mastered_topics",
       storageKeyPractice: "es_iot_practice_answers",
@@ -36,6 +67,8 @@ const CONFIG = {
     },
     cn: {
       label: "Computer Networks",
+      shortLabel: "CN",
+      icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="9" height="9"></rect><rect x="13" y="2" width="9" height="9"></rect><rect x="13" y="13" width="9" height="9"></rect><rect x="2" y="13" width="9" height="9"></rect></svg>',
       examTime: new Date("2026-06-02T09:30:00+05:30").getTime(),
       storageKey: "cn_mastered_topics",
       storageKeyPractice: "cn_practice_answers",
@@ -74,6 +107,8 @@ const CONFIG = {
     },
     linux: {
       label: "Linux",
+      shortLabel: "Linux",
+      icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>',
       examTime: new Date("2026-06-06T09:30:00+05:30").getTime(),
       storageKey: "linux_mastered_topics",
       storageKeyPractice: "linux_mcq_answers",
@@ -108,6 +143,8 @@ const CONFIG = {
     },
     java: {
       label: "Java DSA",
+      shortLabel: "Java",
+      icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>',
       examTime: null,
       storageKey: "java_mastered_topics",
       storageKeyPractice: "java_practice_answers",
@@ -204,6 +241,13 @@ function hydrateSubjectData(subjectId) {
     };
   } else if (subjectId === 'java') {
     CONFIG.subjects.java.javaProblems = typeof JAVA_DSA_PROBLEMS !== 'undefined' ? JAVA_DSA_PROBLEMS : [];
+  } else if (CONFIG.subjects[subjectId]) {
+    const globalPrefix = subjectId.toUpperCase();
+    let dataVar = {}, mcqsVar = [];
+    try { dataVar = eval(globalPrefix + '_STUDY_DATA'); } catch (e) {}
+    try { mcqsVar = eval(globalPrefix + '_MCQ_BANK'); } catch (e) {}
+    CONFIG.subjects[subjectId].data = dataVar;
+    CONFIG.subjects[subjectId].mcqs = mcqsVar;
   }
 
   hydratedSubjects[subjectId] = true;
@@ -214,7 +258,7 @@ async function ensureSubjectDataLoaded(subjectId) {
   if (subjectLoadPromises[subjectId]) return subjectLoadPromises[subjectId];
 
   subjectLoadPromises[subjectId] = (async () => {
-    const scripts = SUBJECT_SCRIPT_GROUPS[subjectId] || [];
+    const scripts = CONFIG.subjects[subjectId]?.scripts || SUBJECT_SCRIPT_GROUPS[subjectId] || [];
     for (const src of scripts) {
       await loadScriptOnce(src);
     }
@@ -336,9 +380,48 @@ const elements = {
 };
 
 // ============================================================
+//  DYNAMIC SUBJECT SWITCHERS
+// ============================================================
+function renderSubjectSwitchers() {
+  const desktopContainer = document.getElementById('desktop-subject-switcher') || document.querySelector('.header-left .subject-switcher');
+  const sidebarContainer = document.getElementById('sidebar-subject-switcher') || document.querySelector('.sidebar-switcher-container .subject-switcher');
+
+  if (!desktopContainer && !sidebarContainer) return;
+
+  const defaultIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>';
+
+  const subjectKeys = Object.keys(CONFIG.subjects);
+
+  function buildButtonsHtml(isDesktop) {
+    return subjectKeys.map(key => {
+      const subj = CONFIG.subjects[key];
+      const activeClass = state.activeSubject === key ? ' active' : '';
+      const idAttr = isDesktop ? ` id="subject-${key}"` : '';
+      const label = subj.shortLabel || subj.label;
+      const icon = subj.icon || defaultIcon;
+      return `<button class="subject-btn${activeClass}"${idAttr} data-subject="${key}">${icon} ${escapeHtml(label)}</button>`;
+    }).join('');
+  }
+
+  if (desktopContainer) desktopContainer.innerHTML = buildButtonsHtml(true);
+  if (sidebarContainer) sidebarContainer.innerHTML = buildButtonsHtml(false);
+
+  elements.subjectBtns = document.querySelectorAll('.subject-btn');
+
+  elements.subjectBtns.forEach(btn => {
+    btn.onclick = () => {
+      const subject = btn.getAttribute('data-subject');
+      setActiveSubject(subject);
+      closeMobileSidebar();
+    };
+  });
+}
+
+// ============================================================
 //  INITIALISATION
 // ============================================================
 function init() {
+  renderSubjectSwitchers();
   loadAllProgress();
   loadSmartNotes();
   loadStarredMcqs();
@@ -1030,8 +1113,9 @@ notes --focus st2</pre>
 //  SUBJECT SWITCHING
 // ============================================================
 async function setActiveSubject(subjectId) {
-  document.body.classList.remove('landing-mode');
-  document.body.classList.remove('subject-iot', 'subject-cn', 'subject-linux', 'subject-java');
+  Array.from(document.body.classList).forEach(cls => {
+    if (cls.startsWith('subject-')) document.body.classList.remove(cls);
+  });
   document.body.classList.add('subject-' + subjectId);
   state.activeSubject = subjectId;
   const subjectConfig = CONFIG.subjects[subjectId];

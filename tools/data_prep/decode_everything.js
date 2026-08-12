@@ -1,4 +1,5 @@
 
+const path = require('path');
 const fs = require('fs');
 
 function rot13(str) {
@@ -9,8 +10,8 @@ function rot13(str) {
 }
 
 const dataFiles = [
-  '/Users/gurjobansingh/Desktop/iot/IOT/data.js',
-  '/Users/gurjobansingh/Desktop/iot/IOT/linux-data.js'
+  path.join(__dirname, '../../IOT/data.js'),
+  path.join(__dirname, '../../IOT/linux-data.js')
 ];
 
 dataFiles.forEach(file => {

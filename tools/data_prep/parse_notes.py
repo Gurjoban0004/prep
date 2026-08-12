@@ -244,9 +244,10 @@ def parse_markdown_to_html(lines):
 
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(os.path.dirname(script_dir))
     
     # --- Parse IoT Notes ---
-    notes_path = os.path.join(script_dir, 'ES_IOT_Complete_Notes.md')
+    notes_path = os.path.join(project_root, 'IOT', 'ES_IOT_Complete_Notes.md')
     print(f"Reading IoT notes from {notes_path}...")
     with open(notes_path, 'r', encoding='utf-8') as f:
         lines = f.readlines()
@@ -323,7 +324,7 @@ def main():
     print(f"Parsed IoT: ST-1 ({len(sections_iot['st1'])} topics), ST-2 ({len(sections_iot['st2'])} topics), End Term ({len(sections_iot['endTerm'])} topics), Cheat Sheet ({len(sections_iot['cheatSheet'])} topics)")
     
     # --- Parse CN Notes ---
-    cn_notes_path = os.path.join(os.path.dirname(script_dir), 'Computer Networks', 'cn_notes.md')
+    cn_notes_path = os.path.join(project_root, 'Computer Networks', 'cn_notes.md')
     sections_cn = {
         'unit1_2': [],
         'unit3_4': [],
@@ -421,7 +422,7 @@ def main():
         print(f"Warning: CN notes not found at {cn_notes_path}. Using empty CN data.")
 
     # Load Practice MCQs
-    iot_mcqs_path = os.path.join(script_dir, 'iot_mcqs.json')
+    iot_mcqs_path = os.path.join(project_root, 'IOT', 'iot_mcqs.json')
     if os.path.exists(iot_mcqs_path):
         print(f"Loading IoT practice MCQs from {iot_mcqs_path}...")
         with open(iot_mcqs_path, 'r', encoding='utf-8') as f_mcq:
@@ -429,7 +430,7 @@ def main():
     else:
         iot_mcq_bank = []
 
-    cn_mcqs_path = os.path.join(os.path.dirname(script_dir), 'Computer Networks', 'cn_mcqs.json')
+    cn_mcqs_path = os.path.join(project_root, 'Computer Networks', 'cn_mcqs.json')
     if os.path.exists(cn_mcqs_path):
         print(f"Loading CN practice MCQs from {cn_mcqs_path}...")
         with open(cn_mcqs_path, 'r', encoding='utf-8') as f_mcq:
@@ -438,7 +439,7 @@ def main():
         cn_mcq_bank = []
 
     # --- Write to data.js ---
-    data_path = os.path.join(script_dir, 'data.js')
+    data_path = os.path.join(project_root, 'IOT', 'data.js')
     with open(data_path, 'w', encoding='utf-8') as f:
         f.write("const STUDY_DATA = ")
         json.dump(sections_iot, f, indent=2, ensure_ascii=False)
