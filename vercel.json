@@ -1,10 +1,10 @@
 {
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/", "destination": "/IOT/index.html" },
-    { "source": "/plan", "destination": "/IOT/index.html" },
-    { "source": "/boost", "destination": "/IOT/index.html" },
-    { "source": "/analytics", "destination": "/IOT/index.html" },
+    { "source": "/", "destination": "/IOT" },
+    { "source": "/plan", "destination": "/IOT" },
+    { "source": "/boost", "destination": "/IOT" },
+    { "source": "/analytics", "destination": "/IOT" },
     { "source": "/((?!api/).*)", "destination": "/IOT/$1" }
   ]
 }
