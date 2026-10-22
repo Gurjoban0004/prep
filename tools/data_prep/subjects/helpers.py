@@ -15,8 +15,11 @@ def _escape_code(markup):
     return _CODE.sub(lambda m: m.group(1) + html.escape(html.unescape(m.group(2)), quote=False) + m.group(3), markup)
 
 
-def topic(title, subtitle, body):
-    return {"title": title, "subtitle": subtitle, "html": _escape_code(body.strip())}
+def topic(title, subtitle, body, foundations=None):
+    res = {"title": title, "subtitle": subtitle, "html": _escape_code(body.strip())}
+    if foundations:
+        res["foundationsHtml"] = _escape_code(foundations.strip())
+    return res
 
 
 def check(question, options, correct, why):

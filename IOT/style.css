@@ -41,6 +41,90 @@
   --ease-out: cubic-bezier(0.25, 1, 0.5, 1); /* ease-out-quart */
 }
 
+/* ============================================================
+   WARM THEME — Cozy Library, Hearth & Parchment
+   ============================================================ */
+:root:has(body.warm-theme),
+body.warm-theme {
+  --canvas:   #F9F6F0;
+  --surface:  #FFFDF9;
+  --ink:      #2A241F;
+  --muted:    #756B61;
+  --line:     #E8E0D5;
+  --bg-hover: #F2ECE2;
+
+  --lavender-bg: #F5EFEB;  --lavender-ink: #A8653C;
+  --blue-bg:     #EFEFE8;  --blue-ink:     #547065;
+  --blush-bg:    #F9EAE5;  --blush-ink:    #BD5744;
+  --mint-bg:     #EFF4EC;  --mint-ink:     #527958;
+  --peach-bg:    #FBF0E4;  --peach-ink:    #BD682D;
+
+  --bg-color:       var(--canvas);
+  --sidebar-bg:     var(--surface);
+  --text-primary:   var(--ink);
+  --text-secondary: var(--muted);
+  --border-color:   var(--line);
+
+  --accent-st1:   #BD682D;
+  --active-accent: #BD682D;
+}
+
+/* ============================================================
+   PASTEL THEME — Dreamy Soft Lavender & Fresh Mint
+   ============================================================ */
+:root:has(body.pastel-theme),
+body.pastel-theme {
+  --canvas:   #FAF6FD;
+  --surface:  #FFFFFF;
+  --ink:      #282138;
+  --muted:    #6E6582;
+  --line:     #E9E1F4;
+  --bg-hover: #F3ECFA;
+
+  --lavender-bg: #F2ECFC;  --lavender-ink: #7B61C8;
+  --blue-bg:     #EBF2FE;  --blue-ink:     #4B7EC8;
+  --blush-bg:    #FCEBED;  --blush-ink:    #C95F7D;
+  --mint-bg:     #EBF7EE;  --mint-ink:     #4C8B59;
+  --peach-bg:    #FFF1E6;  --peach-ink:    #BE7244;
+
+  --bg-color:       var(--canvas);
+  --sidebar-bg:     var(--surface);
+  --text-primary:   var(--ink);
+  --text-secondary: var(--muted);
+  --border-color:   var(--line);
+
+  --accent-st1:   var(--lavender-ink);
+  --active-accent: var(--lavender-ink);
+}
+
+/* ============================================================
+   FOREST THEME — Calming Sage & Botanical Calm
+   ============================================================ */
+:root:has(body.forest-theme),
+body.forest-theme {
+  --canvas:   #F4F7F4;
+  --surface:  #FCFEFC;
+  --ink:      #1C2A1E;
+  --muted:    #57695A;
+  --line:     #DFE7DF;
+  --bg-hover: #E9F0E9;
+
+  --lavender-bg: #EDF3EC;  --lavender-ink: #4B7A54;
+  --blue-bg:     #EAF2F4;  --blue-ink:     #467988;
+  --blush-bg:    #F7ECEC;  --blush-ink:    #AD5A5A;
+  --mint-bg:     #E6F3E7;  --mint-ink:     #3B7345;
+  --peach-bg:    #F6F1E6;  --peach-ink:    #9C7238;
+
+  --bg-color:       var(--canvas);
+  --sidebar-bg:     var(--surface);
+  --text-primary:   var(--ink);
+  --text-secondary: var(--muted);
+  --border-color:   var(--line);
+
+  --accent-st1:   var(--mint-ink);
+  --active-accent: var(--mint-ink);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -588,8 +672,12 @@ body.dark-theme .sidebar-filter-select {
 /* --- Main Content Panel --- */
 main.content-pane {
   flex: 1;
-  background-color: #FFFFFF;
+  background-color: var(--surface);
   overflow-y: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  scroll-padding-top: 2rem;
   padding: 2.5rem 3rem;
   position: relative;
   display: flex;
@@ -1947,46 +2035,45 @@ nav.top-nav button.active[data-section="bashPractice"] {
 }
 
 .bash-editor-toolbar button {
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 6px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
   padding: 0.45rem 0.85rem;
   font-family: var(--font-sans);
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   margin-left: 0.5rem;
 }
 
 .bash-reset-btn {
-  background: #4b5852;
-  color: #FFFFFF !important;
-  border-color: #63746c;
+  background: var(--surface);
+  color: var(--muted) !important;
+  border: 1px solid var(--line);
 }
 
 .bash-reset-btn:hover {
-  background: #5d6d66;
-  color: #fff !important;
+  background: var(--bg-hover);
+  color: var(--ink) !important;
 }
 
 .bash-editor-toolbar .bash-run-btn {
-  background: #EDF6EE;
-  color: #5F8C68 !important;
-  border-color: #EDF6EE;
+  background: var(--mint-bg);
+  color: var(--mint-ink) !important;
+  border-color: var(--mint-bg);
 }
 
 .bash-editor-toolbar .bash-run-btn:hover {
-  background: #DDF0E6;
-  border-color: #83B799;
-  color: #1c4538 !important;
+  background: color-mix(in srgb, var(--mint-bg) 80%, var(--mint-ink));
+  color: var(--mint-ink) !important;
 }
 
 .bash-submit-btn {
-  background: var(--accent-st2);
-  color: #102017;
-  border-color: #6ea087;
+  background: var(--mint-ink);
+  color: #fff !important;
+  border: 1px solid var(--mint-ink);
 }
 
 .bash-submit-btn:hover {
-  background: var(--mint-ink);
+  filter: brightness(0.92);
 }
 
 .bash-code-editor {
@@ -4238,14 +4325,21 @@ body.dark-theme .java-dialog-form-group label {
   color: #FFFFFF;
 }
 
+.java-dialog-intro {
+  margin-top: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
 .java-dialog-form-group input {
   width: 100%;
   padding: 0.6rem 0.8rem;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  background-color: #FFFFFF;
-  color: var(--text-primary);
-  font-size: 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background-color: var(--surface);
+  color: var(--ink);
+  font-size: 13px;
   outline: none;
   box-sizing: border-box;
 }

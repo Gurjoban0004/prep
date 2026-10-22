@@ -919,3 +919,13 @@ Gives lower latency, disaster recovery (regional failover) and data residency.</
             ["all keys", "about half the keys", "about 1/11 of the keys", "no keys"], "c",
             "Only the keys in the new server's arc of the ring move.")
 ))
+
+try:
+    from subjects.helpers import _escape_code
+    from subjects.sysdesign.foundations import ST1_FOUNDATIONS
+    for idx, f_html in ST1_FOUNDATIONS.items():
+        if idx < len(TOPICS):
+            TOPICS[idx]["foundationsHtml"] = _escape_code(f_html.strip())
+except ImportError:
+    pass
+

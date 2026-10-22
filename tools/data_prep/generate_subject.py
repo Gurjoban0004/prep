@@ -53,6 +53,10 @@ def build(subject):
             prose = re.sub(r"<(pre|code)[^>]*>.*?</\1>", "", t["html"], flags=re.S)
             if re.search(r"(?<!\\)\$", prose):
                 raise SystemExit(f"{subject}.{section}: stray $ in '{t['title']}'")
+            if "foundationsHtml" in t:
+                fprose = re.sub(r"<(pre|code)[^>]*>.*?</\1>", "", t["foundationsHtml"], flags=re.S)
+                if re.search(r"(?<!\\)\$", fprose):
+                    raise SystemExit(f"{subject}.{section}: stray $ in foundations '{t['title']}'")
 
     prefix = subject.upper()
     target = ROOT / "IOT" / f"{subject}-data.js"

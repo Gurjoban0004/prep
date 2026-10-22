@@ -58,6 +58,10 @@
       lastSyncedAt = null;
       closeProfilePanel();
     }
+
+    try {
+      window.dispatchEvent(new CustomEvent('prep:auth-changed', { detail: { user } }));
+    } catch (_) {}
   });
 
   // ─────────────────────────────────────────────────────────────
@@ -657,5 +661,8 @@
   };
 
   window.openProfilePanel = openProfilePanel;
+  window.signInWithGoogle = signInWithGoogle;
+  window.signOut = signOut;
+  window.getCurrentUser = () => currentUser;
 
 })();

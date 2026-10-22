@@ -20,12 +20,19 @@ function createRes() {
   return {
     statusCode: 200,
     body: null,
+    headers: {},
+    setHeader(key, val) {
+      this.headers[key] = val;
+    },
     status(code) {
       this.statusCode = code;
       return this;
     },
     json(data) {
       this.body = data;
+      return this;
+    },
+    end() {
       return this;
     }
   };
@@ -125,15 +132,60 @@ async function testUpstreamUnauthorizedIsProxyAuthFailure(handlerPath) {
   );
 }
 
+async function testAnalyticsHandler() {
+  const analyticsHandler = require('../../api/analytics');
+  
+  // Test GET
+  const getRes = createRes();
+  await analyticsHandler({ method: 'GET' }, getRes);
+  assert.strictEqual(getRes.statusCode, 200);
+  assert.strictEqual(getRes.body.ok, true);
+  assert.strictEqual(getRes.body.service, 'prep-visitor-analytics');
+
+  // Test POST with valid payload
+  const postRes = createRes();
+  await analyticsHandler({
+    method: 'POST',
+    body: {
+      visitorId: 'vis_test_123',
+      alias: 'Guest-Sage-42',
+      sessionNumber: 1,
+      startTime: Date.now(),
+      endTime: Date.now(),
+      durationSeconds: 120,
+      topicsViewed: 2,
+      quizzesAnswered: 5,
+      quizCorrect: 4,
+      subjects: ['sysdesign'],
+      device: 'Desktop'
+    }
+  }, postRes);
+  assert.strictEqual(postRes.statusCode, 200);
+  assert.strictEqual(postRes.body.ok, true);
+  assert.strictEqual(postRes.body.received, true);
+
+  // Test POST with missing/invalid visitorId
+  const invalidRes = createRes();
+  await analyticsHandler({ method: 'POST', body: { visitorId: 'invalid' } }, invalidRes);
+  assert.strictEqual(invalidRes.statusCode, 400);
+
+  // Test unsupported method (PUT)
+  const methodRes = createRes();
+  await analyticsHandler({ method: 'PUT' }, methodRes);
+  assert.strictEqual(methodRes.statusCode, 405);
+}
+
 async function main() {
   for (const handlerPath of ['../../api/execute']) {
     await testDoesNotDoubleAppendExecutePath(handlerPath);
     await testProductionRequiresHostedJudgeUrl(handlerPath);
     await testUpstreamUnauthorizedIsProxyAuthFailure(handlerPath);
   }
+  await testAnalyticsHandler();
 }
 
 main().catch(error => {
   console.error(error);
   process.exit(1);
 });
+

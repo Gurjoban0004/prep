@@ -559,6 +559,10 @@ function init() {
 
   initExperience();
 
+  if (typeof initVisitorAnalytics === 'function') {
+    initVisitorAnalytics();
+  }
+
   renderLandingPage();
   initSmartNotesUI();
 
@@ -1199,9 +1203,33 @@ const DESK_FAMILIES = {
 // Four subjects shown in the "Pick up a subject" strip: this semester's core courses.
 const DESK_STRIP = ['java_abstractions', 'algo', 'aiml', 'sysdesign'];
 
+const ADMIN_ANALYTICS_EMAIL = 'gurjobanpanjeta@gmail.com';
+
+function getCurrentUser() {
+  try {
+    if (typeof window !== 'undefined' && typeof window.getCurrentUser === 'function') {
+      const u = window.getCurrentUser();
+      if (u) return u;
+    }
+    const auth = (typeof window !== 'undefined' && window.fbAuth) || (typeof firebase !== 'undefined' && firebase.auth && firebase.auth());
+    return (auth && auth.currentUser) || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function getCurrentUserEmail() {
+  const u = getCurrentUser();
+  return (u && u.email ? u.email.trim().toLowerCase() : '');
+}
+
+function isCurrentUserAdmin() {
+  return getCurrentUserEmail() === ADMIN_ANALYTICS_EMAIL.toLowerCase();
+}
+
 function getUserFirstName() {
   try {
-    const u = window.firebase && firebase.auth && firebase.auth().currentUser;
+    const u = getCurrentUser();
     if (u && u.displayName) return u.displayName.trim().split(/\s+/)[0];
   } catch (e) {}
   return '';
@@ -1274,6 +1302,8 @@ function renderStudyDesk() {
           <aside class="desk-col-side">
             ${renderExamCard(exam, activity)}
             ${renderQuickPractice()}
+            ${renderDeskBoostCard()}
+            ${renderDeskAnalyticsCard()}
           </aside>
         </div>
 
@@ -1297,6 +1327,9 @@ function renderStudyDesk() {
 const ICON = {
   home: '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
   subjects: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+  plan: '<rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+  boost: '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+  analytics: '<path d="M3 3v18h18"/><path d="m7 14 4-4 4 4 5-6"/>',
   tests: '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
   labs: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
   terminal: '<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>',
@@ -1312,9 +1345,21 @@ function svgIcon(paths, size = 18) {
 }
 
 function renderDeskNav(active) {
+  const isAdmin = isCurrentUserAdmin();
   const saved = (state.smartNotes || []).length +
     Object.values(state.starredMcqs || {}).reduce((n, list) => n + (Array.isArray(list) ? list.length : 0), 0);
-  const items = [['home', 'Home'], ['subjects', 'Subjects'], ['notes', 'Notes'], ['tests', 'Practice'], ['labs', 'Labs'], ['saved', 'Saved'], ['progress', 'Progress']];
+  const items = [
+    ['home', 'Home'],
+    ['subjects', 'Subjects'],
+    ['plan', 'Plan'],
+    ['boost', 'Boost'],
+    ...(isAdmin ? [['analytics', 'Analytics']] : []),
+    ['notes', 'Notes'],
+    ['tests', 'Practice'],
+    ['labs', 'Labs'],
+    ['saved', 'Saved'],
+    ['progress', 'Progress']
+  ];
   const nav = items.map(([id, label]) => {
     const current = id === active;
     const badge = id === 'saved' && saved ? `<b class="desk-nav-count">${saved}</b>` : '';
@@ -1335,6 +1380,9 @@ const HUB_PAGES = {
   notes: { title: 'Notes library', sub: 'Find the concept you need. Take it at your own pace.' },
   progress: { title: 'Your progress', sub: 'Every topic understood is a little less to worry about.' },
   subjects: { title: 'Subjects', sub: 'Every course this semester, with your progress and exam dates.' },
+  plan: { title: 'Syllabus & Roadmap', sub: 'Course outcomes, exam milestones, and structured revision plans.' },
+  boost: { title: 'High-Yield Boost', sub: 'Rapid revision cards, common exam traps, and quick concept quizzes.' },
+  analytics: { title: 'Visitor Analytics', sub: 'Anonymous traffic, session activity, and study engagement metrics.' },
   tests: { title: 'Tests', sub: 'Question banks and practice tests for each course.' },
   labs: { title: 'Labs', sub: 'Lab programs, coding problems and terminal practice.' }
 };
@@ -1449,9 +1497,28 @@ function renderLabsHub() {
   return hubGroup('Hands-on practice', rows, 'No labs yet. They appear here as courses add programs.');
 }
 
+function renderPlanHub() {
+  const currentSubj = (state.activeSubject === 'aiml' || state.activeSubject === 'sysdesign') ? state.activeSubject : 'sysdesign';
+  return `<div class="hub-custom-wrap">${renderStudyPlanContent(currentSubj)}</div>`;
+}
+
+function renderBoostHub() {
+  const currentSubj = (state.activeSubject === 'aiml' || state.activeSubject === 'sysdesign') ? state.activeSubject : 'sysdesign';
+  const urlTab = (typeof location !== 'undefined' && location.hash) ? (new URLSearchParams(location.hash.replace(/^#/, '')).get('tab')) : null;
+  const currentTab = state.activeBoostTab || urlTab || 'cheats';
+  return `<div class="hub-custom-wrap">${renderExamBoostContent(currentSubj, currentTab)}</div>`;
+}
+
 function renderHubPage(page) {
   const meta = HUB_PAGES[page];
-  const body = page === 'subjects' ? renderSubjectGallery() : page === 'notes' ? hubGroup('Your reading rooms', hubSectionRows('notes', () => ({ icon: ICON.notes, meta: 'Read notes' })), 'Choose a subject to start reading.') : page === 'progress' ? renderProgressHub() : page === 'tests' ? renderTestsHub() : renderLabsHub();
+  const body = page === 'subjects' ? renderSubjectGallery() :
+    page === 'notes' ? hubGroup('Your reading rooms', hubSectionRows('notes', () => ({ icon: ICON.notes, meta: 'Read notes' })), 'Choose a subject to start reading.') :
+    page === 'progress' ? renderProgressHub() :
+    page === 'tests' ? renderTestsHub() :
+    page === 'plan' ? renderPlanHub() :
+    page === 'boost' ? renderBoostHub() :
+    page === 'analytics' ? renderAnalyticsHub() :
+    renderLabsHub();
   return `
     <div class="desk" aria-label="${meta.title}">
       <div class="desk-main">
@@ -1486,6 +1553,1976 @@ const ATLAS_FAM_CYCLE = ['lavender', 'blue', 'peach', 'mint', 'blush'];
 function sectionTopicCount(subjId, tabId) {
   const data = CONFIG.subjects[subjId].data || {};
   return Array.isArray(data[tabId]) ? data[tabId].length : null;
+}
+
+// Course Syllabus Plans and Exam Boost data structures
+const COURSE_SYLLABUS_DATA = {
+  sysdesign: {
+    code: '24CSE0318',
+    title: 'System Design',
+    credits: 3,
+    ltp: '2-0-2',
+    hours: 60,
+    department: 'Department of Computer Science & Engineering',
+    prereqs: 'Data Structures & Algorithms, Database Systems, Computer Networks, Operating Systems',
+    grading: [
+      { label: 'Formative Assessment (Presentation & Viva)', weight: 10, note: 'Case study group presentation & viva voce' },
+      { label: 'Sessional Tests (ST-1 & ST-2, Compulsory)', weight: 30, note: 'Two compulsory offline sessional examinations (15% each)' },
+      { label: 'End Term Examination (Computer-based)', weight: 60, note: 'Comprehensive final exam covering all 30 lectures' }
+    ],
+    clos: [
+      { id: 'CLO01', desc: 'Explain fundamentals of system design, availability, reliability, scalability (up/out), maintainability, consistency, fault tolerance, latency & throughput.', lectures: 'Lectures 1–4' },
+      { id: 'CLO02', desc: 'Design and normalize database schemas (1NF, 2NF, 3NF, BCNF), apply transactions & ACID properties, and evaluate relational vs NoSQL vs vector tradeoffs.', lectures: 'Lectures 9–14' },
+      { id: 'CLO03', desc: 'Apply networking essentials (TCP/UDP, HTTP/2/3, WebSockets, DNS, CDN), REST/GraphQL/gRPC API design, and load balancing (L4/L7, consistent hashing).', lectures: 'Lectures 15–17' },
+      { id: 'CLO04', desc: 'Analyze client-server frameworks, security (OAuth 2.0, JWT, SSO), DevOps CI/CD pipelines, and low-level OS design (process scheduling, paging, virtual memory).', lectures: 'Lectures 18–27' },
+      { id: 'CLO05', desc: 'Formulate caching architectures, cache replacement policies (LRU, LFU, FIFO), distributed caching (Redis/Memcached), and cache stampede solutions.', lectures: 'Lectures 28–30' }
+    ],
+    milestones: [
+      {
+        id: 'st1',
+        title: 'ST-1: Fundamentals, Architecture & Databases',
+        lectures: 'Lectures 1–17',
+        examScope: 'Sessional Test 1',
+        color: 'blue',
+        units: [
+          {
+            title: 'Lectures 1–4 · Fundamentals of System Design',
+            topics: [
+              'System Design Characteristics: Availability, Reliability, Scalability (Vertical vs Horizontal), Maintainability, Consistency, Fault Tolerance',
+              'Performance vs Scalability, Latency vs Throughput, Availability vs Consistency',
+              'Modular Design, Clean Code Principles & CI/CD Pipelines'
+            ]
+          },
+          {
+            title: 'Lectures 5–8 · Core System Design Concepts & Patterns',
+            topics: [
+              'CAP Theorem & Consistency Patterns: Weak, Eventual, Strong Consistency',
+              'Functional & Non-Functional Requirements, HLD vs LLD & Back-of-the-envelope calculations',
+              'Architectural Patterns: Monolith vs Microservices vs Serverless, Event-Driven Architecture, Service Mesh, BFF, API Composition'
+            ]
+          },
+          {
+            title: 'Lectures 9–14 · Database Design & Advanced Storage',
+            topics: [
+              'Database Design Lifecycle, Steps to Good Schema Design',
+              'Normalization: 1NF, 2NF, 3NF, BCNF, Anomaly Elimination',
+              'Transactions, ACID Properties, Concurrency Control & Recovery',
+              'Scaling Databases: Indexing (B-Tree/Hash), Replication, Sharding',
+              'NoSQL (MongoDB, Redis, Cassandra, Neo4j), NewSQL, Time-Series & Vector DBs'
+            ]
+          },
+          {
+            title: 'Lectures 15–17 · Networking Essentials & APIs',
+            topics: [
+              'Networking Protocols: TCP/UDP, HTTP/1.1 vs 2 vs 3, WebSockets, DNS, TLS, CDN',
+              'API Paradigms: REST, GraphQL, gRPC, Webhooks, API Gateways, Rate Limiting (Token Bucket)',
+              'Client-Server Architecture, L4 vs L7 Load Balancing, Consistent Hashing Rings'
+            ]
+          }
+        ]
+      },
+      {
+        id: 'st2',
+        title: 'ST-2: Frameworks, Security, DevOps & Low-Level OS Design',
+        lectures: 'Lectures 18–27',
+        examScope: 'Sessional Test 2',
+        color: 'mint',
+        units: [
+          {
+            title: 'Lectures 18–22 · Frameworks, Security & DevOps',
+            topics: [
+              'Client-Server Frameworks (Express, Spring, Django, React), Push vs Pull CDNs, Firewalls',
+              'Security Architecture: Access Control, Authentication vs Authorization, Malware Defense',
+              'OAuth 2.0 Authorization Flows, JWT Structure & Signatures, Single Sign-On (SSO)',
+              'DevOps Pipelines: Continuous Integration/Deployment, Monitoring & Alerting with Prometheus & Grafana'
+            ]
+          },
+          {
+            title: 'Lectures 23–27 · Low-Level Design & Operating System Concepts',
+            topics: [
+              'OS Fundamentals, Processes, Threads, Process Control Block (PCB), Context Switching',
+              'CPU Scheduling: Preemptive vs Non-Preemptive, FCFS, SJF, Round Robin, Priority Scheduling',
+              'Concurrency, Race Conditions, Critical Section, Mutex & Semaphores',
+              'Memory Management: Contiguous Allocation, Paging, Segmentation, External vs Internal Fragmentation',
+              'Virtual Memory: Page Faults, Thrashing, Page Replacement Algorithms (FIFO, LRU, Optimal)'
+            ]
+          }
+        ]
+      },
+      {
+        id: 'endTerm',
+        title: 'End Term: Caching, Distributed Systems & Synthesis',
+        lectures: 'Lectures 28–30 + Comprehensive',
+        examScope: 'End Term Examination',
+        color: 'lavender',
+        units: [
+          {
+            title: 'Lectures 28–30 · Caching & Distributed Caches',
+            topics: [
+              'Cache Memory Fundamentals, Hit/Miss Ratio, Where to Cache (Client, CDN, Gateway, DB)',
+              'Cache Eviction Policies: LRU (Doubly-Linked List + Hash Map), LFU, FIFO, TTL',
+              'Caching Patterns: Cache-Aside (Lazy Loading), Write-Through, Write-Back, Write-Around, Refresh-Ahead',
+              'Distributed Caching: Redis vs Memcached, CDN Edge Caching, Cache Stampede & Thundering Herd Solutions'
+            ]
+          }
+        ]
+      },
+      {
+        id: 'lab',
+        title: 'Lab Curriculum: Hands-On System Architecture',
+        lectures: 'Labs 1–30',
+        examScope: 'Lab Evaluation & Case Studies',
+        color: 'peach',
+        units: [
+          {
+            title: 'Labs 1–10 · System Architecture & High-Level Design',
+            topics: [
+              'Labs 1–2: System Design Tools (Draw.io, Figma, Lucidchart)',
+              'Lab 3: Case Study: System Architecture & Video Upload on YouTube',
+              'Lab 4: Monolithic vs Microservices vs Event-Driven Architectural Analysis',
+              'Labs 5–10: Requirements Gathering, HLD Architecture, Context & Use Case Diagrams'
+            ]
+          },
+          {
+            title: 'Labs 11–22 · Low-Level Design & Database Implementation',
+            topics: [
+              'Labs 11–15: LLD: Class Diagrams, Sequence Diagrams, Component Diagrams',
+              'Labs 16–18: E-Commerce DB Schema Design, ER Diagrams & BCNF Normalization',
+              'Labs 19–22: SQL Query Mastery: Nested Queries, Correlated Subqueries, EXISTS, ANY/ALL, Joins'
+            ]
+          },
+          {
+            title: 'Labs 23–30 · API, Scalability & Security Design',
+            topics: [
+              'Labs 23–27: REST API Design (Endpoints, JSON) & Scalability Design (Caching, LB, CDN, Replication)',
+              'Labs 28–30: Security Design: JWT Authentication, OAuth 2.0 Flow & Final Presentation'
+            ]
+          }
+        ]
+      }
+    ],
+    schedule14Days: [
+      { day: 'Day 1–2', focus: 'Fundamentals & Tradeoffs', target: 'Availability 9s, Scalability, CAP Theorem, Latency vs Throughput' },
+      { day: 'Day 3–4', focus: 'Architecture Patterns', target: 'Monolith vs Microservices, Event-Driven, HLD/LLD, Back-of-envelope calculations' },
+      { day: 'Day 5–7', focus: 'Databases & Scaling', target: 'Normalization 1NF-BCNF, ACID, Indexing, Sharding, Replication, NoSQL' },
+      { day: 'Day 8–9', focus: 'Networking & APIs', target: 'TCP/UDP, HTTP/2/3, REST vs gRPC, Rate Limiting, L4/L7 Load Balancing, Consistent Hashing' },
+      { day: 'Day 10–11', focus: 'Security & Low-Level OS', target: 'JWT, OAuth 2.0, CPU Scheduling, Concurrency, Paging, Virtual Memory' },
+      { day: 'Day 12–13', focus: 'Caching & Distributed Systems', target: 'LRU/LFU, Cache-Aside, Write-Through/Back, Redis, CDN caching' },
+      { day: 'Day 14', focus: 'Exam Boost Sprint', target: 'High-Yield Trap Review & 10-Minute Rapid Boost Quiz' }
+    ]
+  },
+  aiml: {
+    code: '24CSE0316',
+    title: 'Artificial Intelligence & Machine Learning',
+    credits: 3,
+    ltp: '2-0-2',
+    hours: 60,
+    department: 'Department of Computer Science & Engineering',
+    prereqs: 'Programming Fundamentals, Probability & Statistics, Linear Algebra',
+    grading: [
+      { label: 'Continuous Evaluation (Average of 2 FAs)', weight: 20, note: 'Formative assessments on Python ML & problem solving' },
+      { label: 'Sessional Test (ST-1)', weight: 20, note: 'Covers Lectures 1–21 (AI foundations, data prep, supervised learning)' },
+      { label: 'End Term Project', weight: 30, note: 'Capstone mini-AI/ML project implementation & viva' },
+      { label: 'End Term MCQ Examination (Online)', weight: 30, note: 'Online computer-based MCQ exam covering all modules' }
+    ],
+    clos: [
+      { id: 'CLO01', desc: 'Explain AI concepts, evolution, Turing test, foundations, ethics, and intelligent agents using PEAS representation.', lectures: 'Lectures 1–6' },
+      { id: 'CLO02', desc: 'Apply machine learning workflow, tools, and Python libraries (NumPy, Pandas, Scikit-Learn, Matplotlib).', lectures: 'Lectures 7–9' },
+      { id: 'CLO03', desc: 'Perform data preprocessing, handling missing values, encoding, feature scaling, and regression modelling (Linear, Multiple, Polynomial, MAE, MSE, RMSE, R²).', lectures: 'Lectures 10–15' },
+      { id: 'CLO04', desc: 'Develop and evaluate classification models (Logistic, KNN, Decision Tree, Random Forest, Naive Bayes, SVM) and clustering (K-Means, Hierarchical, DBSCAN).', lectures: 'Lectures 16–24' },
+      { id: 'CLO05', desc: 'Analyze reinforcement learning (Agent, Environment, Policy, Value, Q-Learning), association rules (Apriori), recommender systems, PCA, and GenAI/Agentic AI.', lectures: 'Lectures 25–30' },
+      { id: 'CLO06', desc: 'Implement AI and Machine Learning algorithms using Python and scikit-learn in lab experiments.', lectures: 'Labs 1–30' }
+    ],
+    milestones: [
+      {
+        id: 'st1',
+        title: 'ST-1: AI Foundations, Data Preprocessing & Supervised Learning',
+        lectures: 'Lectures 1–21 (70% Core Weight)',
+        examScope: 'Sessional Test 1',
+        color: 'lavender',
+        units: [
+          {
+            title: 'Lectures 1–3 · Introduction to Artificial Intelligence',
+            topics: [
+              'Scope & Definition: Thinking vs Acting, Human-like vs Rational',
+              'History & Milestones: Turing Test (1950), Dartmouth 1956, AI Winters, Deep Blue (1997), AlexNet (2012), Transformers (2017)',
+              'Foundations & Disciplines: Math, Logic, Economics, Neuroscience, Psychology',
+              'AI vs Human Intelligence: Speed, Generalization, Common Sense, Energy'
+            ]
+          },
+          {
+            title: 'Lectures 4–6 · AI Approaches, Agents & Ethics',
+            topics: [
+              'Types by Capability: Narrow (ANI), General (AGI), Super (ASI)',
+              'Types by Functionality: Reactive Machines, Limited Memory, Theory of Mind, Self-Aware',
+              'Intelligent Agents: PEAS Specification (Automated Taxi, Medical Diagnosis, Vacuum Cleaner)',
+              'Environment Properties: Observable, Deterministic, Episodic, Static, Discrete, Multi-Agent',
+              'Agent Architectures: Simple Reflex, Model-Based, Goal-Based, Utility-Based, Learning Agent',
+              'Generative AI, AI Agents & Agentic AI: Autonomous planning, tools, and multi-agent systems',
+              'AI Ethics: Algorithmic Bias, Privacy, DPDP Act 2023, Explainability (XAI), Safety'
+            ]
+          },
+          {
+            title: 'Lectures 7–9 · ML Workflow & Python Ecosystem',
+            topics: [
+              'Machine Learning Development Workflow: Problem formulation to deployment',
+              'Learning Paradigms: Supervised, Unsupervised, Semi-Supervised, Reinforcement Learning',
+              'Well-Posed Learning Problems (Mitchell): Task T, Performance P, Experience E',
+              'Python ML Stack: NumPy vectorization, Pandas DataFrames, Matplotlib plotting, Scikit-Learn pipelines'
+            ]
+          },
+          {
+            title: 'Lectures 10–12 · Data Preprocessing & Feature Engineering',
+            topics: [
+              'Data Cleaning & Missing Value Imputation (Mean, Median, Mode, KNN)',
+              'Categorical Encoding: One-Hot Encoding vs Label Encoding',
+              'Feature Scaling: Min-Max Normalization [0, 1] vs Z-score Standardization (Mean=0, Std=1)',
+              'Feature Selection (Filter, Wrapper, Embedded) vs Feature Extraction',
+              'Train-Test Split & Stratification'
+            ]
+          },
+          {
+            title: 'Lectures 13–15 · Supervised Learning: Regression',
+            topics: [
+              'Simple Linear Regression: Hypothesis y = wx + b, Gradient Descent, Ordinary Least Squares',
+              'Multiple Linear Regression & Polynomial Regression: Overcoming underfitting',
+              'Regression Performance Metrics: MAE, MSE, RMSE, R² (Coefficient of Determination)'
+            ]
+          },
+          {
+            title: 'Lectures 16–18 · Supervised Learning: Classification',
+            topics: [
+              'Logistic Regression: Sigmoid Function, Log-Loss, Decision Boundaries',
+              'K-Nearest Neighbours (KNN): Distance metrics (Euclidean, Manhattan), choosing odd K, lazy learner',
+              'Decision Trees: Entropy H(S), Information Gain, Gini Impurity, Tree Pruning',
+              'Random Forest: Ensemble Learning, Bagging (Bootstrap Aggregation), Out-of-Bag error',
+              'Naive Bayes: Bayes Theorem, Conditional Independence Assumption, Laplace Smoothing',
+              'Support Vector Machines (SVM): Hyperplanes, Functional & Geometric Margins, Hard vs Soft Margin (C parameter), Kernel Trick (RBF, Polynomial)'
+            ]
+          },
+          {
+            title: 'Lectures 19–21 · Model Evaluation & Validation',
+            topics: [
+              'Train-Test Split vs K-Fold Cross-Validation (Stratified K-Fold)',
+              'Underfitting vs Overfitting, Bias-Variance Tradeoff',
+              'Regularization: L1 Lasso (feature selection) vs L2 Ridge (weight shrinkage)',
+              'Confusion Matrix: TP, FP, TN, FN',
+              'Metrics: Accuracy, Precision (TP/(TP+FP)), Recall (TP/(TP+FN)), F1-Score (Harmonic Mean), Specificity',
+              'ROC Curve & AUC (Area Under Curve)'
+            ]
+          }
+        ]
+      },
+      {
+        id: 'endTerm',
+        title: 'End Term: Unsupervised, Recommenders & Reinforcement Learning',
+        lectures: 'Lectures 22–30 (30% + Capstone Project)',
+        examScope: 'End Term Examination',
+        color: 'mint',
+        units: [
+          {
+            title: 'Lectures 22–24 · Unsupervised Learning: Clustering',
+            topics: [
+              'Clustering Concepts: Grouping unlabeled data without predefined classes',
+              'K-Means Algorithm: Centroid initialization, assignment step, update step, Inertia, Elbow Method',
+              'Hierarchical Clustering: Agglomerative (Bottom-Up) vs Divisive (Top-Down), Dendrograms, Linkage methods',
+              'DBSCAN: Density-based clustering, Epsilon (eps), MinPts, Core points, Border points, Noise (-1)',
+              'Cluster Evaluation: Silhouette Coefficient [-1, 1], Davies-Bouldin Index'
+            ]
+          },
+          {
+            title: 'Lectures 25–27 · Association Rules & Recommenders',
+            topics: [
+              'Association Rule Mining & Market Basket Analysis',
+              'Rule Metrics: Support = P(A ∩ B), Confidence = P(B|A), Lift = Confidence / Support(B)',
+              'Apriori Algorithm: Downward-closure property of frequent itemsets, Pruning',
+              'FP-Growth: Frequent Pattern tree, avoiding candidate generation',
+              'Recommender Systems: Content-Based Filtering (Cosine similarity) vs Collaborative Filtering (User-User, Item-Item, Matrix Factorization)',
+              'Dimensionality Reduction & PCA: Curse of dimensionality, Covariance Matrix, Eigenvalues, Eigenvectors, Variance Explained'
+            ]
+          },
+          {
+            title: 'Lectures 28–30 · Reinforcement Learning & Emerging Trends',
+            topics: [
+              'RL Framework: Agent, Environment, State s, Action a, Reward r, State Transition Probability',
+              'Policy π(s) (Deterministic vs Stochastic) & Value Functions V(s), Q(s, a)',
+              'Bellman Optimality Equation: Q*(s, a) = r + γ * max_a\' Q*(s\', a\')',
+              'Model-Free RL: Q-Learning, Exploration vs Exploitation (ε-greedy strategy)',
+              'Applications: Robotics, Autonomous Navigation, AlphaGo, Game Playing',
+              'Emerging AI & Safety: Large Language Models, RAG (Retrieval-Augmented Generation), Prompt Injection, Alignment'
+            ]
+          }
+        ]
+      },
+      {
+        id: 'lab',
+        title: 'Lab Curriculum: Python AI & ML Engineering',
+        lectures: 'Labs 1–30',
+        examScope: 'Lab Continuous Evaluation & Project',
+        color: 'peach',
+        units: [
+          {
+            title: 'Labs 1–10 · Python, Preprocessing & Regression',
+            topics: [
+              'Labs 1–2: NumPy arrays and Pandas DataFrame operations',
+              'Labs 3–4: A* Search Algorithm with Heuristics implementation',
+              'Labs 5–7: Data Preprocessing Pipeline (Missing values, Encoding, Scaling)',
+              'Labs 8–10: Simple Linear Regression with MAE, MSE, RMSE, R²'
+            ]
+          },
+          {
+            title: 'Labs 11–22 · Advanced Models & Classification',
+            topics: [
+              'Labs 11–13: Multiple Linear Regression on multi-attribute data',
+              'Labs 14–15: Logistic Regression with Confusion Matrix & ROC',
+              'Labs 16–18: Support Vector Machine with Decision Boundaries',
+              'Labs 19–20: K-Nearest Neighbours with K-optimization',
+              'Labs 21–22: Decision Tree Classifier & Structure Visualization'
+            ]
+          },
+          {
+            title: 'Labs 23–30 · Clustering, PCA & Capstone Project',
+            topics: [
+              'Labs 23–24: K-Means Clustering, Elbow Method & Silhouette',
+              'Labs 25–26: Principal Component Analysis (PCA) 2D projection',
+              'Labs 27–30: Mini AI/ML Capstone Project implementation & presentation'
+            ]
+          }
+        ]
+      }
+    ],
+    schedule14Days: [
+      { day: 'Day 1–2', focus: 'AI Scope, History & Agents', target: 'Dartmouth 1956, Turing Test, PEAS framework, Agent types, GenAI vs Agentic AI' },
+      { day: 'Day 3–4', focus: 'Preprocessing & Data Prep', target: 'Imputation, One-Hot vs Label encoding, Standardization, Train/Test split' },
+      { day: 'Day 5–6', focus: 'Regression Models & Metrics', target: 'Linear, Multiple & Polynomial regression, MSE cost, MAE, RMSE, R² score' },
+      { day: 'Day 7–9', focus: 'Classification Mastery', target: 'Logistic Regression, KNN, Decision Trees, Random Forest, Naive Bayes, SVM' },
+      { day: 'Day 10–11', focus: 'Validation & Evaluation', target: 'K-Fold, Confusion Matrix, Precision, Recall, F1, Bias-Variance, ROC-AUC' },
+      { day: 'Day 12–13', focus: 'Unsupervised & RL', target: 'K-Means, DBSCAN, Apriori Support/Confidence/Lift, PCA, Bellman Equation' },
+      { day: 'Day 14', focus: 'Exam Boost Sprint', target: 'Pitfall Traps Review & 10-Minute Rapid Boost Quiz' }
+    ]
+  }
+};
+
+const EXAM_BOOST_DATA = {
+  sysdesign: {
+    title: 'System Design Exam Boost',
+    code: '24CSE0318',
+    cheats: [
+      {
+        title: 'Availability 9s & Downtime',
+        badge: 'High Yield',
+        body: '<table><thead><tr><th>Level</th><th>Availability</th><th>Downtime / Year</th><th>Downtime / Month</th></tr></thead><tbody><tr><td>Two 9s</td><td>99%</td><td>3.65 days</td><td>7.31 hours</td></tr><tr><td>Three 9s</td><td>99.9%</td><td>8.76 hours</td><td>43.8 minutes</td></tr><tr><td>Four 9s</td><td>99.99%</td><td>52.6 minutes</td><td>4.38 minutes</td></tr><tr><td>Five 9s</td><td>99.999%</td><td>5.26 minutes</td><td>26.3 seconds</td></tr></tbody></table><p class="boost-note">Formula: Availability = Uptime / (Uptime + Downtime). Redundancy is the only path to 99.99%+.</p>'
+      },
+      {
+        title: 'CAP Theorem & PACELC',
+        badge: 'Guaranteed Exam Topic',
+        body: '<p>Under a <strong>Network Partition (P)</strong>, you must trade off <strong>Consistency (C)</strong> vs <strong>Availability (A)</strong>:</p><ul><li><strong>CP Systems</strong> (MongoDB, HBase, Redis Cluster): Refuse writes or return errors when nodes are partitioned to prevent dirty reads.</li><li><strong>AP Systems</strong> (Cassandra, DynamoDB, CouchDB): Accept writes on available nodes; reconcile later (eventual consistency).</li></ul><p><strong>PACELC Extension:</strong> If Partition (P), choose A or C; <em>Else (E)</em>, trade off <strong>Latency (L)</strong> vs <strong>Consistency (C)</strong>. e.g., DynamoDB is PA/EL.</p>'
+      },
+      {
+        title: 'Consistent Hashing Math',
+        badge: 'Architecture Core',
+        body: '<p>Traditional modulo hashing <code>hash(key) % N</code> breaks when N changes (requires re-hashing ~100% of keys).<br><strong>Consistent Hashing:</strong></p><ul><li>Maps both nodes and keys to a 360° ring [0, 2<sup>32</sup> - 1].</li><li>When a node is added or removed, only <code>k / N</code> keys move on average.</li><li><strong>Virtual Nodes (V-Nodes):</strong> Assign multiple tokens per physical node to ensure uniform key distribution and prevent hot spots.</li></ul>'
+      },
+      {
+        title: 'Caching Strategies Matrix',
+        badge: 'Must Know',
+        body: '<table><thead><tr><th>Strategy</th><th>How it Works</th><th>Pros</th><th>Cons</th></tr></thead><tbody><tr><td><strong>Cache-Aside</strong> (Lazy)</td><td>App checks cache; on miss, loads DB and writes to cache</td><td>Resilient to cache node failure</td><td>Cache miss penalty on first read</td></tr><tr><td><strong>Write-Through</strong></td><td>App writes to cache; cache writes synchronously to DB</td><td>Data always fresh, strong consistency</td><td>Higher write latency (2 writes)</td></tr><tr><td><strong>Write-Back</strong> (Write-Behind)</td><td>App writes to cache; cache writes asynchronously in batches to DB</td><td>Ultra-fast writes, high write throughput</td><td>Risk of data loss on cache crash</td></tr><tr><td><strong>Write-Around</strong></td><td>App writes directly to DB, bypasses cache</td><td>Avoids flooding cache with write-only data</td><td>Cache miss on immediate read</td></tr></tbody></table>'
+      },
+      {
+        title: 'L4 vs L7 Load Balancing',
+        badge: 'Networking',
+        body: '<table><thead><tr><th>Feature</th><th>Layer 4 (Transport)</th><th>Layer 7 (Application)</th></tr></thead><tbody><tr><td><strong>Data inspected</strong></td><td>IP address, TCP/UDP port only</td><td>HTTP headers, URL paths, cookies, body</td></tr><tr><td><strong>Routing logic</strong></td><td>Packet-level routing, NAT</td><td>Content-based routing, microservice routing</td></tr><tr><td><strong>SSL / TLS</strong></td><td>Pass-through (cannot decrypt)</td><td>Terminates SSL / TLS certificate</td></tr><tr><td><strong>Performance</strong></td><td>Extremely fast, minimal CPU overhead</td><td>Higher CPU overhead, more intelligent</td></tr><tr><td><strong>Examples</strong></td><td>AWS NLB, HAProxy TCP mode</td><td>AWS ALB, NGINX, Envoy, Traefik</td></tr></tbody></table>'
+      },
+      {
+        title: 'Database Normalization Checklist',
+        badge: 'Database Core',
+        body: '<ul><li><strong>1NF (First Normal Form):</strong> All attribute values must be atomic (no arrays, lists, or composite values). Unique row identification via primary key.</li><li><strong>2NF (Second Normal Form):</strong> Must be in 1NF + <em>no partial dependency</em> (no non-key attribute depends on a proper subset of a composite candidate key).</li><li><strong>3NF (Third Normal Form):</strong> Must be in 2NF + <em>no transitive dependency</em> (X → Y → Z where Z depends on non-key Y).</li><li><strong>BCNF (Boyce-Codd):</strong> Strictly stronger than 3NF. For <em>every</em> functional dependency X → Y, X <strong>must be a superkey</strong>.</li></ul>'
+      },
+      {
+        title: 'Process Scheduling Algorithms',
+        badge: 'OS / LLD',
+        body: '<table><thead><tr><th>Algorithm</th><th>Preemptive?</th><th>Criteria</th><th>Key Property</th></tr></thead><tbody><tr><td><strong>FCFS</strong></td><td>No</td><td>Arrival Time</td><td>Suffers from Convoy Effect</td></tr><tr><td><strong>SJF</strong></td><td>No</td><td>Burst Time</td><td>Provably minimal average waiting time; starvation possible</td></tr><tr><td><strong>SRTF</strong></td><td>Yes</td><td>Remaining Burst Time</td><td>Preemptive SJF; frequent context switches</td></tr><tr><td><strong>Round Robin</strong></td><td>Yes</td><td>Time Quantum (q)</td><td>Fair sharing; if q large → FCFS; if q small → high overhead</td></tr><tr><td><strong>Priority</strong></td><td>Both</td><td>Priority number</td><td>Suffers from starvation; solved via Aging</td></tr></tbody></table>'
+      },
+      {
+        title: 'Paging vs Segmentation & Virtual Memory',
+        badge: 'Memory LLD',
+        body: '<ul><li><strong>Paging:</strong> Divides physical memory into fixed-size <em>frames</em> and logical memory into <em>pages</em> of equal size. Eliminates <strong>external fragmentation</strong> completely; leaves small <strong>internal fragmentation</strong> on the final page.</li><li><strong>Segmentation:</strong> Divides memory into variable-sized logical segments (code, stack, heap). Eliminates internal fragmentation; suffers from <strong>external fragmentation</strong>.</li><li><strong>Thrashing:</strong> High paging activity where CPU spends more time swapping pages in/out than executing instructions. Caused by total working set size exceeding available frames.</li><li><strong>Belady\'s Anomaly:</strong> Increasing page frames causes <em>more</em> page faults under FIFO. LRU and Optimal are stack algorithms and never suffer Belady\'s Anomaly.</li></ul>'
+      }
+    ],
+    traps: [
+      {
+        trap: 'Higher throughput automatically means lower latency.',
+        correction: 'Throughput is rate of completion; latency is turnaround time. As throughput approaches saturation (>80% capacity), request queues grow exponentially, causing latency to skyrocket (Little\'s Law: L = λW).'
+      },
+      {
+        trap: 'Eventual consistency guarantees a client will read their own write.',
+        correction: 'Eventual consistency only guarantees that replicas will converge in the absence of new updates. A client reading from an un-updated replica immediately after writing to another replica will read stale data without Read-Your-Writes consistency.'
+      },
+      {
+        trap: 'Any database table in 3NF is automatically in BCNF.',
+        correction: 'False. 3NF allows functional dependencies X → Y where Y is a prime attribute (part of candidate key) even if X is not a superkey. BCNF strictly forbids this: X must ALWAYS be a superkey.'
+      },
+      {
+        trap: 'Paging causes external fragmentation in operating system memory.',
+        correction: 'False. Frames and pages are identical, uniform sizes. Any free frame can host any page. Paging eliminates external fragmentation entirely; it only suffers internal fragmentation in the last byte span of a process.'
+      },
+      {
+        trap: 'Redis is strictly in-memory and loses all data on reboot.',
+        correction: 'False. Redis provides two persistent storage engines: RDB (point-in-time snapshots to disk) and AOF (Append-Only File logging every write operation).'
+      }
+    ],
+    quiz: [
+      {
+        id: 'sd_q1',
+        q: 'Which consistency model ensures that if process A updates data and notifies process B, process B is guaranteed to read the updated value?',
+        question: 'Which consistency model ensures that if process A updates data and notifies process B, process B is guaranteed to read the updated value?',
+        options: ['Eventual Consistency', 'Causal Consistency', 'Weak Consistency', 'Monotonic Read Consistency'],
+        correct: 1,
+        answer: 1,
+        why: 'Causal consistency guarantees that operations causally related by communication are seen by every node in the same order.',
+        explanation: 'Causal consistency guarantees that operations causally related by communication are seen by every node in the same order.'
+      },
+      {
+        id: 'sd_q2',
+        q: 'In consistent hashing, what is the primary benefit of introducing Virtual Nodes (V-Nodes)?',
+        question: 'In consistent hashing, what is the primary benefit of introducing Virtual Nodes (V-Nodes)?',
+        options: ['Reduces total memory consumed by hashing', 'Ensures uniform key distribution and eliminates server hot-spots', 'Encrypts user data before routing to nodes', 'Guarantees ACID transactions across partitions'],
+        correct: 1,
+        answer: 1,
+        why: 'Virtual nodes ensure each physical server receives a balanced, statistically uniform distribution of the hash ring, preventing hot spots.',
+        explanation: 'Virtual nodes ensure each physical server receives a balanced, statistically uniform distribution of the hash ring, preventing hot spots.'
+      },
+      {
+        id: 'sd_q3',
+        q: 'A table R(A, B, C) has candidate keys {A, B} and {B, C}. The functional dependency C → A holds. What is the highest normal form of R?',
+        question: 'A table R(A, B, C) has candidate keys {A, B} and {B, C}. The functional dependency C → A holds. What is the highest normal form of R?',
+        options: ['1NF', '2NF', '3NF', 'BCNF'],
+        correct: 2,
+        answer: 2,
+        why: 'C → A satisfies 3NF because A is a prime attribute (part of candidate key {A,B}), but violates BCNF because C is not a superkey.',
+        explanation: 'C → A satisfies 3NF because A is a prime attribute (part of candidate key {A,B}), but violates BCNF because C is not a superkey.'
+      },
+      {
+        id: 'sd_q4',
+        q: 'Which caching strategy writes data directly to the database while bypassing the cache completely?',
+        question: 'Which caching strategy writes data directly to the database while bypassing the cache completely?',
+        options: ['Write-Through', 'Write-Back', 'Write-Around', 'Cache-Aside'],
+        correct: 2,
+        answer: 2,
+        why: 'Write-Around writes directly to persistent storage without populating the cache, preventing cache churn on write-heavy data that may not be immediately read.',
+        explanation: 'Write-Around writes directly to persistent storage without populating the cache, preventing cache churn on write-heavy data that may not be immediately read.'
+      },
+      {
+        id: 'sd_q5',
+        q: 'Which load balancing layer is capable of cookie-based session persistence and SSL termination?',
+        question: 'Which load balancing layer is capable of cookie-based session persistence and SSL termination?',
+        options: ['Layer 2 (Data Link)', 'Layer 3 (Network)', 'Layer 4 (Transport)', 'Layer 7 (Application)'],
+        correct: 3,
+        answer: 3,
+        why: 'Layer 7 inspects application layer payloads including HTTP headers, cookies, URLs, and TLS handshakes.',
+        explanation: 'Layer 7 inspects application layer payloads including HTTP headers, cookies, URLs, and TLS handshakes.'
+      },
+      {
+        id: 'sd_q6',
+        q: 'Which CPU scheduling algorithm is mathematically proven to minimize average waiting time for a set of processes?',
+        question: 'Which CPU scheduling algorithm is mathematically proven to minimize average waiting time for a set of processes?',
+        options: ['First Come First Served (FCFS)', 'Shortest Job First (SJF)', 'Round Robin (RR)', 'Priority Scheduling'],
+        correct: 1,
+        answer: 1,
+        why: 'Non-preemptive SJF provably minimizes average waiting time by executing shorter jobs first, minimizing queue buildup.',
+        explanation: 'Non-preemptive SJF provably minimizes average waiting time by executing shorter jobs first, minimizing queue buildup.'
+      },
+      {
+        id: 'sd_q7',
+        q: 'Belady\'s Anomaly (where increasing the number of page frames leads to more page faults) occurs in which page replacement algorithm?',
+        question: 'Belady\'s Anomaly (where increasing the number of page frames leads to more page faults) occurs in which page replacement algorithm?',
+        options: ['Least Recently Used (LRU)', 'Optimal Page Replacement', 'First In First Out (FIFO)', 'Least Frequently Used (LFU)'],
+        correct: 2,
+        answer: 2,
+        why: 'FIFO is not a stack algorithm, making it susceptible to Belady\'s Anomaly.',
+        explanation: 'FIFO is not a stack algorithm, making it susceptible to Belady\'s Anomaly.'
+      },
+      {
+        id: 'sd_q8',
+        q: 'What is the maximum yearly downtime permitted by a "Five Nines" (99.999%) availability SLA?',
+        question: 'What is the maximum yearly downtime permitted by a "Five Nines" (99.999%) availability SLA?',
+        options: ['52.6 minutes', '8.76 hours', '5.26 minutes', '31.5 seconds'],
+        correct: 2,
+        answer: 2,
+        why: '99.999% availability permits 0.001% downtime = 0.00001 * 365.25 * 24 * 60 = 5.26 minutes per year.',
+        explanation: '99.999% availability permits 0.001% downtime = 0.00001 * 365.25 * 24 * 60 = 5.26 minutes per year.'
+      },
+      {
+        id: 'sd_q9',
+        q: 'What mechanism prevents a "Cache Stampede" (Thundering Herd) when a high-traffic cache key expires?',
+        question: 'What mechanism prevents a "Cache Stampede" (Thundering Herd) when a high-traffic cache key expires?',
+        options: ['Switching to FIFO eviction', 'Mutex/Locking around DB query and probabilistic early expiration (XFetch)', 'Removing the database index', 'Increasing CPU clock rate'],
+        correct: 1,
+        answer: 1,
+        why: 'A distributed lock or mutex ensures only one worker queries the database on cache miss, while probabilistic early refresh recomputes the key before expiration.',
+        explanation: 'A distributed lock or mutex ensures only one worker queries the database on cache miss, while probabilistic early refresh recomputes the key before expiration.'
+      },
+      {
+        id: 'sd_q10',
+        q: 'Which database sharding strategy routes queries based on a mathematical hash of the shard key?',
+        question: 'Which database sharding strategy routes queries based on a mathematical hash of the shard key?',
+        options: ['Range-based sharding', 'Directory-based sharding', 'Hash-based (algorithmic) sharding', 'Geographical sharding'],
+        correct: 2,
+        answer: 2,
+        why: 'Hash-based sharding uses hash(key) % N to uniformly scatter data across shards, eliminating sequential write hotspots.',
+        explanation: 'Hash-based sharding uses hash(key) % N to uniformly scatter data across shards, eliminating sequential write hotspots.'
+      }
+    ]
+  },
+  aiml: {
+    title: 'AI & Machine Learning Exam Boost',
+    code: '24CSE0316',
+    cheats: [
+      {
+        title: 'Bias-Variance Tradeoff & Regularization',
+        badge: 'Core Theory',
+        body: '<p>Total Error = <strong>Bias² + Variance + Irreducible Error</strong>.</p><ul><li><strong>High Bias (Underfitting):</strong> Model is too simplistic (e.g. linear model on non-linear data). Train error is high, test error is high. Fix: Add features, increase model capacity, reduce regularization.</li><li><strong>High Variance (Overfitting):</strong> Model memorizes training noise. Train error is near-zero, test error is high. Fix: Get more training data, prune trees, use dropout, apply regularization.</li><li><strong>L1 Regularization (Lasso):</strong> Adds λΣ|w|. Drives weights to exact zero → <em>feature selection</em>.</li><li><strong>L2 Regularization (Ridge):</strong> Adds λΣw². Shrinks weights toward zero smoothly → handles multicollinearity.</li></ul>'
+      },
+      {
+        title: 'Classification Metrics & Confusion Matrix',
+        badge: 'Guaranteed Exam Topic',
+        body: '<table><thead><tr><th>Metric</th><th>Formula</th><th>When to Prioritize</th><th>Example</th></tr></thead><tbody><tr><td><strong>Accuracy</strong></td><td>(TP + TN) / Total</td><td>Balanced classes only</td><td>Digit recognition</td></tr><tr><td><strong>Precision</strong></td><td>TP / (TP + FP)</td><td>When False Positives are expensive</td><td>Spam detection, loan approval</td></tr><tr><td><strong>Recall (Sensitivity)</strong></td><td>TP / (TP + FN)</td><td>When False Negatives are dangerous</td><td>Cancer detection, fraud detection</td></tr><tr><td><strong>F1-Score</strong></td><td>2 · (P · R) / (P + R)</td><td>Imbalanced class trade-off</td><td>Medical diagnostics</td></tr><tr><td><strong>Specificity</strong></td><td>TN / (TN + FP)</td><td>True negative rate</td><td>Healthy patient screening</td></tr></tbody></table>'
+      },
+      {
+        title: 'Regression Evaluation Metrics',
+        badge: 'Math & Formulas',
+        body: '<ul><li><strong>MAE (Mean Absolute Error):</strong> <code>(1/n) Σ |y - ŷ|</code>. Same unit as target. Robust to outliers (linear penalty).</li><li><strong>MSE (Mean Squared Error):</strong> <code>(1/n) Σ (y - ŷ)²</code>. Heavily penalizes large outlier errors (quadratic penalty).</li><li><strong>RMSE:</strong> <code>sqrt(MSE)</code>. Interpretable in target units, widely preferred in gradient descent.</li><li><strong>R² Score (Coefficient of Determination):</strong> <code>1 - (SS_res / SS_tot)</code>. Range (-∞, 1]. R²=1 is perfect prediction; R²=0 means model predicts target mean ȳ.</li></ul>'
+      },
+      {
+        title: 'Decision Tree Splitting Criteria',
+        badge: 'Algorithmic Core',
+        body: '<ul><li><strong>Entropy:</strong> <code>H(S) = - Σ pᵢ log₂(pᵢ)</code>. Pure node has H=0; maximum uncertainty has H=1 (binary).</li><li><strong>Information Gain:</strong> <code>IG(S, A) = H(S) - Σ (|Sᵥ| / |S|) · H(Sᵥ)</code>. ID3 chooses attribute with maximum IG. Favors attributes with many distinct values!</li><li><strong>Gini Impurity:</strong> <code>Gini = 1 - Σ pᵢ²</code>. CART algorithm uses Gini. Pure node has Gini=0; binary maximum is 0.5. Computationally faster than Entropy (no log calculation).</li></ul>'
+      },
+      {
+        title: 'Clustering Comparison: K-Means vs DBSCAN',
+        badge: 'Unsupervised ML',
+        body: '<table><thead><tr><th>Aspect</th><th>K-Means</th><th>DBSCAN</th></tr></thead><tbody><tr><td><strong>Cluster Shape</strong></td><td>Spherical / Globular only</td><td>Arbitrary shapes (crescents, rings)</td></tr><tr><td><strong>Number of Clusters</strong></td><td>Must specify K beforehand</td><td>Discovers automatically from density</td></tr><tr><td><strong>Noise / Outliers</strong></td><td>Forces every point into a cluster</td><td>Explicitly identifies outliers as noise (-1)</td></tr><tr><td><strong>Parameters</strong></td><td>K, initialization method (K-Means++)</td><td>Epsilon (eps radius), MinPts (density)</td></tr><tr><td><strong>Validation</strong></td><td>Elbow method (Inertia sum of squares)</td><td>Silhouette score, density reachability</td></tr></tbody></table>'
+      },
+      {
+        title: 'Association Rule Mining (Apriori)',
+        badge: 'Exam Critical',
+        body: '<ul><li><strong>Support (A → B):</strong> <code>P(A ∩ B) = Count(A ∪ B) / Total Transactions</code>. Measures frequency.</li><li><strong>Confidence (A → B):</strong> <code>P(B | A) = Support(A ∪ B) / Support(A)</code>. Measures reliability of the implication.</li><li><strong>Lift (A → B):</strong> <code>Confidence(A → B) / Support(B) = P(A ∩ B) / (P(A) · P(B))</code>. Measures correlation:<ul><li><strong>Lift = 1:</strong> A and B are independent.</li><li><strong>Lift &gt; 1:</strong> Positive correlation (A increases chance of B).</li><li><strong>Lift &lt; 1:</strong> Negative correlation (substitutes).</li></ul></li></ul>'
+      },
+      {
+        title: 'Principal Component Analysis (PCA)',
+        badge: 'Dimensionality Reduction',
+        body: '<p>Linear unsupervised technique to project high-dimensional data onto orthogonal axes of maximum variance:</p><ol><li>Standardize data (mean = 0, variance = 1).</li><li>Compute Covariance Matrix <code>Σ = (1/n) XᵀX</code>.</li><li>Calculate Eigenvectors and Eigenvalues: <code>Σ v = λ v</code>.</li><li>Sort eigenvectors by eigenvalues in descending order. Eigenvector with largest λ is PC1.</li><li>Select top k components where cumulative explained variance ratio ≥ 90–95%.</li></ol>'
+      },
+      {
+        title: 'Reinforcement Learning & Bellman Equation',
+        badge: 'Modern AI',
+        body: '<ul><li><strong>Markov Decision Process (MDP):</strong> (S, A, P, R, γ) where future depends only on current state and action.</li><li><strong>Bellman Optimality Equation:</strong> <code>Q*(s, a) = R(s, a) + γ · maxₐ\' Q*(s\', a\')</code>.</li><li><strong>Q-Learning Update Rule:</strong> <code>Q(s, a) ← Q(s, a) + α [r + γ maxₐ\' Q(s\', a\') - Q(s, a)]</code> where α is learning rate, γ is discount factor.</li><li><strong>Exploration vs Exploitation:</strong> ε-greedy chooses random exploratory action with probability ε, greedy action with probability 1-ε.</li></ul>'
+      }
+    ],
+    traps: [
+      {
+        trap: 'KNN requires a heavy training phase before answering queries.',
+        correction: 'False. KNN is an instance-based "lazy learner." Training complexity is O(1) (simply storing data points). All computation (distance calculations and sorting) happens during inference time (O(n · d)).'
+      },
+      {
+        trap: 'Decision Tree classifiers require standardizing or normalizing numerical features.',
+        correction: 'False. Decision Trees split one feature at a time based solely on ordinal rank/order. Any monotonic transformation (e.g. min-max scaling, log scaling) leaves the split point order completely unchanged.'
+      },
+      {
+        trap: 'A 99% accuracy score proves a cancer detection model is excellent.',
+        correction: 'The Accuracy Paradox: In a dataset with 99 healthy patients and 1 cancer patient, a trivial dummy model predicting "Healthy" for everyone achieves 99% accuracy but 0% recall, failing to catch a single patient!'
+      },
+      {
+        trap: 'L1 (Lasso) and L2 (Ridge) regularization both remove irrelevant features.',
+        correction: 'False. L1 has sharp diamond-shaped constraint boundaries that force non-informative weights strictly to zero (feature selection). L2 has a circular L2 ball that shrinks weights close to zero, but keeps all features.'
+      },
+      {
+        trap: 'PCA selects the best subset of existing features from the dataset.',
+        correction: 'False. PCA is a feature *extraction* technique, not feature selection. It constructs brand-new synthetic components that are linear combinations of ALL original features.'
+      }
+    ],
+    quiz: [
+      {
+        id: 'aiml_q1',
+        q: 'In the 1956 Dartmouth workshop, who proposed the name "Artificial Intelligence", effectively founding the field?',
+        question: 'In the 1956 Dartmouth workshop, who proposed the name "Artificial Intelligence", effectively founding the field?',
+        options: ['Alan Turing', 'John McCarthy', 'Marvin Minsky', 'Arthur Samuel'],
+        correct: 1,
+        answer: 1,
+        why: 'John McCarthy organized the Dartmouth Summer Research Project on Artificial Intelligence in 1956 and coined the term.',
+        explanation: 'John McCarthy organized the Dartmouth Summer Research Project on Artificial Intelligence in 1956 and coined the term.'
+      },
+      {
+        id: 'aiml_q2',
+        q: 'Which classification metric MUST be prioritized when the cost of a False Negative is fatal (e.g., detecting malignant heart disease)?',
+        question: 'Which classification metric MUST be prioritized when the cost of a False Negative is fatal (e.g., detecting malignant heart disease)?',
+        options: ['Precision', 'Accuracy', 'Recall (Sensitivity)', 'Specificity'],
+        correct: 2,
+        answer: 2,
+        why: 'Recall = TP / (TP + FN). Maximizing recall minimizes False Negatives (cases where sick patients are mistakenly marked healthy).',
+        explanation: 'Recall = TP / (TP + FN). Maximizing recall minimizes False Negatives (cases where sick patients are mistakenly marked healthy).'
+      },
+      {
+        id: 'aiml_q3',
+        q: 'Why does L1 Regularization (Lasso) generate sparse weight vectors while L2 (Ridge) does not?',
+        question: 'Why does L1 Regularization (Lasso) generate sparse weight vectors while L2 (Ridge) does not?',
+        options: ['L1 uses quadratic penalty on weights', 'The L1 norm has diamond-shaped geometric corners along coordinate axes where gradient reaches zero', 'L1 requires neural network architectures', 'L1 is strictly for classification models'],
+        correct: 1,
+        answer: 1,
+        why: 'The geometric shape of the L1 ball has sharp corners on parameter axes, causing optimal contours to intersect exactly at zero.',
+        explanation: 'The geometric shape of the L1 ball has sharp corners on parameter axes, causing optimal contours to intersect exactly at zero.'
+      },
+      {
+        id: 'aiml_q4',
+        q: 'In K-Means clustering, what is the primary metric plotted against K in the "Elbow Method" to select the optimal cluster count?',
+        question: 'In K-Means clustering, what is the primary metric plotted against K in the "Elbow Method" to select the optimal cluster count?',
+        options: ['Silhouette Score', 'Inertia (Within-Cluster Sum of Squares, WCSS)', 'Information Gain', 'Davies-Bouldin Index'],
+        correct: 1,
+        answer: 1,
+        why: 'Inertia measures the sum of squared distances of samples to their closest cluster center. The elbow indicates diminishing returns.',
+        explanation: 'Inertia measures the sum of squared distances of samples to their closest cluster center. The elbow indicates diminishing returns.'
+      },
+      {
+        id: 'aiml_q5',
+        q: 'If association rule {Bread} → {Butter} has Support = 0.20, Support({Bread}) = 0.40, and Support({Butter}) = 0.50, what is the Lift of the rule?',
+        question: 'If association rule {Bread} → {Butter} has Support = 0.20, Support({Bread}) = 0.40, and Support({Butter}) = 0.50, what is the Lift of the rule?',
+        options: ['0.50', '1.00', '1.50', '2.00'],
+        correct: 1,
+        answer: 1,
+        why: 'Confidence = Support(Bread ∪ Butter) / Support(Bread) = 0.20 / 0.40 = 0.50. Lift = Confidence / Support(Butter) = 0.50 / 0.50 = 1.00 (Independent!).',
+        explanation: 'Confidence = Support(Bread ∪ Butter) / Support(Bread) = 0.20 / 0.40 = 0.50. Lift = Confidence / Support(Butter) = 0.50 / 0.50 = 1.00 (Independent!).'
+      },
+      {
+        id: 'aiml_q6',
+        q: 'Which agent type maintains an internal state to track aspects of the environment that are currently unobservable by sensors?',
+        question: 'Which agent type maintains an internal state to track aspects of the environment that are currently unobservable by sensors?',
+        options: ['Simple Reflex Agent', 'Model-Based Reflex Agent', 'Goal-Based Agent', 'Utility-Based Agent'],
+        correct: 1,
+        answer: 1,
+        why: 'Model-based reflex agents maintain an internal world state to handle partially observable environments.',
+        explanation: 'Model-based reflex agents maintain an internal world state to handle partially observable environments.'
+      },
+      {
+        id: 'aiml_q7',
+        q: 'What is the primary difference between Generative AI and Agentic AI?',
+        question: 'What is the primary difference between Generative AI and Agentic AI?',
+        options: ['Generative AI runs offline while Agentic AI requires GPUs', 'Generative AI is reactive content generation; Agentic AI proactively plans multi-step actions and uses tools autonomously', 'Generative AI does not use transformers', 'Agentic AI cannot produce text or code'],
+        correct: 1,
+        answer: 1,
+        why: 'Generative AI creates content from prompts; Agentic AI incorporates autonomous planning, tool execution, memory, and goal-driven action.',
+        explanation: 'Generative AI creates content from prompts; Agentic AI incorporates autonomous planning, tool execution, memory, and goal-driven action.'
+      },
+      {
+        id: 'aiml_q8',
+        q: 'In Reinforcement Learning, what parameter controls the balance between immediate reward and future discounted rewards in the Bellman equation?',
+        question: 'In Reinforcement Learning, what parameter controls the balance between immediate reward and future discounted rewards in the Bellman equation?',
+        options: ['Learning rate (alpha)', 'Epsilon (epsilon)', 'Discount factor (gamma)', 'Temperature (tau)'],
+        correct: 2,
+        answer: 2,
+        why: 'The discount factor γ (0 ≤ γ < 1) determines the present value of future rewards. γ=0 makes the agent myopic (only cares about immediate reward).',
+        explanation: 'The discount factor γ (0 ≤ γ < 1) determines the present value of future rewards. γ=0 makes the agent myopic (only cares about immediate reward).'
+      },
+      {
+        id: 'aiml_q9',
+        q: 'Which metric measures the purity of a node in the CART decision tree algorithm and is computationally faster than Entropy?',
+        question: 'Which metric measures the purity of a node in the CART decision tree algorithm and is computationally faster than Entropy?',
+        options: ['Information Gain Ratio', 'Gini Impurity', 'Chi-Square', 'Log-Loss'],
+        correct: 1,
+        answer: 1,
+        why: 'Gini Impurity = 1 - Σ pᵢ² requires no logarithmic computations, making it much faster than Shannon Entropy.',
+        explanation: 'Gini Impurity = 1 - Σ pᵢ² requires no logarithmic computations, making it much faster than Shannon Entropy.'
+      },
+      {
+        id: 'aiml_q10',
+        q: 'In Principal Component Analysis (PCA), what mathematical property is guaranteed for the relationship between the first and second principal components (PC1 and PC2)?',
+        question: 'In Principal Component Analysis (PCA), what mathematical property is guaranteed for the relationship between the first and second principal components (PC1 and PC2)?',
+        options: ['They have identical eigenvalues', 'They are strictly orthogonal (uncorrelated, dot product = 0)', 'They are parallel vectors', 'They sum to 1.0'],
+        correct: 1,
+        answer: 1,
+        why: 'Principal components are eigenvectors of a symmetric covariance matrix, making them mathematically orthogonal and uncorrelated.',
+        explanation: 'Principal components are eigenvectors of a symmetric covariance matrix, making them mathematically orthogonal and uncorrelated.'
+      }
+    ]
+  }
+};
+
+function getSyllabusPlan(subjectId) {
+  if (COURSE_SYLLABUS_DATA[subjectId]) return COURSE_SYLLABUS_DATA[subjectId];
+  const s = CONFIG.subjects[subjectId];
+  if (!s) return null;
+  const milestones = s.tabs.filter(t => !/practice|mcq/i.test(t.id)).map(t => ({
+    id: t.id,
+    title: (s.sectionNames && s.sectionNames[t.id]) || t.label,
+    lectures: t.label,
+    examScope: t.label,
+    color: 'blue',
+    units: [{
+      title: t.label,
+      topics: (Array.isArray(s.data?.[t.id]) ? s.data[t.id].map(x => x.title) : [t.label])
+    }]
+  }));
+  return {
+    code: s.code || s.shortLabel,
+    title: s.label,
+    credits: s.course?.credits || 3,
+    ltp: s.course?.ltp || '3-0-0',
+    hours: 45,
+    department: 'Engineering Department',
+    prereqs: 'Relevant Course Foundations',
+    grading: (s.course?.grading || []).map(([label, weight]) => ({ label, weight, note: '' })),
+    clos: [
+      { id: 'CLO01', desc: `Master the foundational and practical concepts of ${s.label}.`, lectures: 'Full Course' }
+    ],
+    milestones,
+    schedule14Days: [
+      { day: 'Day 1–5', focus: 'Foundations & Theory', target: 'Review core notes and concepts.' },
+      { day: 'Day 6–10', focus: 'Applications & Labs', target: 'Practice lab problems and code.' },
+      { day: 'Day 11–14', focus: 'Revision & MCQs', target: 'Complete test banks and review weaknesses.' }
+    ]
+  };
+}
+
+function getExamBoost(subjectId) {
+  if (EXAM_BOOST_DATA[subjectId]) return EXAM_BOOST_DATA[subjectId];
+  const s = CONFIG.subjects[subjectId];
+  if (!s) return null;
+  return {
+    title: `${s.label} Exam Boost`,
+    code: s.code || s.shortLabel,
+    cheats: [
+      {
+        title: 'Core Revision Summary',
+        badge: 'Essentials',
+        body: `<p>Focus on foundational definitions, edge cases, and time/space complexities for <strong>${escapeHtml(s.label)}</strong>.</p>`
+      }
+    ],
+    traps: [
+      {
+        trap: 'Rushing through question options without reading all choices.',
+        correction: 'Exam MCQs often place plausible distractors at option A. Always eliminate all choices methodically.'
+      }
+    ],
+    quiz: []
+  };
+}
+
+
+function renderStudyPlanContent(subjectId) {
+  const activeSubj = (subjectId === 'aiml' || subjectId === 'sysdesign') ? subjectId : (state.activeSubject === 'aiml' ? 'aiml' : 'sysdesign');
+  const plan = getSyllabusPlan(activeSubj);
+  if (!plan) return '<div class="plan-empty">No syllabus plan available.</div>';
+
+  const savedChecks = (typeof localStorage !== 'undefined' ? safeParse(localStorage.getItem('prep_plan_checklist'), {}) : {}) || {};
+  const subjChecks = savedChecks[activeSubj] || {};
+
+  const tabs = [
+    { id: 'sysdesign', label: 'System Design', code: '24CSE0318' },
+    { id: 'aiml', label: 'AI & Machine Learning', code: '24CSE0316' }
+  ];
+
+  const selector = `
+    <div class="plan-selector-bar">
+      ${tabs.map(t => `
+        <button type="button" class="plan-tab-btn fam-${t.id === 'sysdesign' ? 'mint' : 'lavender'}${t.id === activeSubj ? ' active' : ''}" data-plan-subject="${t.id}">
+          <span class="plan-tab-code">${t.code}</span>
+          <span class="plan-tab-label">${t.label}</span>
+        </button>
+      `).join('')}
+    </div>`;
+
+  const hero = `
+    <header class="plan-hero fam-${activeSubj === 'sysdesign' ? 'mint' : 'lavender'}">
+      <div class="plan-hero-head">
+        <span class="plan-badge">${escapeHtml(plan.code)}</span>
+        <span class="plan-hours">${plan.hours} Hours · ${plan.credits} Credits · L-T-P ${escapeHtml(plan.ltp)}</span>
+      </div>
+      <h1 class="plan-title">${escapeHtml(plan.title)}</h1>
+      <p class="plan-dept">${escapeHtml(plan.department)}</p>
+      <div class="plan-meta-strip">
+        <span class="plan-meta-item"><strong>Prerequisites:</strong> ${escapeHtml(plan.prereqs)}</span>
+        <span class="plan-meta-item"><strong>Attendance:</strong> Minimum 75% required for End Term eligibility</span>
+      </div>
+    </header>`;
+
+  const gradingRows = (plan.grading || []).map(g => `
+    <li class="plan-grade-item">
+      <div class="plan-grade-info">
+        <span class="plan-grade-title">${escapeHtml(g.label)}</span>
+        ${g.note ? `<span class="plan-grade-note">${escapeHtml(g.note)}</span>` : ''}
+      </div>
+      <div class="plan-grade-bar-wrap">
+        <span class="plan-grade-bar" aria-hidden="true"><span style="width: ${g.weight}%"></span></span>
+        <b>${g.weight}%</b>
+      </div>
+    </li>
+  `).join('');
+
+  const grading = `
+    <section class="plan-section">
+      <h2 class="plan-h2">Assessment &amp; Grading Scheme</h2>
+      <ul class="plan-grades-list">${gradingRows}</ul>
+    </section>`;
+
+  const cloRows = (plan.clos || []).map(clo => `
+    <li class="plan-clo-card">
+      <div class="plan-clo-tag">${escapeHtml(clo.id)}</div>
+      <div class="plan-clo-body">
+        <p class="plan-clo-desc">${escapeHtml(clo.desc)}</p>
+        <span class="plan-clo-scope">${escapeHtml(clo.lectures)}</span>
+      </div>
+    </li>
+  `).join('');
+
+  const clos = `
+    <section class="plan-section">
+      <h2 class="plan-h2">Course Learning Outcomes (CLOs)</h2>
+      <ul class="plan-clos-list">${cloRows}</ul>
+    </section>`;
+
+  const milestoneCards = (plan.milestones || []).map(m => `
+    <article class="plan-milestone-card fam-${m.color || 'blue'}">
+      <header class="plan-milestone-head">
+        <div>
+          <span class="plan-milestone-scope">${escapeHtml(m.examScope)}</span>
+          <h3 class="plan-milestone-title">${escapeHtml(m.title)}</h3>
+        </div>
+        <span class="plan-milestone-lectures">${escapeHtml(m.lectures)}</span>
+      </header>
+      <div class="plan-units-list">
+        ${(m.units || []).map(u => `
+          <div class="plan-unit-block">
+            <h4 class="plan-unit-title">${escapeHtml(u.title)}</h4>
+            <ul class="plan-unit-topics">
+              ${(u.topics || []).map(top => `<li>${escapeHtml(top)}</li>`).join('')}
+            </ul>
+          </div>
+        `).join('')}
+      </div>
+    </article>
+  `).join('');
+
+  const milestones = `
+    <section class="plan-section">
+      <h2 class="plan-h2">Sessional &amp; Examination Milestones</h2>
+      <div class="plan-milestones-grid">${milestoneCards}</div>
+    </section>`;
+
+  const scheduleItems = (plan.schedule14Days || []).map((s, idx) => {
+    const checked = !!subjChecks[idx];
+    return `
+      <li class="plan-schedule-item${checked ? ' is-done' : ''}">
+        <label class="plan-schedule-label">
+          <input type="checkbox" class="plan-check-input" data-plan-check="${activeSubj}" data-plan-day="${idx}" ${checked ? 'checked' : ''}>
+          <span class="plan-schedule-checkbox"></span>
+          <span class="plan-schedule-day">${escapeHtml(s.day)}</span>
+        </label>
+        <div class="plan-schedule-content">
+          <strong class="plan-schedule-focus">${escapeHtml(s.focus)}</strong>
+          <p class="plan-schedule-target">${escapeHtml(s.target)}</p>
+        </div>
+      </li>
+    `;
+  }).join('');
+
+  const schedule = `
+    <section class="plan-section">
+      <div class="plan-section-head">
+        <h2 class="plan-h2">14-Day Exam Revision Roadmap</h2>
+        <span class="plan-schedule-count" id="plan-schedule-count">${Object.values(subjChecks).filter(Boolean).length} / ${(plan.schedule14Days || []).length} days completed</span>
+      </div>
+      <p class="plan-section-sub">A focused day-by-day sprint to master all core concepts before the exam. Check items as you complete them.</p>
+      <ul class="plan-schedule-list">${scheduleItems}</ul>
+    </section>`;
+
+  return `
+    <div class="plan-container" data-active-subject="${activeSubj}">
+      ${selector}
+      ${hero}
+      ${grading}
+      ${clos}
+      ${milestones}
+      ${schedule}
+    </div>`;
+}
+
+function renderExamBoostContent(subjectId, activeTab = 'cheats') {
+  const activeSubj = (subjectId === 'aiml' || subjectId === 'sysdesign') ? subjectId : (state.activeSubject === 'aiml' ? 'aiml' : 'sysdesign');
+  const boost = getExamBoost(activeSubj);
+  if (!boost) return '<div class="boost-empty">No exam boost available.</div>';
+
+  const savedQuiz = (typeof localStorage !== 'undefined' ? safeParse(localStorage.getItem(`prep_boost_quiz_${activeSubj}`), {}) : {}) || {};
+  const answeredCount = Object.keys(savedQuiz).length;
+  let correctCount = 0;
+  (boost.quiz || []).forEach((q, qIndex) => {
+    const qid = q.id || `${activeSubj}_q${qIndex + 1}`;
+    const correctAns = typeof q.answer === 'number' ? q.answer : q.correct;
+    if (savedQuiz[qid] === correctAns) correctCount++;
+  });
+
+  const tabs = [
+    { id: 'sysdesign', label: 'System Design', code: '24CSE0318' },
+    { id: 'aiml', label: 'AI & Machine Learning', code: '24CSE0316' }
+  ];
+
+  const selector = `
+    <div class="boost-selector-bar">
+      ${tabs.map(t => `
+        <button type="button" class="plan-tab-btn fam-${t.id === 'sysdesign' ? 'mint' : 'lavender'}${t.id === activeSubj ? ' active' : ''}" data-boost-subject="${t.id}">
+          <span class="plan-tab-code">${t.code}</span>
+          <span class="plan-tab-label">${t.label}</span>
+        </button>
+      `).join('')}
+    </div>`;
+
+  const nav = `
+    <div class="boost-nav-tabs" role="tablist">
+      <button type="button" role="tab" class="boost-tab-btn${activeTab === 'cheats' ? ' active' : ''}" data-boost-tab="cheats" aria-selected="${activeTab === 'cheats'}">
+        High-Yield Cheats (${(boost.cheats || []).length})
+      </button>
+      <button type="button" role="tab" class="boost-tab-btn${activeTab === 'traps' ? ' active' : ''}" data-boost-tab="traps" aria-selected="${activeTab === 'traps'}">
+        Exam Traps (${(boost.traps || []).length})
+      </button>
+      <button type="button" role="tab" class="boost-tab-btn${activeTab === 'quiz' ? ' active' : ''}" data-boost-tab="quiz" aria-selected="${activeTab === 'quiz'}">
+        Rapid Boost Quiz (${answeredCount}/${(boost.quiz || []).length})
+      </button>
+    </div>`;
+
+  let body = '';
+  if (activeTab === 'cheats') {
+    body = `
+      <div class="boost-cheats-grid">
+        ${(boost.cheats || []).map((c, i) => `
+          <article class="boost-card fam-${ATLAS_FAM_CYCLE[i % ATLAS_FAM_CYCLE.length]}">
+            <header class="boost-card-head">
+              <span class="boost-card-badge">${escapeHtml(c.badge || 'Core')}</span>
+              <h3 class="boost-card-title">${escapeHtml(c.title)}</h3>
+            </header>
+            <div class="boost-card-body">${c.body}</div>
+          </article>
+        `).join('')}
+      </div>`;
+  } else if (activeTab === 'traps') {
+    body = `
+      <div class="boost-traps-list">
+        <p class="boost-intro">Common pitfalls where students lose marks in tests and examinations. Review these traps before entering the hall.</p>
+        ${(boost.traps || []).map((t, i) => `
+          <article class="boost-trap-card">
+            <div class="boost-trap-side trap-pitfall fam-blush">
+              <span class="boost-trap-label">Exam Trap #${i + 1}</span>
+              <h4 class="boost-trap-heading">Common Mistake</h4>
+              <p class="boost-trap-text">${escapeHtml(t.trap)}</p>
+            </div>
+            <div class="boost-trap-side trap-fix fam-mint">
+              <span class="boost-trap-label">Scoring Solution</span>
+              <h4 class="boost-trap-heading">Correct Understanding</h4>
+              <p class="boost-trap-text">${escapeHtml(t.correction)}</p>
+            </div>
+          </article>
+        `).join('')}
+      </div>`;
+  } else if (activeTab === 'quiz') {
+    body = `
+      <div class="boost-quiz-container">
+        <header class="boost-quiz-header">
+          <div>
+            <h3 class="boost-quiz-title">10-Minute Rapid Concept Sprint</h3>
+            <p class="boost-quiz-sub">Immediate answers and explanations designed to test your mental models.</p>
+          </div>
+          <div class="boost-quiz-score-box">
+            <span class="boost-quiz-score-val">${correctCount} / ${(boost.quiz || []).length}</span>
+            <span class="boost-quiz-score-lbl">Correct</span>
+            ${answeredCount > 0 ? `<button type="button" class="boost-quiz-reset-btn" data-quiz-reset="${activeSubj}">Reset</button>` : ''}
+          </div>
+        </header>
+        <div class="boost-quiz-list">
+          ${(boost.quiz || []).map((q, qIndex) => {
+            const qid = q.id || `${activeSubj}_q${qIndex + 1}`;
+            const questionText = q.question || q.q || '';
+            const correctAns = typeof q.answer === 'number' ? q.answer : q.correct;
+            const explanationText = q.explanation || q.why || '';
+            const userChoice = savedQuiz[qid];
+            const isAnswered = typeof userChoice === 'number';
+            return `
+              <article class="boost-quiz-card${isAnswered ? ' is-answered' : ''}">
+                <div class="boost-quiz-qhead">
+                  <span class="boost-quiz-qnum">Question ${qIndex + 1}</span>
+                  <p class="boost-quiz-qtext">${escapeHtml(questionText)}</p>
+                </div>
+                <div class="boost-quiz-opts">
+                  ${(q.options || []).map((opt, optIndex) => {
+                    let optClass = 'boost-opt-btn';
+                    if (isAnswered) {
+                      if (optIndex === correctAns) optClass += ' is-correct';
+                      else if (optIndex === userChoice) optClass += ' is-incorrect';
+                    }
+                    return `
+                      <button type="button" class="${optClass}" data-quiz-subj="${activeSubj}" data-quiz-qid="${escapeHtml(qid)}" data-quiz-opt="${optIndex}" ${isAnswered ? 'disabled' : ''}>
+                        <span class="boost-opt-letter">${String.fromCharCode(65 + optIndex)}</span>
+                        <span class="boost-opt-text">${escapeHtml(opt)}</span>
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+                ${isAnswered ? `
+                  <div class="boost-quiz-expl fam-${userChoice === correctAns ? 'mint' : 'blush'}">
+                    <strong>${userChoice === correctAns ? '✓ Correct!' : '✗ Not quite.'}</strong>
+                    <span>${escapeHtml(explanationText)}</span>
+                  </div>
+                ` : ''}
+              </article>
+            `;
+          }).join('')}
+        </div>
+      </div>`;
+  }
+
+  return `
+    <div class="boost-container" data-active-subject="${activeSubj}" data-active-tab="${activeTab}">
+      ${selector}
+      ${nav}
+      ${body}
+    </div>`;
+}
+
+// ============================================================
+//  ANONYMOUS VISITOR ANALYTICS ENGINE
+//  Completely decoupled from Google Sign-In / Firebase Auth.
+// ============================================================
+
+const VISITOR_ALIASES = ['Falcon', 'Atlas', 'Sage', 'Nova', 'Cedar', 'Orion', 'Echo', 'Summit', 'Comet', 'River', 'Pioneer', 'Horizon'];
+let analyticsHeartbeatTimer = null;
+let lastInteractionTimestamp = Date.now();
+let analyticsInitialized = false;
+
+function getLocalDateKey(date = new Date()) {
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function getAnalyticsVisitorId() {
+  try {
+    let id = localStorage.getItem('prep_visitor_id');
+    if (!id || typeof id !== 'string' || !id.startsWith('vis_')) {
+      id = 'vis_' + Math.random().toString(36).substring(2, 6) + Date.now().toString(36).substring(4);
+      localStorage.setItem('prep_visitor_id', id);
+    }
+    return id;
+  } catch (_) {
+    return 'vis_anonymous';
+  }
+}
+
+function getAnalyticsVisitorAlias(vid) {
+  try {
+    let alias = localStorage.getItem('prep_visitor_alias');
+    if (!alias) {
+      let hash = 0;
+      for (let i = 0; i < (vid || '').length; i++) hash = ((hash << 5) - hash) + vid.charCodeAt(i);
+      const num = Math.abs(hash % 90) + 10;
+      const word = VISITOR_ALIASES[Math.abs(hash) % VISITOR_ALIASES.length];
+      alias = `Guest-${word}-${num}`;
+      localStorage.setItem('prep_visitor_alias', alias);
+    }
+    return alias;
+  } catch (_) {
+    return 'Guest-Scholar';
+  }
+}
+
+function getAnalyticsData() {
+  const vid = getAnalyticsVisitorId();
+  const alias = getAnalyticsVisitorAlias(vid);
+  let data = null;
+  try {
+    const raw = localStorage.getItem('prep_analytics_data');
+    if (raw) data = JSON.parse(raw);
+  } catch (_) {}
+  if (!data || typeof data !== 'object') {
+    data = {
+      visitorId: vid,
+      alias: alias,
+      firstSeen: Date.now(),
+      lastActive: Date.now(),
+      totalVisits: 0,
+      totalSecondsStudied: 0,
+      totalTopicsViewed: 0,
+      quizzesAnsweredCount: 0,
+      quizzesCorrectCount: 0,
+      daily: {},
+      subjects: {},
+      readingModes: { foundations: 0, deepdive: 0 },
+      sessions: []
+    };
+  }
+  if (!data.visitorId) data.visitorId = vid;
+  if (!data.alias) data.alias = alias;
+  if (!data.daily || typeof data.daily !== 'object') data.daily = {};
+  if (!data.subjects || typeof data.subjects !== 'object') data.subjects = {};
+  if (!data.readingModes || typeof data.readingModes !== 'object') data.readingModes = { foundations: 0, deepdive: 0 };
+  if (!Array.isArray(data.sessions)) data.sessions = [];
+  return data;
+}
+
+function saveAnalyticsData(data) {
+  if (!data || typeof data !== 'object') return;
+  try {
+    localStorage.setItem('prep_analytics_data', JSON.stringify(data));
+  } catch (_) {}
+}
+
+function initVisitorAnalytics() {
+  if (analyticsInitialized) return;
+  analyticsInitialized = true;
+  const vid = getAnalyticsVisitorId();
+  const alias = getAnalyticsVisitorAlias(vid);
+  const data = getAnalyticsData();
+  const todayKey = getLocalDateKey();
+  data.daily[todayKey] = data.daily[todayKey] || { visits: 0, studySeconds: 0, topicsViewed: 0, quizzesAnswered: 0, quizCorrect: 0 };
+
+  const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
+  const now = Date.now();
+  const mostRecentSession = data.sessions[0];
+  const isNewSession = !mostRecentSession || (now - (data.lastActive || 0) > SESSION_TIMEOUT_MS);
+
+  if (isNewSession) {
+    data.totalVisits = (data.totalVisits || 0) + 1;
+    data.daily[todayKey].visits = (data.daily[todayKey].visits || 0) + 1;
+    data.sessions.forEach(s => s.active = false);
+    const newSession = {
+      id: 'ses_' + Math.random().toString(36).substring(2, 9),
+      visitorId: vid,
+      alias: alias,
+      sessionNumber: data.totalVisits,
+      startTime: now,
+      endTime: now,
+      durationSeconds: 0,
+      topicsViewed: 0,
+      topicTitles: [],
+      quizzesAnswered: 0,
+      quizCorrect: 0,
+      subjects: [],
+      device: (typeof navigator !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent)) ? 'Mobile' : 'Desktop',
+      active: true
+    };
+    data.sessions.unshift(newSession);
+    data.sessions = data.sessions.slice(0, 50);
+    try {
+      if (typeof fetch === 'function') {
+        fetch('/api/analytics', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newSession)
+        }).catch(() => {});
+      }
+    } catch (_) {}
+  } else {
+    mostRecentSession.active = true;
+    mostRecentSession.endTime = now;
+  }
+  data.lastActive = now;
+  saveAnalyticsData(data);
+
+  if (typeof window !== 'undefined') {
+    const onActivity = () => { lastInteractionTimestamp = Date.now(); };
+    ['mousemove', 'keydown', 'scroll', 'click', 'touchstart'].forEach(evt => {
+      window.addEventListener(evt, onActivity, { passive: true });
+    });
+    if (!analyticsHeartbeatTimer) {
+      analyticsHeartbeatTimer = setInterval(heartbeatAnalytics, 5000);
+    }
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+          const d = getAnalyticsData();
+          d.lastActive = Date.now();
+          if (d.sessions[0] && d.sessions[0].active) {
+            d.sessions[0].endTime = Date.now();
+          }
+          saveAnalyticsData(d);
+        }
+      });
+    }
+  }
+}
+
+function heartbeatAnalytics() {
+  if (typeof document !== 'undefined' && document.hidden) return;
+  const now = Date.now();
+  if (now - lastInteractionTimestamp > 90000) return; // idle
+  addAnalyticsStudySeconds(5);
+}
+
+function addAnalyticsStudySeconds(seconds = 5) {
+  try {
+    const data = getAnalyticsData();
+    const todayKey = getLocalDateKey();
+    data.daily[todayKey] = data.daily[todayKey] || { visits: 1, studySeconds: 0, topicsViewed: 0, quizzesAnswered: 0, quizCorrect: 0 };
+    data.totalSecondsStudied = (data.totalSecondsStudied || 0) + seconds;
+    data.daily[todayKey].studySeconds = (data.daily[todayKey].studySeconds || 0) + seconds;
+
+    if (typeof state !== 'undefined' && state.activeSubject) {
+      const subj = state.activeSubject;
+      data.subjects[subj] = data.subjects[subj] || { studySeconds: 0, topicsViewed: 0, quizzesAnswered: 0, quizCorrect: 0 };
+      data.subjects[subj].studySeconds = (data.subjects[subj].studySeconds || 0) + seconds;
+    }
+
+    const mode = (typeof getActiveReadingMode === 'function') ? getActiveReadingMode() : 'foundations';
+    data.readingModes = data.readingModes || { foundations: 0, deepdive: 0 };
+    data.readingModes[mode] = (data.readingModes[mode] || 0) + seconds;
+
+    const currentSession = data.sessions[0];
+    if (currentSession) {
+      currentSession.durationSeconds = (currentSession.durationSeconds || 0) + seconds;
+      currentSession.endTime = Date.now();
+    }
+    data.lastActive = Date.now();
+    saveAnalyticsData(data);
+  } catch (_) {}
+}
+
+function trackAnalyticsTopicView(subject, section, topicIndex, topicTitle) {
+  try {
+    const data = getAnalyticsData();
+    const todayKey = getLocalDateKey();
+    data.daily[todayKey] = data.daily[todayKey] || { visits: 1, studySeconds: 0, topicsViewed: 0, quizzesAnswered: 0, quizCorrect: 0 };
+    data.subjects[subject] = data.subjects[subject] || { studySeconds: 0, topicsViewed: 0, quizzesAnswered: 0, quizCorrect: 0 };
+
+    data.totalTopicsViewed = (data.totalTopicsViewed || 0) + 1;
+    data.daily[todayKey].topicsViewed = (data.daily[todayKey].topicsViewed || 0) + 1;
+    data.subjects[subject].topicsViewed = (data.subjects[subject].topicsViewed || 0) + 1;
+
+    const currentSession = data.sessions[0];
+    if (currentSession) {
+      currentSession.topicsViewed = (currentSession.topicsViewed || 0) + 1;
+      if (topicTitle && !(currentSession.topicTitles || []).includes(topicTitle)) {
+        currentSession.topicTitles = [...(currentSession.topicTitles || []), topicTitle].slice(-10);
+      }
+      if (subject && !(currentSession.subjects || []).includes(subject)) {
+        currentSession.subjects = [...(currentSession.subjects || []), subject];
+      }
+      currentSession.endTime = Date.now();
+    }
+    data.lastActive = Date.now();
+    saveAnalyticsData(data);
+  } catch (_) {}
+}
+
+function trackAnalyticsQuizAnswer(subject, qid, isCorrect) {
+  try {
+    const data = getAnalyticsData();
+    const todayKey = getLocalDateKey();
+    data.daily[todayKey] = data.daily[todayKey] || { visits: 1, studySeconds: 0, topicsViewed: 0, quizzesAnswered: 0, quizCorrect: 0 };
+    data.subjects[subject] = data.subjects[subject] || { studySeconds: 0, topicsViewed: 0, quizzesAnswered: 0, quizCorrect: 0 };
+
+    data.quizzesAnsweredCount = (data.quizzesAnsweredCount || 0) + 1;
+    if (isCorrect) data.quizzesCorrectCount = (data.quizzesCorrectCount || 0) + 1;
+
+    data.daily[todayKey].quizzesAnswered = (data.daily[todayKey].quizzesAnswered || 0) + 1;
+    if (isCorrect) data.daily[todayKey].quizCorrect = (data.daily[todayKey].quizCorrect || 0) + 1;
+
+    data.subjects[subject].quizzesAnswered = (data.subjects[subject].quizzesAnswered || 0) + 1;
+    if (isCorrect) data.subjects[subject].quizCorrect = (data.subjects[subject].quizCorrect || 0) + 1;
+
+    const currentSession = data.sessions[0];
+    if (currentSession) {
+      currentSession.quizzesAnswered = (currentSession.quizzesAnswered || 0) + 1;
+      if (isCorrect) currentSession.quizCorrect = (currentSession.quizCorrect || 0) + 1;
+      if (subject && !(currentSession.subjects || []).includes(subject)) {
+        currentSession.subjects = [...(currentSession.subjects || []), subject];
+      }
+      currentSession.endTime = Date.now();
+    }
+    data.lastActive = Date.now();
+    saveAnalyticsData(data);
+  } catch (_) {}
+}
+
+function trackAnalyticsModeChange(mode) {
+  try {
+    const data = getAnalyticsData();
+    data.readingModes = data.readingModes || { foundations: 0, deepdive: 0 };
+    data.lastActive = Date.now();
+    saveAnalyticsData(data);
+  } catch (_) {}
+}
+
+function getAnalyticsSummary() {
+  const data = getAnalyticsData();
+  const sessions = data.sessions || [];
+  const uniqueVisitors = new Set(sessions.map(s => s.visitorId).filter(Boolean)).size || 1;
+  return {
+    visitorId: data.visitorId,
+    alias: data.alias,
+    firstSeen: data.firstSeen,
+    lastActive: data.lastActive,
+    totalVisits: Math.max(1, data.totalVisits || sessions.length || 1),
+    uniqueVisitors: uniqueVisitors,
+    totalSecondsStudied: data.totalSecondsStudied || 0,
+    topicsReadCount: data.totalTopicsViewed || 0,
+    quizzesAnsweredCount: data.quizzesAnsweredCount || 0,
+    quizzesCorrectCount: data.quizzesCorrectCount || 0
+  };
+}
+
+function getAnalyticsSessions() {
+  const data = getAnalyticsData();
+  return data.sessions || [];
+}
+
+function seedCohortVisitorData() {
+  const data = getAnalyticsData();
+  const now = Date.now();
+  const dayMs = 86400000;
+
+  const sampleIds = new Set(['ses_sample_1', 'ses_sample_2', 'ses_sample_3', 'ses_sample_4']);
+  const hadSampleCohort = (data.sessions || []).some(s => sampleIds.has(s.id));
+
+  const sampleCohort = [
+    {
+      id: 'ses_sample_1',
+      visitorId: 'vis_7e21a8',
+      alias: 'Guest-Sage-42',
+      sessionNumber: 3,
+      startTime: now - (2 * dayMs + 3600000 * 4),
+      endTime: now - (2 * dayMs + 3600000 * 3),
+      durationSeconds: 2890,
+      topicsViewed: 5,
+      topicTitles: ['Consistent Hashing', 'CAP Theorem', 'Database Sharding'],
+      quizzesAnswered: 12,
+      quizCorrect: 10,
+      subjects: ['sysdesign', 'algo'],
+      device: 'Desktop',
+      active: false
+    },
+    {
+      id: 'ses_sample_2',
+      visitorId: 'vis_b39d12',
+      alias: 'Guest-Nova-19',
+      sessionNumber: 6,
+      startTime: now - (dayMs + 3600000 * 2),
+      endTime: now - (dayMs + 3600000 * 1),
+      durationSeconds: 4920,
+      topicsViewed: 8,
+      topicTitles: ['Linear Regression', 'Bias-Variance Tradeoff', 'PCA Essentials'],
+      quizzesAnswered: 18,
+      quizCorrect: 16,
+      subjects: ['aiml', 'java_abstractions'],
+      device: 'Desktop',
+      active: false
+    },
+    {
+      id: 'ses_sample_3',
+      visitorId: 'vis_5c80ef',
+      alias: 'Guest-Cedar-88',
+      sessionNumber: 2,
+      startTime: now - (3600000 * 3),
+      endTime: now - (3600000 * 2),
+      durationSeconds: 1965,
+      topicsViewed: 4,
+      topicTitles: ['File Permissions', 'Process Lifecycle', 'Shell Piping'],
+      quizzesAnswered: 10,
+      quizCorrect: 9,
+      subjects: ['linux', 'cn'],
+      device: 'Mobile',
+      active: false
+    },
+    {
+      id: 'ses_sample_4',
+      visitorId: 'vis_d41a77',
+      alias: 'Guest-Orion-63',
+      sessionNumber: 4,
+      startTime: now - (3600000 * 1),
+      endTime: now - (3600000 * 0.5),
+      durationSeconds: 1780,
+      topicsViewed: 3,
+      topicTitles: ['TCP vs UDP', 'OSI Layer Protocol Stack'],
+      quizzesAnswered: 8,
+      quizCorrect: 7,
+      subjects: ['cn', 'sysdesign'],
+      device: 'Desktop',
+      active: false
+    }
+  ];
+
+  const nonSampleSessions = (data.sessions || []).filter(s => !sampleIds.has(s.id));
+  data.sessions = [
+    ...nonSampleSessions.filter(s => s.active),
+    ...sampleCohort,
+    ...nonSampleSessions.filter(s => !s.active)
+  ].slice(0, 50);
+
+  if (!hadSampleCohort) {
+    data.totalVisits = Math.max(data.totalVisits || 1, data.sessions.length);
+    data.totalSecondsStudied = (data.totalSecondsStudied || 0) + 11555;
+    data.totalTopicsViewed = (data.totalTopicsViewed || 0) + 20;
+    data.quizzesAnsweredCount = (data.quizzesAnsweredCount || 0) + 48;
+    data.quizzesCorrectCount = (data.quizzesCorrectCount || 0) + 42;
+
+    const day1Key = getLocalDateKey(now - 2 * dayMs);
+    const day2Key = getLocalDateKey(now - dayMs);
+    const day3Key = getLocalDateKey(now);
+
+    data.daily[day1Key] = data.daily[day1Key] || { visits: 2, studySeconds: 3200, topicsViewed: 6, quizzesAnswered: 12, quizCorrect: 10 };
+    data.daily[day2Key] = data.daily[day2Key] || { visits: 3, studySeconds: 5100, topicsViewed: 9, quizzesAnswered: 18, quizCorrect: 16 };
+    data.daily[day3Key] = data.daily[day3Key] || { visits: 2, studySeconds: 2400, topicsViewed: 5, quizzesAnswered: 10, quizCorrect: 9 };
+
+    data.subjects.sysdesign = data.subjects.sysdesign || { studySeconds: 3200, topicsViewed: 6, quizzesAnswered: 12, quizCorrect: 10 };
+    data.subjects.aiml = data.subjects.aiml || { studySeconds: 3800, topicsViewed: 7, quizzesAnswered: 15, quizCorrect: 14 };
+    data.subjects.algo = data.subjects.algo || { studySeconds: 1900, topicsViewed: 4, quizzesAnswered: 8, quizCorrect: 7 };
+    data.subjects.linux = data.subjects.linux || { studySeconds: 1800, topicsViewed: 4, quizzesAnswered: 10, quizCorrect: 9 };
+    data.cohortSeeded = true;
+  }
+
+  saveAnalyticsData(data);
+}
+
+function resetAnalyticsData() {
+  try {
+    const vid = getAnalyticsVisitorId();
+    const alias = getAnalyticsVisitorAlias(vid);
+    localStorage.removeItem('prep_analytics_data');
+    const now = Date.now();
+    const todayKey = getLocalDateKey(now);
+    const fresh = {
+      visitorId: vid,
+      alias: alias,
+      firstSeen: now,
+      lastActive: now,
+      totalVisits: 1,
+      totalSecondsStudied: 0,
+      totalTopicsViewed: 0,
+      quizzesAnsweredCount: 0,
+      quizzesCorrectCount: 0,
+      daily: {
+        [todayKey]: { visits: 1, studySeconds: 0, topicsViewed: 0, quizzesAnswered: 0, quizCorrect: 0 }
+      },
+      subjects: {},
+      readingModes: { foundations: 0, deepdive: 0 },
+      sessions: [
+        {
+          id: 'ses_' + Math.random().toString(36).substring(2, 9),
+          visitorId: vid,
+          alias: alias,
+          sessionNumber: 1,
+          startTime: now,
+          endTime: now,
+          durationSeconds: 0,
+          topicsViewed: 0,
+          topicTitles: [],
+          quizzesAnswered: 0,
+          quizCorrect: 0,
+          subjects: [],
+          device: (typeof navigator !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent)) ? 'Mobile' : 'Desktop',
+          active: true
+        }
+      ]
+    };
+    saveAnalyticsData(fresh);
+  } catch (_) {}
+}
+
+function importAnalyticsData(imported) {
+  if (!imported || typeof imported !== 'object') return false;
+  try {
+    const current = getAnalyticsData();
+    const existingIds = new Set((current.sessions || []).map(s => s.id));
+    const newSessions = (imported.sessions || []).filter(s => s && s.id && !existingIds.has(s.id));
+    current.sessions = [...(current.sessions || []), ...newSessions].sort((a, b) => (b.startTime || 0) - (a.startTime || 0)).slice(0, 50);
+
+    Object.entries(imported.daily || {}).forEach(([day, rec]) => {
+      current.daily[day] = current.daily[day] || { visits: 0, studySeconds: 0, topicsViewed: 0, quizzesAnswered: 0, quizCorrect: 0 };
+      current.daily[day].visits += (rec.visits || 0);
+      current.daily[day].studySeconds += (rec.studySeconds || 0);
+      current.daily[day].topicsViewed += (rec.topicsViewed || 0);
+      current.daily[day].quizzesAnswered += (rec.quizzesAnswered || 0);
+      current.daily[day].quizCorrect += (rec.quizCorrect || 0);
+    });
+
+    Object.entries(imported.subjects || {}).forEach(([subj, rec]) => {
+      current.subjects[subj] = current.subjects[subj] || { studySeconds: 0, topicsViewed: 0, quizzesAnswered: 0, quizCorrect: 0 };
+      current.subjects[subj].studySeconds += (rec.studySeconds || 0);
+      current.subjects[subj].topicsViewed += (rec.topicsViewed || 0);
+      current.subjects[subj].quizzesAnswered += (rec.quizzesAnswered || 0);
+      current.subjects[subj].quizCorrect += (rec.quizCorrect || 0);
+    });
+
+    current.totalVisits = Math.max(current.totalVisits || 1, current.sessions.length);
+    current.totalSecondsStudied = (current.totalSecondsStudied || 0) + (imported.totalSecondsStudied || 0);
+    current.totalTopicsViewed = (current.totalTopicsViewed || 0) + (imported.totalTopicsViewed || 0);
+    current.quizzesAnsweredCount = (current.quizzesAnsweredCount || 0) + (imported.quizzesAnsweredCount || 0);
+    current.quizzesCorrectCount = (current.quizzesCorrectCount || 0) + (imported.quizzesCorrectCount || 0);
+
+    saveAnalyticsData(current);
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+function exportAnalyticsData() {
+  try {
+    const data = getAnalyticsData();
+    const json = JSON.stringify(data, null, 2);
+    if (typeof URL !== 'undefined' && typeof URL.createObjectURL === 'function' && typeof Blob !== 'undefined' && typeof document !== 'undefined') {
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `prep-visitor-analytics-${getLocalDateKey()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  } catch (_) {}
+}
+
+function formatStudyDuration(seconds = 0) {
+  const s = Math.max(0, Math.floor(Number(seconds) || 0));
+  if (s < 60) return `${s}s`;
+  const m = Math.floor(s / 60);
+  if (m < 60) {
+    const rem = s % 60;
+    return rem ? `${m}m ${rem}s` : `${m}m`;
+  }
+  const h = Math.floor(m / 60);
+  const remM = m % 60;
+  return remM ? `${h}h ${remM}m` : `${h}h`;
+}
+
+function formatRelativeTime(timestamp) {
+  if (!timestamp || isNaN(timestamp)) return 'Just now';
+  const diffSec = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
+  if (diffSec < 60) return 'Just now';
+  if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`;
+  if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`;
+  const days = Math.floor(diffSec / 86400);
+  return days === 1 ? 'Yesterday' : `${days}d ago`;
+}
+
+function formatDateTime(timestamp) {
+  if (!timestamp || isNaN(timestamp)) return '';
+  const d = new Date(timestamp);
+  if (isNaN(d.getTime())) return '';
+  return d.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+}
+
+function svgDailyActivityBarChart(dailyHistory = {}) {
+  const days = [];
+  const now = Date.now();
+  const dayMs = 86400000;
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date(now - i * dayMs);
+    const key = getLocalDateKey(d);
+    const rec = dailyHistory[key] || { studySeconds: 0, visits: 0 };
+    const mins = Math.round((rec.studySeconds || 0) / 60);
+    const dayName = i === 0 ? 'Today' : (i === 1 ? 'Yest' : d.toLocaleDateString([], { weekday: 'short' }));
+    const dateNum = d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    days.push({ key, mins, visits: rec.visits || 0, dayName, dateNum });
+  }
+
+  const maxMins = Math.max(60, ...days.map(d => d.mins));
+  const chartHeight = 110;
+  const barWidth = 24;
+  const gap = 16;
+  const totalWidth = days.length * (barWidth + gap);
+
+  const bars = days.map((day, idx) => {
+    const x = idx * (barWidth + gap) + 10;
+    const h = day.mins > 0 ? Math.max(6, Math.round((day.mins / maxMins) * chartHeight)) : 3;
+    const y = chartHeight - h + 15;
+    const isToday = idx === 13;
+    const fill = isToday ? 'var(--lavender-ink)' : 'color-mix(in srgb, var(--lavender-ink) 55%, var(--line))';
+    const valText = day.mins > 0 ? `<text x="${x + barWidth / 2}" y="${y - 4}" text-anchor="middle" font-size="9" font-weight="600" fill="var(--muted)">${day.mins}m</text>` : '';
+    return `
+      <g class="analytics-bar-group" data-day="${day.key}">
+        <title>${day.dateNum}: ${day.mins} min studied, ${day.visits} session(s)</title>
+        <rect x="${x}" y="${y}" width="${barWidth}" height="${h}" rx="3" fill="${fill}" />
+        ${valText}
+        <text x="${x + barWidth / 2}" y="${chartHeight + 30}" text-anchor="middle" font-size="10" font-weight="${isToday ? '600' : '400'}" fill="${isToday ? 'var(--ink)' : 'var(--muted)'}">${day.dayName}</text>
+      </g>
+    `;
+  }).join('');
+
+  return `
+    <svg viewBox="0 0 ${totalWidth + 20} 155" width="100%" height="155" aria-label="14-day study activity bar chart" role="img">
+      <line x1="0" y1="${chartHeight + 15}" x2="${totalWidth + 20}" y2="${chartHeight + 15}" stroke="var(--line)" stroke-width="1" />
+      ${bars}
+    </svg>
+  `;
+}
+
+function renderSubjectEngagementList(subjectData = {}) {
+  const subjects = Object.keys(CONFIG.subjects || {});
+  if (!subjects.length) return '<p class="analytics-empty-state">No subjects loaded yet.</p>';
+  const maxSeconds = Math.max(1, ...subjects.map(s => subjectData[s]?.studySeconds || 0));
+
+  return subjects.map(sKey => {
+    const s = CONFIG.subjects[sKey];
+    if (!s || s.pending) return '';
+    const rec = subjectData[sKey] || { studySeconds: 0, topicsViewed: 0, quizzesAnswered: 0 };
+    const pct = Math.min(100, Math.round(((rec.studySeconds || 0) / maxSeconds) * 100));
+    const durationStr = formatStudyDuration(rec.studySeconds || 0);
+    const fam = DESK_FAMILIES[sKey] || 'blue';
+    return `
+      <div class="analytics-subject-row fam-${fam}">
+        <div class="analytics-subject-info">
+          <span class="analytics-subject-name">${escapeHtml(s.label)}</span>
+          <span class="analytics-subject-meta">${durationStr} · ${rec.topicsViewed || 0} topics · ${rec.quizzesAnswered || 0} MCQs</span>
+        </div>
+        <div class="analytics-bar-track">
+          <div class="analytics-bar-fill" style="width: ${Math.max(4, pct)}%"></div>
+        </div>
+      </div>
+    `;
+  }).filter(Boolean).join('');
+}
+
+function renderDepthBreakdown(analyticsData = {}) {
+  const fSec = analyticsData.readingModes?.foundations || 0;
+  const dSec = analyticsData.readingModes?.deepdive || 0;
+  const totalSec = fSec + dSec;
+  const fPct = totalSec ? Math.round((fSec / totalSec) * 100) : 50;
+  const dPct = totalSec ? 100 - fPct : 50;
+
+  return `
+    <div class="analytics-depth-box">
+      <div class="analytics-depth-title">
+        <span>🌱 Foundations Reading Mode</span>
+        <strong>${fPct}% (${formatStudyDuration(fSec)})</strong>
+      </div>
+      <p class="analytics-depth-desc">Intuitive, conceptual starts and visual mental models.</p>
+    </div>
+    <div class="analytics-depth-box">
+      <div class="analytics-depth-title">
+        <span>⚡ Deep Dive Technical Mode</span>
+        <strong>${dPct}% (${formatStudyDuration(dSec)})</strong>
+      </div>
+      <p class="analytics-depth-desc">Mathematical formulations, proofs, architecture tradeoffs, and exam traps.</p>
+    </div>
+  `;
+}
+
+function renderVisitorSessionTable(sessions = [], filter = 'all') {
+  const now = Date.now();
+  const dayMs = 86400000;
+  const startOfToday = new Date().setHours(0, 0, 0, 0);
+
+  const filtered = sessions.filter(s => {
+    if (filter === 'today') return (s.startTime || 0) >= startOfToday;
+    if (filter === 'week') return (s.startTime || 0) >= (now - 7 * dayMs);
+    return true;
+  });
+
+  if (!filtered.length) {
+    return `<div class="analytics-empty-state">No visitor sessions recorded for this filter.</div>`;
+  }
+
+  const rows = filtered.map(s => {
+    const vid = escapeHtml(s.visitorId || 'vis_anon');
+    const alias = escapeHtml(s.alias || '');
+    const startTimeStr = formatDateTime(s.startTime);
+    const relTime = formatRelativeTime(s.startTime);
+    const duration = formatStudyDuration(s.durationSeconds || 0);
+    const topics = s.topicsViewed || 0;
+    const quizzes = s.quizzesAnswered || 0;
+    const correct = s.quizCorrect || 0;
+    const quizPct = quizzes ? Math.round((correct / quizzes) * 100) : 0;
+    const subjs = (s.subjects || []).map(k => CONFIG.subjects[k]?.shortLabel || k).filter(Boolean).join(', ') || 'Exploration';
+    const status = s.active
+      ? `<span class="analytics-badge-active"><span class="analytics-pulse-dot"></span>Active now</span>`
+      : `<span class="analytics-badge-done">Completed</span>`;
+
+    return `
+      <tr>
+        <td>
+          <code>${vid}</code>
+          ${alias ? `<small>${alias}</small>` : ''}
+        </td>
+        <td>
+          <strong>${startTimeStr}</strong>
+          <small>${relTime}</small>
+        </td>
+        <td>
+          <span>Visit #${s.sessionNumber || 1}</span>
+          <small>${escapeHtml(s.device || 'Desktop')}</small>
+        </td>
+        <td><strong>${duration}</strong></td>
+        <td>
+          <span>${topics} topic${topics === 1 ? '' : 's'}</span>
+          <small>${escapeHtml(subjs)}</small>
+        </td>
+        <td>
+          <span>${quizzes} answered</span>
+          <small>${correct} correct (${quizPct}%)</small>
+        </td>
+        <td>${status}</td>
+      </tr>
+    `;
+  }).join('');
+
+  return `
+    <table class="analytics-table" aria-label="Visitor sessions traffic ledger">
+      <thead>
+        <tr>
+          <th scope="col">Visitor ID</th>
+          <th scope="col">Visit Time</th>
+          <th scope="col">Session</th>
+          <th scope="col">Study Duration</th>
+          <th scope="col">Topics &amp; Focus</th>
+          <th scope="col">Quizzes Answered</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderAdminAccessGate() {
+  const user = getCurrentUser();
+  const email = getCurrentUserEmail();
+  const isLoggedIn = !!user;
+
+  return `
+    <div class="analytics-container">
+      <div class="analytics-gate-card fam-lavender">
+        <div class="analytics-gate-icon-circle">
+          ${svgIcon('<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>', 32)}
+        </div>
+        <span class="analytics-gate-badge">Restricted Access · Administrator Only</span>
+        <h2 class="analytics-gate-title">Visitor Analytics &amp; Traffic Ledger</h2>
+        <p class="analytics-gate-desc">
+          Site-wide visitor telemetry, session histories, and study engagement records are strictly confidential and reserved for the administrator (<code>${ADMIN_ANALYTICS_EMAIL}</code>).
+        </p>
+
+        <div class="analytics-gate-box">
+          ${isLoggedIn ? `
+            <div class="analytics-gate-user-row">
+              <span class="analytics-status-pill analytics-status-pill--denied">Access Denied</span>
+              <span>Signed in as: <strong>${escapeHtml(email)}</strong></span>
+            </div>
+            <p class="analytics-gate-hint">
+              This Google account is not authorized as an administrator. Please sign in with <strong>${ADMIN_ANALYTICS_EMAIL}</strong> to view site visitor analytics.
+            </p>
+            <div class="analytics-gate-actions">
+              <button type="button" class="desk-btn-primary fam-lavender" data-admin-login>
+                ${svgIcon('<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>', 15)}
+                <span>Switch to Admin Google Account</span>
+              </button>
+              <button type="button" class="analytics-action-btn" data-nav="home">
+                <span>Return to Study Desk</span>
+              </button>
+            </div>
+          ` : `
+            <div class="analytics-gate-user-row">
+              <span class="analytics-status-pill analytics-status-pill--locked">Authentication Required</span>
+              <span>Administrator sign-in required</span>
+            </div>
+            <p class="analytics-gate-hint">
+              Please sign in with Google using your administrator email (<strong>${ADMIN_ANALYTICS_EMAIL}</strong>) to access the visitor ledger.
+            </p>
+            <div class="analytics-gate-actions">
+              <button type="button" class="desk-btn-primary fam-lavender" data-admin-login>
+                ${svgIcon('<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>', 15)}
+                <span>Sign in with Google (Admin)</span>
+              </button>
+              <button type="button" class="analytics-action-btn" data-nav="home">
+                <span>Return to Study Desk</span>
+              </button>
+            </div>
+          `}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderAnalyticsHub() {
+  if (!isCurrentUserAdmin()) {
+    return renderAdminAccessGate();
+  }
+  const data = getAnalyticsData();
+  const summary = getAnalyticsSummary();
+  const vid = summary.visitorId;
+  const alias = summary.alias;
+  const totalVisits = summary.totalVisits;
+  const uniqueVisitors = summary.uniqueVisitors || 1;
+  const totalStudyFormatted = formatStudyDuration(summary.totalSecondsStudied);
+  const topicsCount = summary.topicsReadCount;
+  const quizzesCount = summary.quizzesAnsweredCount;
+  const accuracy = quizzesCount ? Math.round((summary.quizzesCorrectCount / quizzesCount) * 100) : 0;
+
+  const todayKey = getLocalDateKey();
+  const todayRec = data.daily?.[todayKey] || { studySeconds: 0, visits: 1 };
+  const todayStudyFormatted = formatStudyDuration(todayRec.studySeconds || 0);
+  const todayVisits = typeof todayRec.visits === 'number' ? todayRec.visits : 1;
+
+  const firstArrived = formatDateTime(summary.firstSeen || Date.now());
+  const latestActivity = formatRelativeTime(summary.lastActive || Date.now());
+  const deviceType = (typeof navigator !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent)) ? 'Mobile Device' : 'Desktop Browser';
+
+  return `
+    <div class="analytics-container">
+      <div class="analytics-top-bar">
+        <div class="analytics-visitor-chip">
+          <span class="analytics-pulse-dot"></span>
+          <span class="analytics-visitor-label">Anonymous Visitor:</span>
+          <code class="analytics-visitor-code">${escapeHtml(vid)}</code>
+          <span>(${escapeHtml(alias)})</span>
+          <button type="button" class="analytics-mini-btn" data-analytics-copy-id title="Copy visitor ID">Copy ID</button>
+        </div>
+        <div class="analytics-top-actions">
+          <button type="button" class="analytics-action-btn" data-analytics-export title="Download analytics data as JSON">
+            ${svgIcon('<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>', 14)}
+            <span>Export (JSON)</span>
+          </button>
+          <button type="button" class="analytics-action-btn" data-analytics-import title="Import and merge external analytics JSON">
+            ${svgIcon('<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>', 14)}
+            <span>Import</span>
+          </button>
+          <button type="button" class="analytics-action-btn" data-analytics-seed title="Load sample cohort visitor traffic">
+            ${svgIcon('<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>', 14)}
+            <span>Simulate Cohort</span>
+          </button>
+          <button type="button" class="analytics-action-btn analytics-action-btn--danger" data-analytics-reset title="Reset local analytics">
+            <span>Reset</span>
+          </button>
+        </div>
+      </div>
+
+      <header class="analytics-hero fam-lavender">
+        <span class="analytics-hero-badge">100% Privacy-Preserving · No Google Sign-In Required</span>
+        <h2 class="analytics-hero-title">Visitor Traffic &amp; Study Engagement Ledger</h2>
+        <p class="analytics-hero-desc">
+          Tracking who visited, arrival timestamps, session counts, and exact time dedicated to engineering notes, rapid boost quizzes, and code labs.
+        </p>
+        <div class="analytics-hero-meta">
+          <span>First Arrived: <strong>${firstArrived}</strong></span>
+          <span>•</span>
+          <span>Latest Activity: <strong>${latestActivity}</strong></span>
+          <span>•</span>
+          <span>Client: <strong>${deviceType}</strong></span>
+        </div>
+      </header>
+
+      <div class="analytics-stats-grid">
+        <div class="analytics-stat-card">
+          <span class="analytics-stat-label">Unique Visitors</span>
+          <strong class="analytics-stat-value">${uniqueVisitors}</strong>
+          <span class="analytics-stat-foot">Anonymous learners tracked</span>
+        </div>
+        <div class="analytics-stat-card">
+          <span class="analytics-stat-label">Total Visits</span>
+          <strong class="analytics-stat-value">${totalVisits}</strong>
+          <span class="analytics-stat-foot">Study sessions recorded</span>
+        </div>
+        <div class="analytics-stat-card">
+          <span class="analytics-stat-label">Time Spent Studying</span>
+          <strong class="analytics-stat-value">${totalStudyFormatted}</strong>
+          <span class="analytics-stat-foot">Active reading &amp; practice</span>
+        </div>
+        <div class="analytics-stat-card">
+          <span class="analytics-stat-label">Topics Explored</span>
+          <strong class="analytics-stat-value">${topicsCount}</strong>
+          <span class="analytics-stat-foot">Notes &amp; chapters reviewed</span>
+        </div>
+        <div class="analytics-stat-card">
+          <span class="analytics-stat-label">Quizzes &amp; MCQs</span>
+          <strong class="analytics-stat-value">${quizzesCount}</strong>
+          <span class="analytics-stat-foot">${accuracy}% correct answers</span>
+        </div>
+        <div class="analytics-stat-card">
+          <span class="analytics-stat-label">Today's Focus</span>
+          <strong class="analytics-stat-value">${todayStudyFormatted}</strong>
+          <span class="analytics-stat-foot">${todayVisits} visit${todayVisits === 1 ? '' : 's'} today</span>
+        </div>
+      </div>
+
+      <section class="analytics-panel">
+        <div class="analytics-panel-head">
+          <div>
+            <h3 class="analytics-panel-title">14-Day Study Activity Timeline</h3>
+            <p class="analytics-panel-sub">Daily focused study minutes and visit count across your sessions.</p>
+          </div>
+          <div class="analytics-legend">
+            <span class="analytics-legend-dot"></span> Study Minutes
+          </div>
+        </div>
+        <div class="analytics-chart-container">
+          ${svgDailyActivityBarChart(data.daily || {})}
+        </div>
+      </section>
+
+      <div class="analytics-two-col">
+        <section class="analytics-panel">
+          <div class="analytics-panel-head">
+            <div>
+              <h3 class="analytics-panel-title">Subject Focus Distribution</h3>
+              <p class="analytics-panel-sub">Time and topics completed per course.</p>
+            </div>
+          </div>
+          <div class="analytics-subject-list">
+            ${renderSubjectEngagementList(data.subjects || {})}
+          </div>
+        </section>
+
+        <section class="analytics-panel">
+          <div class="analytics-panel-head">
+            <div>
+              <h3 class="analytics-panel-title">Study Depth &amp; Note Modes</h3>
+              <p class="analytics-panel-sub">Foundations vs Deep Dive balance.</p>
+            </div>
+          </div>
+          <div class="analytics-depth-content">
+            ${renderDepthBreakdown(data)}
+          </div>
+        </section>
+      </div>
+
+      <section class="analytics-panel">
+        <div class="analytics-panel-head">
+          <div>
+            <h3 class="analytics-panel-title">Visitor Traffic &amp; Session History</h3>
+            <p class="analytics-panel-sub">Every visitor arrival, session start time, duration, and study achievements.</p>
+          </div>
+          <div class="analytics-filter-tabs">
+            <button type="button" class="analytics-filter-tab active" data-analytics-filter="all">All Visits (${(data.sessions || []).length})</button>
+            <button type="button" class="analytics-filter-tab" data-analytics-filter="today">Today</button>
+            <button type="button" class="analytics-filter-tab" data-analytics-filter="week">Past 7 Days</button>
+          </div>
+        </div>
+        <div class="analytics-table-wrap" id="analytics-sessions-table-wrap">
+          ${renderVisitorSessionTable(data.sessions || [], 'all')}
+        </div>
+      </section>
+    </div>
+  `;
+}
+
+function renderDeskAnalyticsCard() {
+  if (!isCurrentUserAdmin()) return '';
+  const summary = getAnalyticsSummary();
+  const visits = summary.totalVisits || 1;
+  const time = formatStudyDuration(summary.totalSecondsStudied || 0);
+  const learners = summary.uniqueVisitors || 1;
+  return `
+    <section class="desk-side-card fam-lavender">
+      <div class="desk-side-card-head">
+        <span class="desk-side-k">${svgIcon(ICON.analytics, 14)}Visitor Traffic</span>
+        <span class="desk-exam-badge">Admin · ${visits} session${visits === 1 ? '' : 's'}</span>
+      </div>
+      <h3 class="desk-side-title">Study Time &amp; Traffic</h3>
+      <p class="desk-side-desc">${time} spent studying · ${learners} learner${learners === 1 ? '' : 's'} · ${summary.topicsReadCount || 0} topics explored · Confidential.</p>
+      <button class="desk-panel-link" type="button" data-nav="analytics">
+        Open traffic ledger ${svgIcon(ICON.chevron, 14)}
+      </button>
+    </section>`;
 }
 
 function renderSubjectOverview(subjectId) {
@@ -1589,9 +3626,20 @@ function renderSubjectOverview(subjectId) {
       </div>
 
       <div class="atlas-support">
-        ${continueBtn}${practiceBtn}${recentBtn}
+        ${continueBtn}
+        <button class="atlas-support-card fam-mint" type="button" data-plan-open data-subject="${subjectId}">
+          <span class="atlas-support-k">Official Syllabus &amp; Roadmap</span>
+          <strong>Course Plan &amp; Milestones</strong>
+          <span class="atlas-support-meta">CLOs, ST-1, ST-2, End Term &amp; 14-day study plan</span>
+        </button>
+        <button class="atlas-support-card fam-lavender" type="button" data-boost-open data-subject="${subjectId}">
+          <span class="atlas-support-k">Rapid Exam Revision</span>
+          <strong>High-Yield Boost &amp; Quiz</strong>
+          <span class="atlas-support-meta">Cheats, exam traps &amp; 10-Q sprint test</span>
+        </button>
+        ${practiceBtn}${recentBtn}
       </div>
-      ${renderCoursePlan(subj)}
+      ${renderCoursePlan(subj, subjectId)}
     </section>`;
 
   initChapterRail();
@@ -1600,9 +3648,10 @@ function renderSubjectOverview(subjectId) {
 }
 
 // Grading scheme and books from the course handout (CHO).
-function renderCoursePlan(subj) {
+function renderCoursePlan(subj, subjectId) {
   const c = subj.course;
   if (!c) return '';
+  const sid = subjectId || subj.id || state.activeSubject;
   const rows = c.grading.map(([label, pct]) => `
     <li class="course-grade">
       <span class="course-grade-label">${escapeHtml(label)}</span>
@@ -1610,9 +3659,12 @@ function renderCoursePlan(subj) {
       <b>${pct}%</b>
     </li>`).join('');
   return `
-    <details class="course-details"><summary>Course details & recommended reading</summary><section class="atlas-course" aria-label="Course plan">
+    <details class="course-details"><summary>Course details &amp; recommended reading</summary><section class="atlas-course" aria-label="Course plan">
       <div class="course-card">
-        <h2 class="atlas-h2">How you're graded</h2>
+        <div class="course-card-head">
+          <h2 class="atlas-h2">How you're graded</h2>
+          <button class="desk-btn-ghost fam-mint" type="button" data-plan-open data-subject="${sid}">View Full Roadmap</button>
+        </div>
         <ul class="course-grades">${rows}</ul>
         <p class="course-note">${c.credits} credits · L-T-P ${escapeHtml(c.ltp)} · 75% attendance needed to sit the end term</p>
       </div>
@@ -1628,7 +3680,7 @@ function initChapterRail() {
   if (!rail) return;
   const step = () => Math.max(240, rail.clientWidth * 0.8);
   const wrap = rail.closest('.atlas-rail-wrap');
-  wrap.querySelectorAll('[data-rail]').forEach(btn => {
+  wrap?.querySelectorAll('[data-rail]').forEach(btn => {
     btn.addEventListener('click', () => {
       rail.scrollBy({ left: (btn.dataset.rail === 'next' ? 1 : -1) * step(), behavior: 'smooth' });
     });
@@ -1787,6 +3839,23 @@ function renderQuickPractice() {
     </section>`;
 }
 
+function renderDeskBoostCard() {
+  return `
+    <section class="desk-panel fam-peach desk-boost-panel">
+      <div class="desk-panel-head">
+        <span class="desk-exam-when">Sprint</span>
+      </div>
+      <div class="desk-panel-body">
+        <div class="desk-exam-name">High-Yield Revision</div>
+        <p class="desk-boost-sub">Cheat sheets, exam traps &amp; 10-min sprints for core courses.</p>
+        <button class="desk-panel-link desk-boost-link" type="button" data-nav="boost">
+          Open High-Yield Boost
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </section>`;
+}
+
 function safeParse(str, fallback) {
   try { return str ? JSON.parse(str) : fallback; } catch (e) { return fallback; }
 }
@@ -1816,19 +3885,36 @@ function renderReaderChrome(topic, sectionName, index, sectionTotal) {
     ].join('<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>');
   }
 
-  // Meta: section badge + reading time + completion
+  // Meta: section badge + reading time + completion + mode switcher
   const meta = document.getElementById('reader-meta');
   if (meta) {
     const words = (elements.contentArea.textContent || '').trim().split(/\s+/).length;
     const mins = Math.max(1, Math.round(words / 200));
     const mastered = (state.mastered?.[state.activeSubject]?.[state.activeSection] || []).includes(index);
+    const activeMode = getActiveReadingMode();
     meta.innerHTML = `
-      <p class="section-badge">${escapeHtml(shortSection)}</p>
-      <span class="reader-meta-dot">·</span>
-      <span class="reader-meta-item">${mins} min read</span>
-      <span class="reader-meta-dot">·</span>
-      <span class="reader-meta-item reader-meta-pos">Topic ${index + 1} of ${sectionTotal}</span>
-      ${mastered ? '<span class="reader-meta-done">✓ Completed</span>' : ''}`;
+      <div class="reader-meta-row">
+        <div class="reader-meta-info">
+          <p class="section-badge">${escapeHtml(shortSection)}</p>
+          <span class="reader-meta-dot">·</span>
+          <span class="reader-meta-item">${mins} min read</span>
+          <span class="reader-meta-dot">·</span>
+          <span class="reader-meta-item reader-meta-pos">Topic ${index + 1} of ${sectionTotal}</span>
+          ${mastered ? '<span class="reader-meta-done">✓ Completed</span>' : ''}
+        </div>
+        <div class="reading-mode-selector" role="group" aria-label="Reading mode">
+          <button type="button" class="mode-pill${activeMode === 'foundations' ? ' active' : ''}" data-mode="foundations" aria-pressed="${activeMode === 'foundations'}" title="Gentle, intuitive conceptual start">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 21l3.5-.88A8.96 8.96 0 0 0 12 21c4.97 0 9-4.03 9-9s-4.03-9-9-9z"/></svg>
+            <span>Foundations</span>
+            <span class="mode-pill-sub">Gentle</span>
+          </button>
+          <button type="button" class="mode-pill${activeMode === 'deepdive' ? ' active' : ''}" data-mode="deepdive" aria-pressed="${activeMode === 'deepdive'}" title="Comprehensive technical depth & formulas">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span>Deep Dive</span>
+            <span class="mode-pill-sub">Advanced</span>
+          </button>
+        </div>
+      </div>`;
   }
 
   pushRecentTopic(topic.title, index);
@@ -2676,12 +4762,83 @@ function updateActiveSidebarItem(index) {
   }
 }
 
+function getActiveReadingMode() {
+  return state.readingMode || (typeof localStorage !== 'undefined' ? safeParse(localStorage.getItem('prep_reading_mode'), 'foundations') : null) || 'foundations';
+}
+
+function setReadingMode(mode) {
+  if (mode !== 'foundations' && mode !== 'deepdive') return;
+  state.readingMode = mode;
+  try { localStorage.setItem('prep_reading_mode', JSON.stringify(mode)); } catch (_) {}
+
+  // Update mode buttons in UI
+  document.querySelectorAll('[data-mode]').forEach(btn => {
+    const isAct = btn.dataset.mode === mode;
+    btn.classList.toggle('active', isAct);
+    btn.setAttribute('aria-pressed', String(isAct));
+  });
+
+  if (elements.contentArea && !isMcqSection() && !isBashSection() && !isJavaSection() && !isPlaygroundSection()) {
+    const subjectData = CONFIG.subjects[state.activeSubject]?.data;
+    const topics = subjectData?.[state.activeSection] || [];
+    const topic = topics[state.activeTopicIndex];
+    if (topic) {
+      renderTopicNoteContent(topic);
+    }
+  }
+  if (typeof announceStudy === 'function') {
+    announceStudy(mode === 'foundations' ? 'Switched to Foundations (gentle reading)' : 'Switched to Deep Dive (advanced depth)');
+  }
+}
+
+function renderTopicNoteContent(topic) {
+  const mode = getActiveReadingMode();
+  let html = topic.html;
+  if (mode === 'foundations') {
+    html = topic.foundationsHtml || generateFoundationsFallback(topic);
+  }
+  elements.contentArea.innerHTML = html;
+  enhanceReadingContent();
+  if (window.Prism) Prism.highlightAllUnder(elements.contentArea);
+  if (typeof renderMathInElement === 'function') {
+    renderMathInElement(elements.contentArea, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false},
+        {left: '\\(', right: '\\)', display: false},
+        {left: '\\[', right: '\\]', display: true}
+      ],
+      throwOnError: false
+    });
+  }
+  shuffleMcqOptions(elements.contentArea);
+  applyNoteHighlights();
+}
+
+function generateFoundationsFallback(topic) {
+  return `
+    <div class="foundations-banner">
+      <div class="foundations-badge">🌱 Foundations · Gentle Start</div>
+      <p class="foundations-intro">Core concepts simplified. Switch to <strong>Deep Dive</strong> at any time for exhaustive technical details.</p>
+    </div>
+    ${topic.html}
+  `;
+}
+
 function selectTopic(index) {
   if (!Number.isInteger(index) || index < 0) return;
   state.activeTopicIndex = index;
   closeMobileSidebar();
   syncExperience('study');
   recordActivity();
+  if (typeof trackAnalyticsTopicView === 'function') {
+    const subj = state.activeSubject;
+    const data = CONFIG.subjects[subj]?.data || {};
+    const sectionArr = data[state.activeSection] || [];
+    const topic = isMcqSection() ? getActiveMcqBank()[index] : isBashSection() ? getActiveBashProblems()[index] : isJavaSection() ? getActiveJavaProblems()[index] : sectionArr[index];
+    const topicTitle = (topic && (topic.title || topic.unitName)) || '';
+    trackAnalyticsTopicView(subj, state.activeSection, index, topicTitle);
+  }
   // The quiz page opts out of the notes typography (see renderPracticeUnit).
   elements.contentArea.classList.add('reading-area');
 
@@ -2730,32 +4887,16 @@ function selectTopic(index) {
   const sectionName = CONFIG.subjects[state.activeSubject].sectionNames[state.activeSection] || state.activeSection;
   elements.sectionBadge.textContent = sectionName;
   elements.mainTitle.textContent = topic.title;
-  elements.contentArea.innerHTML = topic.html;
-  enhanceReadingContent();
-  if (window.Prism) Prism.highlightAllUnder(elements.contentArea);
 
-  // Restore scroll behavior for reading (horizontal spacing comes from the Focused
-  // Notebook grid + centered reading column, so we no longer hard-code side padding)
-  elements.contentArea.style.overflowY = 'auto';
+  renderTopicNoteContent(topic);
+
+  // Restore scroll behavior for reading:
+  // Use visible overflow so main.content-pane handles scrolling seamlessly without nested wheel conflict
+  elements.contentArea.style.overflowY = 'visible';
+  elements.contentArea.style.overflow = 'visible';
   elements.contentArea.style.padding = '';
   elements.contentArea.style.display = 'block';
   renderReaderChrome(topic, sectionName, index, topics.length);
-  // Re-run KaTeX auto-render on the content area
-  if (typeof renderMathInElement === 'function') {
-    renderMathInElement(elements.contentArea, {
-      delimiters: [
-        {left: '$$', right: '$$', display: true},
-        {left: '$', right: '$', display: false},
-        {left: '\\(', right: '\\)', display: false},
-        {left: '\\[', right: '\\]', display: true}
-      ],
-      throwOnError: false
-    });
-  }
-
-  // Shuffle MCQs if any are embedded in the HTML
-  shuffleMcqOptions(elements.contentArea);
-  applyNoteHighlights();
   if (document.getElementById('smart-notes-panel')?.classList.contains('open')) renderSavedBody();
 
   // Update sidebar active state
@@ -2767,8 +4908,8 @@ function selectTopic(index) {
 
   updateNextButtonState();
 
-  elements.readingPane.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  document.getElementById('main-content-pane').scrollTop = 0;
+  const pane = document.getElementById('main-content-pane');
+  if (pane) pane.scrollTop = 0;
 }
 
 // ============================================================
@@ -4177,8 +6318,12 @@ function answerMcq(option) {
 
   if (!isMcqSection() || !card?.dataset.questionId) return;
   const qId = parseInt(card.dataset.questionId, 10);
-  card.dataset.status = selected === correct ? 'correct' : 'wrong';
+  const isCorrect = selected === correct;
+  card.dataset.status = isCorrect ? 'correct' : 'wrong';
   state.practiceAnswers[state.activeSubject][qId] = selected;
+  if (typeof trackAnalyticsQuizAnswer === 'function') {
+    trackAnalyticsQuizAnswer(state.activeSubject, qId, isCorrect);
+  }
   savePracticeProgress();
   setQuizCursor(qId, false);
   updateQuizRail();
@@ -4435,9 +6580,15 @@ function initThemeToggle() {
   if (toggleBtn.dataset.themeToggleInitialized) return;
   toggleBtn.dataset.themeToggleInitialized = 'true';
   toggleBtn.addEventListener('click', () => {
-    studyPreferences.theme = document.body.classList.contains('dark-theme') ? 'light' : 'dark';
+    const cycle = ['light', 'warm', 'pastel', 'forest', 'dark'];
+    const current = studyPreferences.theme || (document.body.classList.contains('dark-theme') ? 'dark' : (document.body.dataset.theme || 'light'));
+    const next = cycle[(cycle.indexOf(current) + 1) % cycle.length] || 'light';
+    studyPreferences.theme = next;
     saveStudyPreferences();
     applyStudyPreferences();
+    if (typeof announceStudy === 'function') {
+      announceStudy(`Theme changed to ${next.charAt(0).toUpperCase() + next.slice(1)}`);
+    }
   });
 }
 
@@ -6265,4 +8416,9 @@ function updateDiskMonitor() {
     });
   }
   container.appendChild(vgsContainer);
+}
+
+if (typeof window !== 'undefined') {
+  window.isCurrentUserAdmin = isCurrentUserAdmin;
+  window.ADMIN_ANALYTICS_EMAIL = ADMIN_ANALYTICS_EMAIL;
 }

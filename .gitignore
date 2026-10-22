@@ -30,3 +30,8 @@ scratch/
 # Python bytecode
 __pycache__/
 *.pyc
+
+# Local tool caches
+.claude/
+.impeccable/
+

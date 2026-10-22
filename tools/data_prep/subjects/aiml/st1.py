@@ -916,3 +916,13 @@ Increasing complexity lowers bias and raises variance; the best model minimises 
             ["underfitting", "overfitting", "well generalised", "suffering from data leakage in the test set only"], "b",
             "A large gap between training and test performance is the signature of high variance.")
 ))
+
+try:
+    from subjects.helpers import _escape_code
+    from subjects.aiml.foundations import ST1_FOUNDATIONS
+    for idx, f_html in ST1_FOUNDATIONS.items():
+        if idx < len(TOPICS):
+            TOPICS[idx]["foundationsHtml"] = _escape_code(f_html.strip())
+except ImportError:
+    pass
+
