@@ -4,6 +4,8 @@
 *.pdf
 *.txt
 *.md
+!DESIGN.md
+!docs/STUDY_ROOM_IMPLEMENTATION.md
 IOT/*.png
 IOT/*.jpeg
 IOT/*.jpg
@@ -24,3 +26,7 @@ Thumbs.db
 # Ignore backup archives
 archive/
 scratch/
+
+# Python bytecode
+__pycache__/
+*.pyc

@@ -88,6 +88,34 @@ async function main() {
     vm.runInContext('CONFIG.subjects.java_abstractions.mcqs.length', sandbox) > 0,
     'Java Abstractions data should hydrate after lazy load.'
   );
+
+  assert(
+    vm.runInContext('CONFIG.subjects.java_abstractions.data.st1.length', sandbox) > 0,
+    'Java Abstractions notes should hydrate as a flat topic list per section.'
+  );
+
+  // Generated subjects (tools/data_prep/generate_subject.py) hydrate notes and a question bank.
+  for (const id of ['algo', 'aiml', 'sysdesign', 'aptitude']) {
+    await vm.runInContext(`ensureSubjectDataLoaded("${id}")`, sandbox);
+    const tabs = vm.runInContext(`CONFIG.subjects.${id}.tabs.map(t => t.id)`, sandbox);
+    tabs.filter(t => t !== 'practice').forEach(tab => {
+      assert(
+        vm.runInContext(`(CONFIG.subjects.${id}.data.${tab} || []).length`, sandbox) > 0,
+        `${id}.${tab} should have topics after lazy load.`
+      );
+    });
+    assert(vm.runInContext(`CONFIG.subjects.${id}.mcqs.length`, sandbox) > 0, `${id} should have a question bank.`);
+  }
+
+  // Every registered subject needs a mastery bucket per tab, or the sidebar throws.
+  vm.runInContext(`
+    Object.keys(CONFIG.subjects).forEach(sub => {
+      CONFIG.subjects[sub].tabs.forEach(tab => {
+        if (!Array.isArray(state.mastered[sub][tab.id]))
+          throw new Error('missing mastery bucket: ' + sub + '.' + tab.id);
+      });
+    });
+  `, sandbox);
 }
 
 main().catch(error => {

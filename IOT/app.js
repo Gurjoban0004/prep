@@ -8,8 +8,16 @@ const CONFIG = {
     java_abstractions: {
       label: "Programming Abstractions in Java",
       shortLabel: "Java PA",
+      tagline: "Collections, streams, SQL, JDBC & threads",
+      code: "24CSE0314",
       icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>',
       examTime: new Date("2026-12-10T09:30:00+05:30").getTime(),
+      semester: 5,
+      course: {
+        credits: 4, ltp: '2-0-4',
+        grading: [['Sessional tests (both compulsory)', 40], ['End term exam (online)', 60]],
+        books: ['Herbert Schildt — Java: The Complete Reference (12th ed.)', 'Cay S. Horstmann — Core Java Volume I: Fundamentals (12th ed.)', 'Joshua Bloch — Effective Java (3rd ed.)']
+      },
       storageKey: "java_abstractions_mastered_topics",
       storageKeyPractice: "java_abstractions_mcq_answers",
       scripts: ["java_abstractions-data.js"],
@@ -19,24 +27,162 @@ const CONFIG = {
         st1: '#5F7AE0',
         st2: '#81B29A',
         endTerm: '#B58A3D',
+        lab: '#3D405B',
         practice: '#8C4735'
       },
       sectionNames: {
-        st1: 'ST-1 (Collections, Streams & JVM)',
-        st2: 'ST-2 (SQL, JDBC & DAO)',
-        endTerm: 'End Term (Multithreading & Concurrency)',
+        st1: 'ST-1 — Java Core, Collections, Streams & JVM',
+        st2: 'ST-2 — SQL, JDBC & DAO',
+        endTerm: 'End Term — Multithreading & Concurrency',
+        lab: 'Lab Programs (Experiments 1-60)',
         practice: 'Topic-Wise MCQs'
       },
       tabs: [
         { id: 'st1', label: 'ST-1' },
         { id: 'st2', label: 'ST-2' },
         { id: 'endTerm', label: 'End Term' },
+        { id: 'lab', label: 'Lab' },
+        { id: 'practice', label: 'MCQs' }
+      ]
+    },
+    algo: {
+      label: "Algorithm Design & Implementation",
+      shortLabel: "Algo",
+      tagline: "Complexity, greedy, DP, trees & graphs",
+      code: "24CSE0317",
+      icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="18" r="3"></circle><path d="M6 9v6a3 3 0 0 0 3 3h6"></path></svg>',
+      examTime: null,
+      semester: 5,
+      course: {
+        credits: 4, ltp: '2-0-4',
+        grading: [['Test Pad coding series', 10], ['Formative assessments (best 4 of 5)', 10], ['Sessional tests (best 1 of 2)', 30], ['End term exam', 50]],
+        books: ['Debasis Samanta — Classic Data Structures (PHI)', 'Horowitz & Sahni — Fundamentals of Data Structures', 'S. Sridhar — Design and Analysis of Algorithms (OUP)']
+      },
+      storageKey: "algo_mastered_topics",
+      storageKeyPractice: "algo_mcq_answers",
+      scripts: ["algo-data.js"],
+      data: {},
+      mcqs: null,
+      sectionNames: {
+        st1: 'ST-1 — Complexity, Arrays, Greedy, Stacks & Hashing (60%)',
+        st2: 'ST-2 — Recursion, Trees, Heaps & Graphs (40%)',
+        lab: 'Lab Programs (Experiments 1-60)',
+        cheatSheet: 'Cheat Sheet — Complexities & Patterns',
+        practice: 'Topic-Wise MCQs'
+      },
+      tabs: [
+        { id: 'st1', label: 'ST-1' },
+        { id: 'st2', label: 'ST-2' },
+        { id: 'lab', label: 'Lab' },
+        { id: 'cheatSheet', label: 'Cheat Sheet' },
+        { id: 'practice', label: 'MCQs' }
+      ]
+    },
+    aiml: {
+      label: "Artificial Intelligence & Machine Learning",
+      shortLabel: "AI & ML",
+      tagline: "ML workflow, models & evaluation",
+      code: "24CSE0316",
+      icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><circle cx="5" cy="6" r="2"></circle><circle cx="19" cy="6" r="2"></circle><circle cx="5" cy="18" r="2"></circle><circle cx="19" cy="18" r="2"></circle><path d="M7 7l3 3M17 7l-3 3M7 17l3-3M17 17l-3-3"></path></svg>',
+      examTime: null,
+      semester: 5,
+      course: {
+        credits: 3, ltp: '2-0-2',
+        grading: [['Continuous evaluation (average of 2)', 20], ['Sessional test', 20], ['End term — project', 30], ['End term — MCQ (online)', 30]],
+        books: ['Russell & Norvig — Artificial Intelligence: A Modern Approach', 'Aurélien Géron — Hands-On Machine Learning with Scikit-Learn, Keras & TensorFlow', 'Müller & Guido — Introduction to Machine Learning with Python']
+      },
+      storageKey: "aiml_mastered_topics",
+      storageKeyPractice: "aiml_mcq_answers",
+      scripts: ["aiml-data.js"],
+      data: {},
+      mcqs: null,
+      sectionNames: {
+        st1: 'ST-1 — AI Foundations, Data Prep & Supervised Learning (70%)',
+        endTerm: 'End Term — Unsupervised, Association Rules & RL (30%)',
+        lab: 'Lab — Python Experiments & Mini Project',
+        cheatSheet: 'Formula & Decision Sheets',
+        practice: 'Topic-Wise MCQs'
+      },
+      tabs: [
+        { id: 'st1', label: 'ST-1' },
+        { id: 'endTerm', label: 'End Term' },
+        { id: 'lab', label: 'Lab' },
+        { id: 'cheatSheet', label: 'Formulas' },
+        { id: 'practice', label: 'MCQs' }
+      ]
+    },
+    sysdesign: {
+      label: "System Design",
+      shortLabel: "SysDesign",
+      tagline: "Scalability, databases, networking & caching",
+      code: "24CSE0318",
+      icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="6" rx="1"></rect><rect x="2" y="15" width="20" height="6" rx="1"></rect><path d="M7 9v6M17 9v6"></path></svg>',
+      examTime: null,
+      semester: 5,
+      course: {
+        credits: 3, ltp: '2-0-2',
+        grading: [['Formative — presentation & viva', 10], ['Sessional tests (both compulsory)', 30], ['End term exam (online)', 60]],
+        books: ['Kendall & Kendall — Systems Analysis and Design', 'Silberschatz, Korth & Sudarshan — Database System Concepts', 'Silberschatz, Galvin & Gagne — Operating System Concepts Essentials']
+      },
+      storageKey: "sysdesign_mastered_topics",
+      storageKeyPractice: "sysdesign_mcq_answers",
+      scripts: ["sysdesign-data.js"],
+      data: {},
+      mcqs: null,
+      sectionNames: {
+        st1: 'ST-1 — Fundamentals, Databases & Networking',
+        st2: 'ST-2 — Frameworks, Security, DevOps & Low Level Design',
+        endTerm: 'End Term — Caching & Distributed Caches',
+        lab: 'Lab — Case Studies, Schema, SQL, API & Security Design',
+        cheatSheet: 'Cheat Sheet — Numbers & Comparisons',
+        practice: 'Topic-Wise MCQs'
+      },
+      tabs: [
+        { id: 'st1', label: 'ST-1' },
+        { id: 'st2', label: 'ST-2' },
+        { id: 'endTerm', label: 'End Term' },
+        { id: 'lab', label: 'Lab' },
+        { id: 'cheatSheet', label: 'Cheat Sheet' },
+        { id: 'practice', label: 'MCQs' }
+      ]
+    },
+    aptitude: {
+      label: "Numerical Aptitude & Logical Reasoning-I",
+      shortLabel: "Aptitude",
+      tagline: "Arithmetic, reasoning & verbal ability",
+      code: "25UNI0110",
+      icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="7" x2="16" y2="7"></line><line x1="8" y1="12" x2="8" y2="12"></line><line x1="12" y1="12" x2="12" y2="12"></line><line x1="16" y1="12" x2="16" y2="12"></line><line x1="8" y1="17" x2="16" y2="17"></line></svg>',
+      examTime: null,
+      semester: 5,
+      course: {
+        credits: 3, ltp: '3-0-0',
+        grading: [['Formative assessment (best 1 of 2)', 20], ['Sessional test (best 1 of 2)', 30], ['End term — MCQs on Testpad', 50]],
+        books: ['R. S. Aggarwal — Quantitative Aptitude for Competitive Examinations', 'R. S. Aggarwal — A Modern Approach to Logical Reasoning', 'S. P. Bakshi — Objective General English']
+      },
+      storageKey: "aptitude_mastered_topics",
+      storageKeyPractice: "aptitude_mcq_answers",
+      scripts: ["aptitude-data.js"],
+      data: {},
+      mcqs: null,
+      sectionNames: {
+        st1: 'ST-1 — Logic, Numbers, Ratio & Syllogism (Modules 1–2)',
+        st2: 'ST-2 — Percentage, Coding, Interest & Series (Modules 3–4)',
+        endTerm: 'End Term — Time & Work, Calendar, Clock & Verbal (Modules 5–6)',
+        cheatSheet: 'Formula Sheet',
+        practice: 'Module-Wise MCQs'
+      },
+      tabs: [
+        { id: 'st1', label: 'ST-1' },
+        { id: 'st2', label: 'ST-2' },
+        { id: 'endTerm', label: 'End Term' },
+        { id: 'cheatSheet', label: 'Formulas' },
         { id: 'practice', label: 'MCQs' }
       ]
     },
     iot: {
       label: "ES & IoT",
       shortLabel: "IoT",
+      tagline: "Exam notes, cheat sheet, practice",
       icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"></path></svg>',
       examTime: new Date("2026-05-29T09:30:00+05:30").getTime(),
       storageKey: "es_iot_mastered_topics",
@@ -68,6 +214,7 @@ const CONFIG = {
     cn: {
       label: "Computer Networks",
       shortLabel: "CN",
+      tagline: "Layered units and quiz practice",
       icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="9" height="9"></rect><rect x="13" y="2" width="9" height="9"></rect><rect x="13" y="13" width="9" height="9"></rect><rect x="2" y="13" width="9" height="9"></rect></svg>',
       examTime: new Date("2026-06-02T09:30:00+05:30").getTime(),
       storageKey: "cn_mastered_topics",
@@ -108,6 +255,7 @@ const CONFIG = {
     linux: {
       label: "Linux",
       shortLabel: "Linux",
+      tagline: "MCQs plus a virtual Bash terminal",
       icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>',
       examTime: new Date("2026-06-06T09:30:00+05:30").getTime(),
       storageKey: "linux_mastered_topics",
@@ -130,7 +278,7 @@ const CONFIG = {
         linuxMcq: 'Linux MCQs',
         bashPractice: 'Bash Practice',
         linuxPlayground: 'Terminal Playground',
-        practiceTest1: 'PT1'
+        practiceTest1: 'Practice Test 1'
       },
       tabs: [
         { id: 'notes', label: 'Notes' },
@@ -144,6 +292,7 @@ const CONFIG = {
     java: {
       label: "Java DSA",
       shortLabel: "Java",
+      tagline: "LeetCode-style coding practice",
       icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>',
       examTime: null,
       storageKey: "java_mastered_topics",
@@ -196,6 +345,7 @@ const SUBJECT_SCRIPT_GROUPS = {
 const loadedScriptSrcs = new Set();
 const subjectLoadPromises = {};
 const hydratedSubjects = {};
+let subjectNavigationId = 0;
 
 function loadScriptOnce(src) {
   if (loadedScriptSrcs.has(src)) return Promise.resolve();
@@ -219,7 +369,7 @@ function loadScriptOnce(src) {
       loadedScriptSrcs.add(src);
       resolve();
     };
-    script.onerror = () => reject(new Error(`Failed to load ${src}`));
+    script.onerror = () => { script.remove(); reject(new Error(`Failed to load ${src}`)); };
     document.body.appendChild(script);
   });
 }
@@ -241,16 +391,39 @@ function hydrateSubjectData(subjectId) {
     };
   } else if (subjectId === 'java') {
     CONFIG.subjects.java.javaProblems = typeof JAVA_DSA_PROBLEMS !== 'undefined' ? JAVA_DSA_PROBLEMS : [];
+  } else if (CONFIG.subjects[subjectId].pending) {
+    CONFIG.subjects[subjectId].data = buildSyllabusPreview(CONFIG.subjects[subjectId]);
+    CONFIG.subjects[subjectId].mcqs = [];
   } else if (CONFIG.subjects[subjectId]) {
     const globalPrefix = subjectId.toUpperCase();
-    let dataVar = {}, mcqsVar = [];
-    try { dataVar = eval(globalPrefix + '_STUDY_DATA'); } catch (e) {}
-    try { mcqsVar = eval(globalPrefix + '_MCQ_BANK'); } catch (e) {}
-    CONFIG.subjects[subjectId].data = dataVar;
-    CONFIG.subjects[subjectId].mcqs = mcqsVar;
+    try { const d = eval(globalPrefix + '_STUDY_DATA'); if (d) CONFIG.subjects[subjectId].data = d; } catch (e) {}
+    try { const m = eval(globalPrefix + '_MCQ_BANK'); if (m) CONFIG.subjects[subjectId].mcqs = m; } catch (e) {}
   }
 
   hydratedSubjects[subjectId] = true;
+}
+
+// Subjects whose notes aren't written yet still get a real, browsable syllabus
+// outline built straight from their course handout (CHO).
+function buildSyllabusPreview(subject) {
+  const data = {};
+  Object.keys(subject.syllabus || {}).forEach(sectionId => {
+    data[sectionId] = subject.syllabus[sectionId].map(unit => ({
+      title: unit.unit,
+      subtitle: `${unit.points.length} syllabus topics`,
+      html: `
+        <div class="callout callout-tip">
+          <strong>Notes are being written.</strong> This is the official syllabus outline for
+          ${escapeHtml(subject.label)}${subject.code ? ' (' + escapeHtml(subject.code) + ')' : ''},
+          straight from the course handout. Detailed notes for this subject land here next —
+          they are being added one subject at a time.
+        </div>
+        <h3>${escapeHtml(unit.unit)}</h3>
+        <ul>${unit.points.map(pt => `<li>${escapeHtml(pt)}</li>`).join('')}</ul>
+      `
+    }));
+  });
+  return data;
 }
 
 async function ensureSubjectDataLoaded(subjectId) {
@@ -263,7 +436,7 @@ async function ensureSubjectDataLoaded(subjectId) {
       await loadScriptOnce(src);
     }
     hydrateSubjectData(subjectId);
-  })();
+  })().catch(error => { delete subjectLoadPromises[subjectId]; throw error; });
 
   return subjectLoadPromises[subjectId];
 }
@@ -275,9 +448,9 @@ function renderSubjectLoading(label) {
   elements.progressPercent.textContent = 'Loading...';
   elements.progressBar.style.width = '0%';
   elements.welcomeScreen.innerHTML = `
-    <div class="bash-idle-state" style="max-width: 520px;">
-      <strong>Loading ${escapeHtml(label)}...</strong>
-      <p style="margin-top: 0.5rem;">Pulling in this subject's notes, questions, and practice tools.</p>
+    <div class="study-loading" role="status" aria-busy="true">
+      <p>Opening ${escapeHtml(label)}…</p>
+      <div class="study-loading-line"></div><div class="study-loading-line"></div><div class="study-loading-line"></div>
     </div>
   `;
 }
@@ -289,6 +462,8 @@ function renderSubjectLoadError(label, error) {
     <div class="java-error-panel" style="max-width: 560px;">
       <h4>Could not load ${escapeHtml(label)}</h4>
       <p>${escapeHtml(error.message || String(error))}</p>
+      <button class="desk-btn-primary fam-lavender" type="button" data-subject="${state.activeSubject}">Try again</button>
+      <button class="desk-btn-ghost" type="button" data-nav="home">Back to your desk</button>
     </div>
   `;
 }
@@ -302,19 +477,9 @@ let state = {
   activeTopicIndex: 0,
   searchQuery: '',
   selectedSectionFilter: 'All',
-  mastered: {
-    iot: { st1: [], st2: [], endTerm: [], cheatSheet: [], practice: [] },
-    cn:  { unit1_2: [], unit3_4: [], unit5_6: [], unit7_8: [], unit9: [], notes: [], cheatSheet: [], practice: [] },
-    linux: { notes: [], cheatSheet: [], linuxMcq: [], bashPractice: [], linuxPlayground: [], practiceTest1: [] },
-    java: { javaFA: [], javaExam: [], javaTestpad: [] }
-  },
+  mastered: {},
   expandedJavaSections: {},
-  practiceAnswers: {
-    iot: {},
-    cn: {},
-    linux: {},
-    java: {}
-  },
+  practiceAnswers: {},
   bashProgress: {
     linux: {}
   },
@@ -322,14 +487,10 @@ let state = {
     java: {}
   },
   smartNotes: [],
-  starredMcqs: {
-    iot: [],
-    cn: [],
-    linux: [],
-    java: []
-  },
+  starredMcqs: {},
   notesFilterSubject: 'all',
-  showStarredOnly: false,
+  quizFilter: 'all',
+  quizUnitIndex: 0,
   playgroundShell: {
     cwd: '/home/student',
     vars: { '0': 'bash' },
@@ -353,13 +514,21 @@ let state = {
   }
 };
 
+Object.keys(CONFIG.subjects).forEach(sub => {
+  state.mastered[sub] = {};
+  CONFIG.subjects[sub].tabs.forEach(tab => { state.mastered[sub][tab.id] = []; });
+  state.practiceAnswers[sub] = {};
+  state.starredMcqs[sub] = [];
+});
+
 // ============================================================
 //  DOM ELEMENTS
 // ============================================================
 const elements = {
   topNavBar: document.getElementById('top-nav-bar'),
-  timerText: document.getElementById('timer-text'),
-  mobileTimerText: document.getElementById('mobile-timer-text'),
+  headerSubject: document.getElementById('header-subject'),
+  sidebarSubjectName: document.getElementById('sidebar-subject-name'),
+  sidebarSectionName: document.getElementById('sidebar-section-name'),
   sidebar: document.getElementById('sidebar-pane'),
   menuToggleBtn: document.getElementById('menu-toggle-btn'),
   desktopSidebarToggle: document.getElementById('desktop-sidebar-toggle'),
@@ -374,104 +543,27 @@ const elements = {
   contentArea: document.getElementById('reading-content-area'),
   prevBtn: document.getElementById('prev-topic-btn'),
   nextBtn: document.getElementById('next-topic-btn'),
-  subjectBtns: document.querySelectorAll('.subject-btn'),
   mobileBrandTitle: document.getElementById('mobile-brand-title'),
   mobileSectionNav: document.getElementById('mobile-section-nav')
 };
 
 // ============================================================
-//  DYNAMIC SUBJECT SWITCHERS
-// ============================================================
-function renderSubjectSwitchers() {
-  const desktopContainer = document.getElementById('desktop-subject-switcher') || document.querySelector('.header-left .subject-switcher');
-  const sidebarContainer = document.getElementById('sidebar-subject-switcher') || document.querySelector('.sidebar-switcher-container .subject-switcher');
-
-  if (!desktopContainer && !sidebarContainer) return;
-
-  const defaultIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>';
-
-  const subjectKeys = Object.keys(CONFIG.subjects);
-
-  function buildButtonsHtml(isDesktop) {
-    return subjectKeys.map(key => {
-      const subj = CONFIG.subjects[key];
-      const activeClass = state.activeSubject === key ? ' active' : '';
-      const idAttr = isDesktop ? ` id="subject-${key}"` : '';
-      const label = subj.shortLabel || subj.label;
-      const icon = subj.icon || defaultIcon;
-      return `<button class="subject-btn${activeClass}"${idAttr} data-subject="${key}">${icon} ${escapeHtml(label)}</button>`;
-    }).join('');
-  }
-
-  if (desktopContainer) desktopContainer.innerHTML = buildButtonsHtml(true);
-  if (sidebarContainer) sidebarContainer.innerHTML = buildButtonsHtml(false);
-
-  elements.subjectBtns = document.querySelectorAll('.subject-btn');
-
-  elements.subjectBtns.forEach(btn => {
-    btn.onclick = () => {
-      const subject = btn.getAttribute('data-subject');
-      setActiveSubject(subject);
-      closeMobileSidebar();
-    };
-  });
-}
-
-// ============================================================
 //  INITIALISATION
 // ============================================================
 function init() {
-  renderSubjectSwitchers();
   loadAllProgress();
   loadSmartNotes();
   loadStarredMcqs();
   setupEventListeners();
-  updateTimer();
-  setInterval(updateTimer, 60000);
 
-  // Security Measures
-  setupSecurity();
+  initExperience();
 
   renderLandingPage();
   initSmartNotesUI();
-  
+
   if (typeof initThemeToggle === 'function') {
     initThemeToggle();
   }
-}
-
-function setupSecurity() {
-  // Disable right click
-  document.addEventListener('contextmenu', e => e.preventDefault());
-
-  // Disable specific key combos
-  document.addEventListener('keydown', e => {
-    // F12
-    if (e.keyCode === 123) {
-      e.preventDefault();
-      return false;
-    }
-    // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+S, Ctrl+H
-    if (e.ctrlKey && (e.shiftKey && (e.keyCode === 73 || e.keyCode === 74) || e.keyCode === 85 || e.keyCode === 83 || e.keyCode === 72)) {
-      e.preventDefault();
-      return false;
-    }
-    // Command+Option+I (Mac)
-    if (e.metaKey && e.altKey && e.keyCode === 73) {
-      e.preventDefault();
-      return false;
-    }
-  });
-
-  // Simple "Anti-Tamper" check - reduced frequency to minimize performance impact
-  const check = () => {
-    const start = Date.now();
-    // debugger; // Removed to prevent potential layout issues
-    if (Date.now() - start > 100) {
-      // document.body.innerHTML = ... 
-    }
-  };
-  setInterval(check, 10000); // Check every 10 seconds instead of 2
 }
 
 /**
@@ -498,22 +590,22 @@ function setupCodeEditorBehavior(editor) {
     // 1. Tab Key: Insert 4 spaces or handle indentation
     if (e.key === 'Tab') {
       e.preventDefault();
-      
+
       if (start !== end) {
         const startOfFirstLine = value.slice(0, start).lastIndexOf('\n') + 1;
         const endOfLastLine = value.indexOf('\n', end);
         const actualEnd = endOfLastLine === -1 ? value.length : endOfLastLine;
-        
+
         const selection = value.slice(startOfFirstLine, actualEnd);
         const lines = selection.split('\n');
-        
+
         let newSelection;
         if (e.shiftKey) {
           newSelection = lines.map(line => line.startsWith('    ') ? line.slice(4) : (line.startsWith('\t') ? line.slice(1) : line)).join('\n');
         } else {
           newSelection = lines.map(line => '    ' + line).join('\n');
         }
-        
+
         editor.value = value.slice(0, startOfFirstLine) + newSelection + value.slice(actualEnd);
         editor.setSelectionRange(startOfFirstLine, startOfFirstLine + newSelection.length);
       } else {
@@ -529,14 +621,14 @@ function setupCodeEditorBehavior(editor) {
     // 2. Enter Key: Maintain Indentation
     if (e.key === 'Enter') {
       e.preventDefault();
-      
+
       const before = value.slice(0, start);
       const after = value.slice(end);
-      
+
       const lines = before.split('\n');
       const currentLine = lines[lines.length - 1];
       const indentation = currentLine.match(/^\s*/)[0];
-      
+
       let newText = '\n' + indentation;
       let cursorOffset = newText.length;
 
@@ -544,7 +636,7 @@ function setupCodeEditorBehavior(editor) {
       if (trimmedLine.endsWith('{') || trimmedLine.endsWith('(') || trimmedLine.endsWith(':')) {
         newText += '    ';
         cursorOffset += 4;
-        
+
         const charAfter = after.trim().charAt(0);
         if ((trimmedLine.endsWith('{') && charAfter === '}') || (trimmedLine.endsWith('(') && charAfter === ')')) {
           newText += '\n' + indentation;
@@ -561,7 +653,7 @@ function setupCodeEditorBehavior(editor) {
     const open = e.key;
     if (AUTO_CLOSE_PAIRS.hasOwnProperty(open)) {
       const close = AUTO_CLOSE_PAIRS[open];
-      
+
       if (start !== end) {
         e.preventDefault();
         const selected = value.slice(start, end);
@@ -615,7 +707,7 @@ function markEditorHighlightReady(editor) {
 
 function syncEditor(editor, highlighter, lineNumbers) {
   if (!editor) return;
-  
+
   let lastLineCount = -1;
   let lineNumberFrame = null;
   let previousEditorValue = editor.value;
@@ -687,20 +779,20 @@ function syncEditor(editor, highlighter, lineNumbers) {
 // ============================================================
 function loadAllProgress() {
   // Load Mastered topics progress
-  ['iot', 'cn', 'linux', 'java'].forEach(sub => {
+  Object.keys(CONFIG.subjects).forEach(sub => {
     const key = CONFIG.subjects[sub]?.storageKey;
     if (key) {
       const saved = localStorage.getItem(key);
       if (saved) {
         try {
-          state.mastered[sub] = JSON.parse(saved) || {};
+          Object.assign(state.mastered[sub], JSON.parse(saved) || {});
         } catch (e) { console.error(`Error loading ${sub} mastered progress`, e); }
       }
     }
   });
 
   // Load Practice/MCQ progress
-  ['iot', 'cn', 'linux', 'java'].forEach(sub => {
+  Object.keys(CONFIG.subjects).forEach(sub => {
     const key = CONFIG.subjects[sub]?.storageKeyPractice;
     if (key) {
       const saved = localStorage.getItem(key);
@@ -792,10 +884,9 @@ function loadStarredMcqs() {
     const saved = localStorage.getItem('prep_starred_mcqs');
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (parsed.iot) state.starredMcqs.iot = parsed.iot;
-      if (parsed.cn) state.starredMcqs.cn = parsed.cn;
-      if (parsed.linux) state.starredMcqs.linux = parsed.linux;
-      if (parsed.java) state.starredMcqs.java = parsed.java;
+      Object.keys(CONFIG.subjects).forEach(sub => {
+        if (parsed[sub]) state.starredMcqs[sub] = parsed[sub];
+      });
     }
   } catch (e) {
     // TODO(security): Log only non-sensitive error context
@@ -815,7 +906,7 @@ function resetPracticeProgress() {
   state.practiceAnswers[state.activeSubject] = {};
   const subjectKeyPractice = CONFIG.subjects[state.activeSubject].storageKeyPractice;
   localStorage.removeItem(subjectKeyPractice);
-  
+
   // Refresh UI
   renderPracticeUnit(state.activeTopicIndex);
   updateProgressBar();
@@ -826,15 +917,6 @@ function resetPracticeProgress() {
 //  EVENT LISTENERS
 // ============================================================
 function setupEventListeners() {
-  // Subject switcher buttons
-  elements.subjectBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const subject = btn.getAttribute('data-subject');
-      setActiveSubject(subject);
-      closeMobileSidebar();
-    });
-  });
-
   // Mobile menu toggle
   elements.menuToggleBtn.addEventListener('click', () => {
     elements.sidebar.classList.toggle('mobile-open');
@@ -843,9 +925,22 @@ function setupEventListeners() {
   // Desktop sidebar toggle
   if (elements.desktopSidebarToggle) {
     elements.desktopSidebarToggle.addEventListener('click', () => {
+      if (window.matchMedia('(max-width: 700px)').matches) {
+        const open = elements.sidebar.classList.toggle('mobile-open');
+        document.querySelector('.sidebar-scrim').hidden = !open;
+        elements.desktopSidebarToggle.setAttribute('aria-expanded', String(open));
+        if (open) elements.searchInput.focus();
+        return;
+      }
       document.querySelector('.container').classList.toggle('sidebar-collapsed');
     });
   }
+
+  document.getElementById('brand-home')?.addEventListener('click', () => renderLandingPage());
+  document.getElementById('sidebar-back')?.addEventListener('click', () => {
+    closeMobileSidebar();
+    renderSubjectOverview(state.activeSubject);
+  });
 
   // Search filter
   elements.searchInput.addEventListener('input', debounce((e) => {
@@ -920,6 +1015,12 @@ function setupEventListeners() {
     const isTyping = activeTag === 'input' || activeTag === 'textarea' || (document.activeElement && document.activeElement.isContentEditable);
     if (elements.searchInput === document.activeElement || isTyping) return;
 
+    // On the quiz page arrows scroll the page; letters/numbers drive the questions.
+    if (isMcqSection() && elements.contentArea.querySelector('.quiz-page')) {
+      if (handleQuizKey(e)) { e.preventDefault(); return; }
+      if (e.key.startsWith('Arrow')) return;
+    }
+
     if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
       if (state.activeTopicIndex > 0) selectTopic(state.activeTopicIndex - 1);
     } else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
@@ -966,76 +1067,74 @@ function setupEventListeners() {
       return;
     }
 
+    const star = e.target.closest('.mcq-star-btn');
+    if (star) { toggleStar(state.activeSubject, parseInt(star.dataset.qid, 10)); return; }
+
+    const filter = e.target.closest('[data-quiz-filter]');
+    if (filter) {
+      state.quizFilter = filter.dataset.quizFilter;
+      renderPracticeUnit(state.quizUnitIndex);
+      return;
+    }
+    const jump = e.target.closest('[data-quiz-jump]');
+    if (jump) {
+      const qId = parseInt(jump.dataset.quizJump, 10);
+      // A filtered-out question can't be scrolled to, so widen the filter first.
+      if (!document.getElementById('mcq-' + qId)) { state.quizFilter = 'all'; renderPracticeUnit(state.quizUnitIndex); }
+      setQuizCursor(qId, true);
+      return;
+    }
+    const action = e.target.closest('[data-quiz-action]');
+    if (action) { quizAction(action.dataset.quizAction); return; }
+
     const option = e.target.closest('.mcq-option');
-    if (!option) return;
+    if (option) { answerMcq(option); return; }
 
-    const optionsContainer = option.closest('.mcq-options');
-    if (!optionsContainer) return;
-
-    // Lock options to prevent clicking after selection
-    if (optionsContainer.classList.contains('answered')) return;
-
-    const selectedOpt = option.getAttribute('data-option');
-    const correctOpt = optionsContainer.getAttribute('data-correct');
-
-    const allOptions = optionsContainer.querySelectorAll('.mcq-option');
-    allOptions.forEach(opt => {
-      const optLetter = opt.getAttribute('data-option');
-      if (optLetter === correctOpt) {
-        opt.classList.add('correct');
-        if (!opt.querySelector('.correct-badge')) {
-          const badge = document.createElement('span');
-          badge.className = 'correct-badge';
-          badge.textContent = 'Correct ✓';
-          opt.appendChild(badge);
-        }
-      } else if (optLetter === selectedOpt) {
-        opt.classList.add('incorrect');
-        if (!opt.querySelector('.incorrect-badge')) {
-          const badge = document.createElement('span');
-          badge.className = 'incorrect-badge';
-          badge.textContent = 'Incorrect ✗';
-          opt.appendChild(badge);
-        }
-      }
-    });
-
-    optionsContainer.classList.add('answered');
-
-    // Reveal explanation if present
-    const card = option.closest('.mcq-card');
-    if (card) {
-      const exp = card.querySelector('.mcq-explanation');
-      if (exp) {
-        exp.style.display = 'block';
-      }
-    }
-
-    // Special practice mode handling
-    if (isMcqSection()) {
-      const card = option.closest('.mcq-card');
-      if (card) {
-        const qId = parseInt(card.getAttribute('data-question-id'));
-        state.practiceAnswers[state.activeSubject][qId] = selectedOpt;
-        savePracticeProgress();
-        updateQuizDashboardStats();
-        renderSidebar(); // refresh sidebar to update checkboxes / fractions
-        updateProgressBar(); // refresh sidebar progress bar
-      }
-    }
+    const card = e.target.closest('.quiz-page .mcq-card');
+    if (card) setQuizCursor(parseInt(card.dataset.questionId, 10), false);
   });
 
   elements.welcomeScreen.addEventListener('click', (e) => {
-    const subjectCard = e.target.closest('.landing-subject-card');
+    // Study Desk: explicit resume/open targets (subject + optional section/index)
+    const openBtn = e.target.closest('[data-open]');
+    if (openBtn) {
+      const subject = openBtn.getAttribute('data-subject');
+      const section = openBtn.getAttribute('data-section') || null;
+      const idxAttr = openBtn.getAttribute('data-index');
+      if (subject) resumeTo(subject, section, idxAttr != null ? parseInt(idxAttr, 10) : undefined);
+      return;
+    }
+    // Rail navigation: home + hub pages; Saved opens the notes/starred drawer
+    const navBtn = e.target.closest('[data-nav]');
+    if (navBtn) {
+      const nav = navBtn.getAttribute('data-nav');
+      if (nav === 'saved') { toggleSmartNotesPanel(); return; }
+      renderLandingPage(HUB_PAGES[nav] ? nav : 'home');
+      return;
+    }
+    // Learning Atlas: chapter tiles / support cards that open a section
+    const sectionBtn = e.target.closest('[data-section]');
+    if (sectionBtn && !sectionBtn.hasAttribute('data-subject')) {
+      setActiveSection(sectionBtn.getAttribute('data-section'));
+      return;
+    }
+    // Subject cards / tiles (Study Desk + legacy landing)
+    const subjectCard = e.target.closest('.desk-subject, .landing-subject-card, [data-subject]');
     if (!subjectCard) return;
     const subject = subjectCard.getAttribute('data-subject');
     if (subject) setActiveSubject(subject);
   });
 }
 
-function renderLandingPage() {
+function renderLandingPage(page = 'home') {
+  subjectNavigationId++;
+  if (!HUB_PAGES[page] && page !== 'home') page = 'home';
+  // Rescue the header controls before innerHTML below wipes the old desk they live in.
+  restoreHeaderControls();
+  clearWorkspaceModes();
   document.body.classList.add('landing-mode');
-  document.title = 'prep';
+  document.body.classList.remove('overview-mode');
+  document.title = page === 'home' ? 'prep' : `${HUB_PAGES[page].title} — prep`;
   elements.welcomeScreen.style.display = 'flex';
   elements.readingPane.style.display = 'none';
   const pgContainer = document.getElementById('playground-workspace-container');
@@ -1045,97 +1144,830 @@ function renderLandingPage() {
   elements.topNavBar.innerHTML = '';
   if (elements.mobileSectionNav) elements.mobileSectionNav.innerHTML = '';
   elements.topicList.innerHTML = '';
-  elements.progressPercent.textContent = 'Choose a desk';
+  elements.progressPercent.textContent = '';
   elements.progressBar.style.width = '0%';
   if (elements.mobileBrandTitle) elements.mobileBrandTitle.textContent = 'prep';
+  document.documentElement.style.setProperty('--active-accent', 'var(--lavender-ink)');
 
-  elements.subjectBtns.forEach(btn => btn.classList.remove('active'));
-  document.documentElement.style.setProperty('--active-accent', '#2F6F5E');
+  elements.welcomeScreen.innerHTML = page === 'home' ? renderStudyDesk() : renderHubPage(page);
+  elements.welcomeScreen.scrollTop = 0;
+  syncExperience(page);
+}
 
-  elements.welcomeScreen.innerHTML = `
-    <section class="landing-page" aria-label="prep landing page">
-      <div class="landing-hero">
-        <div class="landing-copy">
-          <p class="landing-console-line">student@prep:~$ choose-your-battle</p>
-          <h2>One study room. Four desks. Zero wandering.</h2>
-          <p>prep keeps your notes, MCQs, progress, Linux terminal drills, and Java coding practice in one quiet workspace built for the last stretch before the paper.</p>
-          <div class="landing-actions">
-            <button class="landing-subject-card primary" data-subject="linux">
-              <span class="landing-card-icon">&gt;_</span>
-              <span>
-                <strong>Linux Lab</strong>
-                <small>MCQs plus a virtual Bash terminal</small>
-              </span>
-            </button>
-            <button class="landing-subject-card" data-subject="iot">
-              <span class="landing-card-icon">◎</span>
-              <span>
-                <strong>ES & IoT</strong>
-                <small>Exam notes, cheat sheet, practice</small>
-              </span>
-            </button>
-            <button class="landing-subject-card" data-subject="cn">
-              <span class="landing-card-icon">▦</span>
-              <span>
-                <strong>Computer Networks</strong>
-                <small>Layered units and quiz practice</small>
-              </span>
-            </button>
-            <button class="landing-subject-card" data-subject="java">
-              <span class="landing-card-icon">{}</span>
-              <span>
-                <strong>Java DSA</strong>
-                <small>LeetCode-style coding practice</small>
-              </span>
-            </button>
+function clearWorkspaceModes() {
+  document.getElementById('main-content-pane')?.classList.remove('bash-mode', 'practice-mode', 'playground-mode', 'java-mode');
+  document.querySelector('.container')?.classList.remove('practice-active');
+}
+
+// Fold the global header's utilities (theme/font pill + auth) into the page header
+// on home and hub pages. Nodes are moved (not cloned), so their listeners and
+// Firebase's #auth-container lookups keep working.
+function foldHeaderIntoDesk() {
+  restoreHeaderControls();
+}
+
+// Put those controls back into the global header.
+function restoreHeaderControls() {
+  const headerRight = document.querySelector('header .header-right');
+  if (!headerRight) return;
+  const zoom = document.querySelector('.zoom-controls');
+  const auth = document.getElementById('auth-container');
+  if (zoom) headerRight.appendChild(zoom);
+  if (auth) headerRight.appendChild(auth);
+}
+
+// ── Study Desk home (Phase 2) ───────────────────────────────────────────────
+// Pastel families assigned to the four live subjects, matching the mockups.
+const DESK_FAMILIES = {
+  java_abstractions: 'lavender',
+  iot: 'peach',
+  cn: 'blue',
+  linux: 'mint',
+  algo: 'blue', aiml: 'lavender', sysdesign: 'mint', aptitude: 'peach', java: 'lavender'
+};
+// Four subjects shown in the "Pick up a subject" strip: this semester's core courses.
+const DESK_STRIP = ['java_abstractions', 'algo', 'aiml', 'sysdesign'];
+
+function getUserFirstName() {
+  try {
+    const u = window.firebase && firebase.auth && firebase.auth().currentUser;
+    if (u && u.displayName) return u.displayName.trim().split(/\s+/)[0];
+  } catch (e) {}
+  return '';
+}
+
+function greetingFor(date) {
+  const h = date.getHours();
+  if (h >= 5 && h < 12)  return { part: 'morning',   night: false };
+  if (h >= 12 && h < 17) return { part: 'afternoon', night: false };
+  if (h >= 17 && h < 22) return { part: 'evening',   night: true };
+  return { part: 'night', night: true };
+}
+
+// Subject line-art diagrams (stroke = currentColor, tinted by the card's ink).
+function deskDiagram(key) {
+  const d = {
+    java_abstractions: `<svg viewBox="0 0 140 96" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M34 12c-8 0-8 8-8 16 0 8-6 8-6 20 0 12 6 12 6 20 0 8 0 16 8 16" opacity=".55"/><path d="M106 12c8 0 8 8 8 16 0 8 6 8 6 20 0 12-6 12-6 20 0 8 0 16-8 16" opacity=".55"/><circle cx="70" cy="20" r="6"/><circle cx="46" cy="52" r="6"/><circle cx="94" cy="52" r="6"/><circle cx="46" cy="80" r="5"/><circle cx="94" cy="80" r="5"/><path d="M70 26l-24 20M70 26l24 20M46 58v16M94 58v16"/></svg>`,
+    iot: `<svg viewBox="0 0 140 96" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="48" r="7"/><path d="M40 48c14-22 32-22 46 0M40 48c14 22 32 22 46 0" opacity=".5"/><path d="M96 30q8 18 0 36" opacity=".7"/><path d="M104 22q14 26 0 52" opacity=".45"/><rect x="112" y="38" width="18" height="20" rx="3"/><path d="M118 38v-6M124 38v-6"/></svg>`,
+    cn: `<svg viewBox="0 0 140 96" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="70" cy="20" r="6"/><circle cx="28" cy="52" r="6"/><circle cx="112" cy="52" r="6"/><circle cx="48" cy="80" r="6"/><circle cx="92" cy="80" r="6"/><path d="M70 26l-40 22M70 26l40 22M32 57l14 18M108 57L94 75M52 80h36" opacity=".55"/></svg>`,
+    linux: `<svg viewBox="0 0 140 96" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="18" width="108" height="62" rx="6"/><path d="M16 34h108" opacity=".5"/><circle cx="26" cy="26" r="2"/><circle cx="34" cy="26" r="2"/><circle cx="42" cy="26" r="2"/><path d="M30 50l10 8-10 8M46 66h24" opacity=".8"/></svg>`,
+    algo: `<svg viewBox="0 0 140 96" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="18" y="62" width="10" height="18" rx="2" opacity=".5"/><rect x="34" y="50" width="10" height="30" rx="2" opacity=".6"/><rect x="50" y="36" width="10" height="44" rx="2" opacity=".75"/><rect x="66" y="22" width="10" height="58" rx="2"/><circle cx="100" cy="22" r="6"/><circle cx="88" cy="50" r="6"/><circle cx="114" cy="50" r="6"/><circle cx="104" cy="76" r="5"/><path d="M97 27l-6 17M103 27l8 17M111 56l-5 15" opacity=".6"/></svg>`,
+    aiml: `<svg viewBox="0 0 140 96" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="30" cy="26" r="6"/><circle cx="30" cy="48" r="6"/><circle cx="30" cy="70" r="6"/><circle cx="70" cy="36" r="6"/><circle cx="70" cy="60" r="6"/><circle cx="110" cy="48" r="7"/><path d="M36 26l28 10M36 26l28 34M36 48l28-12M36 48l28 12M36 70l28-34M36 70l28-10M76 36l27 12M76 60l27-12" opacity=".5"/></svg>`,
+    sysdesign: `<svg viewBox="0 0 140 96" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="52" y="10" width="36" height="16" rx="4"/><rect x="16" y="44" width="30" height="16" rx="4"/><rect x="55" y="44" width="30" height="16" rx="4"/><rect x="94" y="44" width="30" height="16" rx="4"/><ellipse cx="70" cy="80" rx="18" ry="5"/><path d="M52 80v-4M88 80v-4" opacity=".6"/><path d="M70 26v18M60 26L31 44M80 26l29 18M31 60l30 16M70 60v15M109 60L79 76" opacity=".5"/></svg>`,
+    aptitude: `<svg viewBox="0 0 140 96" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="20" y="14" width="44" height="68" rx="6"/><path d="M28 28h28" opacity=".6"/><circle cx="32" cy="46" r="2"/><circle cx="42" cy="46" r="2"/><circle cx="52" cy="46" r="2"/><circle cx="32" cy="58" r="2"/><circle cx="42" cy="58" r="2"/><circle cx="52" cy="58" r="2"/><path d="M30 70h24" opacity=".6"/><circle cx="100" cy="48" r="26" opacity=".5"/><path d="M100 48V30M100 48l13 8"/></svg>`
+  };
+  return d[key] || d.cn;
+}
+
+function deskCardMini(key) { return deskDiagram(key); }
+
+function renderStudyDesk() {
+  const now = new Date();
+  const name = getUserFirstName();
+  const g = greetingFor(now);
+  const greetTitle = name ? `Good ${g.part}, ${escapeHtml(name)}` : `Good ${g.part}`;
+  const timeStr = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  const subtitle = g.night
+    ? `It's ${timeStr}. Let's make this hour count.`
+    : `Stay consistent. Small steps every day.`;
+  const moon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/><path d="M19 3v4M17 5h4" opacity=".7"/></svg>`;
+  const sun = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>`;
+
+  const activity = safeParse(localStorage.getItem('prep_study_activity'), {});
+  const entries = Object.values(activity).sort((a, b) => (b.ts || 0) - (a.ts || 0));
+  const resume = entries[0] || null;
+
+  // Upcoming exam = soonest future examTime
+  const nowMs = Date.now();
+  const exam = Object.keys(CONFIG.subjects)
+    .map(k => ({ key: k, ...CONFIG.subjects[k] }))
+    .filter(s => s.examTime && s.examTime > nowMs)
+    .sort((a, b) => a.examTime - b.examTime)[0];
+
+  return `
+    <div class="desk" aria-label="Study Desk home">
+      <div class="desk-main">
+        <header class="desk-greet">
+          <div>
+            <h1 class="desk-title"><span class="desk-greet-icon">${g.night ? moon : sun}</span>${greetTitle}</h1>
+            <p class="desk-sub">${escapeHtml(subtitle)}</p>
           </div>
+          <div class="desk-greet-right"><div class="desk-utils"></div></div>
+        </header>
+
+        <div class="desk-grid">
+          <div class="desk-col-main">
+            ${resume ? renderResumeCard(resume) : renderFirstTimeCard()}
+            ${renderSubjectStrip(activity, !!resume)}
+          </div>
+          <aside class="desk-col-side">
+            ${renderExamCard(exam, activity)}
+            ${renderQuickPractice()}
+          </aside>
         </div>
-        <div class="landing-desk" aria-hidden="true">
-          <div class="landing-window top">
-            <div class="landing-window-bar"><span></span><span></span><span></span></div>
-            <pre>mcq --mode exam
-linux --lab bash
-notes --focus st2</pre>
+
+        <div class="desk-banner">
+          <div class="desk-banner-copy">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c4-3 7-7 7-12a7 7 0 0 0-14 0c0 5 3 9 7 12z" opacity=".5"/><path d="M12 22V10M12 14c-2 0-4-2-4-4M12 12c2 0 4-2 4-4"/></svg>
+            <div>
+              <strong>Late nights build great engineers.</strong>
+              <span>Stay consistent, take breaks, and trust the process.</span>
+            </div>
           </div>
-          <div class="landing-window bottom">
-            <div class="landing-meter"><span style="width: 65%;"></span></div>
-            <div class="landing-check-row"><b></b><span>progress saved locally</span></div>
-            <div class="landing-check-row"><b></b><span>answers hidden until asked</span></div>
-            <div class="landing-check-row"><b></b><span>practice built from your syllabus</span></div>
-          </div>
+          <button class="desk-plan-btn" type="button" data-settings-open>
+            Make yourself comfortable
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
         </div>
       </div>
+    </div>`;
+}
+
+const ICON = {
+  home: '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
+  subjects: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+  tests: '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
+  labs: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
+  terminal: '<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>',
+  notes: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/>',
+  progress: '<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>',
+  settings: '<path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="18" r="2"/>',
+  saved: '<path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>',
+  chevron: '<polyline points="9 18 15 12 9 6"/>'
+};
+
+function svgIcon(paths, size = 18) {
+  return `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
+}
+
+function renderDeskNav(active) {
+  const saved = (state.smartNotes || []).length +
+    Object.values(state.starredMcqs || {}).reduce((n, list) => n + (Array.isArray(list) ? list.length : 0), 0);
+  const items = [['home', 'Home'], ['subjects', 'Subjects'], ['notes', 'Notes'], ['tests', 'Practice'], ['labs', 'Labs'], ['saved', 'Saved'], ['progress', 'Progress']];
+  const nav = items.map(([id, label]) => {
+    const current = id === active;
+    const badge = id === 'saved' && saved ? `<b class="desk-nav-count">${saved}</b>` : '';
+    return `
+    <button class="desk-nav-item${current ? ' active' : ''}" type="button" data-nav="${id}" aria-label="${label}" title="${label}"${current ? ' aria-current="page"' : ''}>
+      ${svgIcon(ICON[id])}<span>${label}</span>${badge}
+    </button>`;
+  }).join('');
+  return `
+    <nav class="desk-nav" aria-label="Primary">
+      <div class="desk-nav-top">${nav}</div>
+      <div class="desk-nav-bottom"><button class="desk-nav-item" type="button" data-settings-open aria-label="Study settings" title="Study settings">${svgIcon(ICON.settings)}<span>Settings</span></button><div class="desk-focus-note">A little focus,<br>a little further.</div></div>
+    </nav>`;
+}
+
+// ── Hub pages: Subjects / Tests / Labs ──────────────────────────────────────
+const HUB_PAGES = {
+  notes: { title: 'Notes library', sub: 'Find the concept you need. Take it at your own pace.' },
+  progress: { title: 'Your progress', sub: 'Every topic understood is a little less to worry about.' },
+  subjects: { title: 'Subjects', sub: 'Every course this semester, with your progress and exam dates.' },
+  tests: { title: 'Tests', sub: 'Question banks and practice tests for each course.' },
+  labs: { title: 'Labs', sub: 'Lab programs, coding problems and terminal practice.' }
+};
+
+function tabKind(tabId) {
+  if (/lab|bash|playground/i.test(tabId) || /^java(FA|Exam|Testpad)$/.test(tabId)) return 'lab';
+  if (/practice|mcq/i.test(tabId)) return 'test';
+  return 'notes';
+}
+
+function examLabel(subj) {
+  if (!subj.examTime) return 'No exam date';
+  const when = new Date(subj.examTime).toLocaleDateString([], { day: 'numeric', month: 'short' });
+  if (subj.examTime < Date.now()) return `Exam was ${when}`;
+  const days = Math.ceil((subj.examTime - Date.now()) / 86400000);
+  return days === 1 ? 'Exam tomorrow' : `Exam in ${days} days`;
+}
+
+function hubRow({ fam, icon, title, sub, meta = '', bar = null, aside = '', attrs, muted = false }) {
+  return `
+    <button class="hub-row fam-${fam}${muted ? ' hub-row--muted' : ''}" type="button" ${attrs}>
+      <span class="hub-row-icon">${svgIcon(icon)}</span>
+      <span class="hub-row-main">
+        <span class="hub-row-title">${title}</span>
+        <span class="hub-row-sub">${sub}</span>
+      </span>
+      <span class="hub-row-meta">
+        ${bar != null ? `<span class="hub-bar" aria-hidden="true"><span style="width:${bar}%"></span></span>` : ''}
+        <span>${meta}</span>
+      </span>
+      <span class="hub-row-aside">${aside}</span>
+      <span class="hub-row-chev">${svgIcon(ICON.chevron, 16)}</span>
+    </button>`;
+}
+
+function hubGroup(title, rows, empty) {
+  return `
+    <section class="hub-group">
+      <h2 class="hub-h2">${title}<span class="hub-count">${rows.length}</span></h2>
+      ${rows.length ? `<div class="hub-list">${rows.join('')}</div>` : `<p class="hub-empty">${empty}</p>`}
+    </section>`;
+}
+
+function renderSubjectsHub() {
+  const activity = safeParse(localStorage.getItem('prep_study_activity'), {});
+  const row = key => {
+    const s = CONFIG.subjects[key];
+    const done = Object.values(state.mastered[key] || {}).reduce((n, list) => n + list.length, 0);
+    const total = activity[key] && activity[key].total;
+    let meta = done ? `${done} topics done` : 'Not started';
+    let bar = null;
+    if (s.pending) meta = 'Syllabus preview';
+    else if (total) { bar = Math.round((done / total) * 100); meta = `${done} of ${total} topics`; }
+    return hubRow({
+      fam: DESK_FAMILIES[key] || 'blue',
+      icon: s.icon.replace(/^<svg[^>]*>|<\/svg>$/g, ''),
+      title: escapeHtml(s.label),
+      sub: escapeHtml([s.code, s.tagline].filter(Boolean).join(' · ')),
+      meta, bar,
+      aside: s.pending ? '' : examLabel(s),
+      attrs: `data-subject="${key}"`,
+      muted: s.pending
+    });
+  };
+  const keys = Object.keys(CONFIG.subjects);
+  const current = keys.filter(k => CONFIG.subjects[k].semester && !CONFIG.subjects[k].pending);
+  const other = keys.filter(k => !CONFIG.subjects[k].semester && !CONFIG.subjects[k].pending);
+  const pending = keys.filter(k => CONFIG.subjects[k].pending);
+  return hubGroup('This semester', current.map(row), 'No courses yet.') +
+    hubGroup('More practice', other.map(row), 'Nothing else yet.') +
+    (pending.length ? hubGroup('Notes coming soon', pending.map(row), '') : '');
+}
+
+function hubSectionRows(kind, describe) {
+  const rows = [];
+  Object.entries(CONFIG.subjects).forEach(([key, s]) => {
+    if (s.pending) return;
+    s.tabs.filter(t => tabKind(t.id) === kind).forEach(t => {
+      rows.push(hubRow({
+        fam: DESK_FAMILIES[key] || 'blue',
+        title: escapeHtml((s.sectionNames && s.sectionNames[t.id]) || t.label),
+        sub: escapeHtml(s.label),
+        attrs: `data-open data-subject="${key}" data-section="${t.id}"`,
+        ...describe(key, t.id)
+      }));
+    });
+  });
+  return rows;
+}
+
+function renderTestsHub() {
+  const rows = hubSectionRows('test', (key, tabId) => {
+    const starred = (state.starredMcqs[key] || []).length;
+    const answered = Object.keys(state.practiceAnswers[key] || {}).length;
+    return {
+      icon: ICON.tests,
+      meta: tabId === 'practiceTest1' ? 'MCQ, written & coding' : (answered ? `${answered} answered` : 'Not started'),
+      aside: starred ? `${starred} starred` : ''
+    };
+  });
+  return hubGroup('Question banks & tests', rows, 'No tests yet. They appear here as courses add question banks.');
+}
+
+function renderLabsHub() {
+  const bashSolved = Object.values(state.bashProgress.linux || {}).filter(p => p && p.solved).length;
+  const rows = hubSectionRows('lab', (key, tabId) => {
+    if (tabId === 'bashPractice') return { icon: ICON.terminal, meta: 'Shell scripting', aside: bashSolved ? `${bashSolved} solved` : '' };
+    if (tabId === 'linuxPlayground') return { icon: ICON.terminal, meta: 'Virtual terminal' };
+    const done = (state.mastered[key] && state.mastered[key][tabId] || []).length;
+    return { icon: ICON.labs, meta: key === 'java' ? 'Coding problems' : 'Lab programs', aside: done ? `${done} done` : '' };
+  });
+  return hubGroup('Hands-on practice', rows, 'No labs yet. They appear here as courses add programs.');
+}
+
+function renderHubPage(page) {
+  const meta = HUB_PAGES[page];
+  const body = page === 'subjects' ? renderSubjectGallery() : page === 'notes' ? hubGroup('Your reading rooms', hubSectionRows('notes', () => ({ icon: ICON.notes, meta: 'Read notes' })), 'Choose a subject to start reading.') : page === 'progress' ? renderProgressHub() : page === 'tests' ? renderTestsHub() : renderLabsHub();
+  return `
+    <div class="desk" aria-label="${meta.title}">
+      <div class="desk-main">
+        <header class="desk-greet">
+          <div>
+            <h1 class="hub-title">${meta.title}</h1>
+            <p class="desk-sub">${meta.sub}</p>
+          </div>
+          <div class="desk-greet-right"><div class="desk-utils"></div></div>
+        </header>
+        ${body}
+      </div>
+    </div>`;
+}
+
+// ── Learning Atlas: subject overview (Phase 3, Redesign_plan.md §5 Phase B) ──
+// Icon per chapter/section type (notes / cheatsheet / MCQs / lab / playground).
+function chapterIcon(tabId) {
+  const id = tabId.toLowerCase();
+  if (id.includes('practice') || id.includes('mcq') || id === 'javaexam' || id === 'javatestpad')
+    return '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>';
+  if (id.includes('lab') || id.includes('bash') || id.includes('playground') || id === 'javafa')
+    return '<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>';
+  if (id.includes('cheat'))
+    return '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/>';
+  return '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>';
+}
+
+const ATLAS_FAM_CYCLE = ['lavender', 'blue', 'peach', 'mint', 'blush'];
+
+// Topic count for a section, when its data is a plain topic array.
+function sectionTopicCount(subjId, tabId) {
+  const data = CONFIG.subjects[subjId].data || {};
+  return Array.isArray(data[tabId]) ? data[tabId].length : null;
+}
+
+function renderSubjectOverview(subjectId) {
+  const subj = CONFIG.subjects[subjectId];
+  if (!subj) return;
+  document.body.classList.add('overview-mode');
+  document.body.classList.remove('landing-mode');
+  clearWorkspaceModes();
+  elements.topNavBar.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+  elements.readingPane.style.display = 'none';
+  const pg = document.getElementById('playground-workspace-container');
+  if (pg) pg.style.display = 'none';
+  elements.welcomeScreen.style.display = 'block';
+
+  const fam = DESK_FAMILIES[subjectId] || 'blue';
+  const activity = safeParse(localStorage.getItem('prep_study_activity'), {})[subjectId];
+
+  // Progress across all array-shaped note sections
+  const data = subj.data || {};
+  const progress = subjectProgress(subjectId);
+  const { total, done: mastered, percent: pct } = progress;
+
+  // Days until exam
+  let examLine = '';
+  if (subj.examTime && subj.examTime > Date.now()) {
+    const days = Math.ceil((subj.examTime - Date.now()) / 86400000);
+    examLine = `<span class="atlas-stat"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${days} days to exam</span>`;
+  }
+
+  // Chapter rail tiles — one per section tab
+  const tiles = subj.tabs.map((tab, i) => {
+    const f = ATLAS_FAM_CYCLE[i % ATLAS_FAM_CYCLE.length];
+    const full = (subj.sectionNames && subj.sectionNames[tab.id]) || tab.label;
+    const desc = full.includes(' — ') ? full.split(' — ').slice(1).join(' — ') : '';
+    const count = sectionTopicCount(subjectId, tab.id);
+    const meta = count != null ? `${count} topics` : 'Open section';
+    return `
+      <button class="atlas-tile fam-${f}" type="button" data-section="${tab.id}">
+        <div class="atlas-tile-art" aria-hidden="true">${deskDiagram(subjectId)}</div>
+        <div class="atlas-tile-label">${escapeHtml(tab.label)}</div>
+        <div class="atlas-tile-desc">${escapeHtml(desc || subj.shortLabel)}</div>
+        <div class="atlas-tile-foot"><span>${meta}</span><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </button>`;
+  }).join('');
+
+  // Support modules
+  const nextSection = subj.tabs[0].id;
+  const continueBtn = activity
+    ? `<button class="atlas-support-card fam-${fam}" type="button" data-open data-subject="${subjectId}" data-section="${escapeHtml(activity.section)}" data-index="${activity.topicIndex}">
+         <span class="atlas-support-k">Continue learning</span>
+         <strong>${escapeHtml(activity.topicTitle || 'Resume last topic')}</strong>
+         <span class="atlas-support-meta">${escapeHtml((subj.sectionNames && subj.sectionNames[activity.section]) || activity.section || '')}</span>
+       </button>`
+    : `<button class="atlas-support-card fam-${fam}" type="button" data-section="${nextSection}">
+         <span class="atlas-support-k">Start here</span>
+         <strong>${escapeHtml(subj.tabs[0].label)}</strong>
+         <span class="atlas-support-meta">Begin with the first chapter</span>
+       </button>`;
+
+  const practiceTab = subj.tabs.find(t => /practice|mcq/i.test(t.id));
+  const practiceBtn = practiceTab
+    ? `<button class="atlas-support-card fam-blush" type="button" data-section="${practiceTab.id}">
+         <span class="atlas-support-k">Practice weak areas</span>
+         <strong>${escapeHtml(practiceTab.label)}</strong>
+         <span class="atlas-support-meta">Test yourself on this subject</span>
+       </button>`
+    : '';
+
+  const savedCount = state.smartNotes.filter(n => n.subject === subjectId).length + (state.starredMcqs[subjectId] || []).length;
+  const recentBtn = `<button class="atlas-support-card fam-mint" type="button" data-saved-open><span class="atlas-support-k">Saved for revision</span><strong>${savedCount ? `${savedCount} saved items` : 'Keep the useful bits'}</strong><span class="atlas-support-meta">Your notes, highlights and starred questions</span></button>`;
+
+  elements.welcomeScreen.innerHTML = `
+    <section class="atlas fam-${fam}" aria-label="${escapeHtml(subj.label)} overview">
+      <button class="atlas-back" type="button" data-nav="home">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to your desk
+      </button>
+      <header class="atlas-head">
+        <div class="atlas-head-copy">
+          <div class="atlas-code">${escapeHtml(subj.code || subj.shortLabel)}</div>
+          <h1 class="atlas-title">${escapeHtml(subj.label)}</h1>
+          <p class="atlas-tagline">${escapeHtml(subj.tagline || '')}</p>
+          <div class="atlas-stats">
+            <span class="atlas-stat"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>${total ? `${mastered}/${total} topics` : `${subj.tabs.length} sections`}</span>
+            ${examLine}
+          </div>
+          ${total ? `<div class="atlas-progress"><span style="width:${pct}%"></span></div>` : ''}
+        </div>
+        <div class="atlas-head-art" aria-hidden="true">${deskDiagram(subjectId)}</div>
+      </header>
+
+      <div class="atlas-rail-wrap">
+        <div class="atlas-rail-head">
+          <h2 class="atlas-h2">Chapters</h2>
+          <div class="atlas-rail-nav">
+            <button class="atlas-arrow" type="button" data-rail="prev" aria-label="Scroll chapters left"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <button class="atlas-arrow" type="button" data-rail="next" aria-label="Scroll chapters right"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+          </div>
+        </div>
+        <div class="atlas-rail" id="atlas-rail" role="group" aria-label="Chapters" tabindex="0">${tiles}</div>
+      </div>
+
+      <div class="atlas-support">
+        ${continueBtn}${practiceBtn}${recentBtn}
+      </div>
+      ${renderCoursePlan(subj)}
+    </section>`;
+
+  initChapterRail();
+  elements.welcomeScreen.scrollTop = 0;
+  syncExperience('subject');
+}
+
+// Grading scheme and books from the course handout (CHO).
+function renderCoursePlan(subj) {
+  const c = subj.course;
+  if (!c) return '';
+  const rows = c.grading.map(([label, pct]) => `
+    <li class="course-grade">
+      <span class="course-grade-label">${escapeHtml(label)}</span>
+      <span class="course-grade-bar" aria-hidden="true"><span style="width:${pct}%"></span></span>
+      <b>${pct}%</b>
+    </li>`).join('');
+  return `
+    <details class="course-details"><summary>Course details & recommended reading</summary><section class="atlas-course" aria-label="Course plan">
+      <div class="course-card">
+        <h2 class="atlas-h2">How you're graded</h2>
+        <ul class="course-grades">${rows}</ul>
+        <p class="course-note">${c.credits} credits · L-T-P ${escapeHtml(c.ltp)} · 75% attendance needed to sit the end term</p>
+      </div>
+      <div class="course-card">
+        <h2 class="atlas-h2">Recommended books</h2>
+        <ul class="course-books">${c.books.map(b => `<li>${escapeHtml(b)}</li>`).join('')}</ul>
+      </div>
+    </section></details>`;
+}
+
+function initChapterRail() {
+  const rail = document.getElementById('atlas-rail');
+  if (!rail) return;
+  const step = () => Math.max(240, rail.clientWidth * 0.8);
+  const wrap = rail.closest('.atlas-rail-wrap');
+  wrap.querySelectorAll('[data-rail]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      rail.scrollBy({ left: (btn.dataset.rail === 'next' ? 1 : -1) * step(), behavior: 'smooth' });
+    });
+  });
+  // Vertical wheel → horizontal scroll
+  rail.addEventListener('wheel', (e) => {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { rail.scrollLeft += e.deltaY; e.preventDefault(); }
+  }, { passive: false });
+  // Keyboard on the rail container
+  rail.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') { rail.scrollBy({ left: step(), behavior: 'smooth' }); e.preventDefault(); }
+    if (e.key === 'ArrowLeft') { rail.scrollBy({ left: -step(), behavior: 'smooth' }); e.preventDefault(); }
+  });
+  // Pointer drag — engage only after real movement so plain tile clicks pass through
+  let down = false, moved = false, startX = 0, startLeft = 0;
+  rail.addEventListener('pointerdown', (e) => { down = true; moved = false; startX = e.clientX; startLeft = rail.scrollLeft; });
+  rail.addEventListener('pointermove', (e) => {
+    if (!down) return;
+    const dx = e.clientX - startX;
+    if (!moved && Math.abs(dx) > 5) { moved = true; rail.setPointerCapture(e.pointerId); }
+    if (moved) rail.scrollLeft = startLeft - dx;
+  });
+  rail.addEventListener('pointerup', (e) => {
+    down = false;
+    if (rail.hasPointerCapture(e.pointerId)) rail.releasePointerCapture(e.pointerId);
+  });
+  rail.addEventListener('pointercancel', () => { down = false; moved = false; });
+  // Suppress the click that follows a drag (capture phase, before it reaches a tile)
+  rail.addEventListener('click', (e) => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
+}
+
+function renderResumeCard(r) {
+  const subj = CONFIG.subjects[r.subject];
+  if (!subj) return renderFirstTimeCard();
+  const fam = DESK_FAMILIES[r.subject] || 'blue';
+  const sectionName = (subj.sectionNames && subj.sectionNames[r.section]) || r.section || '';
+  const pct = subjectProgress(r.subject).percent;
+  const topicTitle = r.topicTitle || subj.label;
+  return `
+    <section class="desk-resume fam-${fam}">
+      <div class="desk-resume-body">
+        <p class="desk-eyebrow">Resume where you left off</p>
+        <h2 class="desk-resume-title">${escapeHtml(subj.label)}</h2>
+        <p class="desk-resume-topic">${escapeHtml(topicTitle)}</p>
+        <div class="desk-resume-status">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+          <span>${escapeHtml(sectionName.split(' — ')[0] || 'In progress')}</span><em>·</em><span>In progress</span>
+          <div class="desk-progress"><span style="width:${pct}%"></span></div>
+          <b>${pct}% complete</b>
+        </div>
+        <div class="desk-resume-actions">
+          <button class="desk-btn-primary" type="button" data-open data-subject="${r.subject}" data-section="${escapeHtml(r.section || '')}" data-index="${r.topicIndex || 0}">Continue Learning</button>
+          <button class="desk-btn-ghost" type="button" data-subject="${r.subject}">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+            Subject overview
+          </button>
+        </div>
+      </div>
+      <div class="desk-resume-art" aria-hidden="true">${deskDiagram(r.subject)}</div>
+    </section>`;
+}
+
+function renderFirstTimeCard() {
+  const first = DESK_STRIP[0];
+  return `
+    <section class="desk-resume fam-lavender desk-resume--first">
+      <div class="desk-resume-body">
+        <p class="desk-eyebrow">Start here</p>
+        <h2 class="desk-resume-title">Choose a subject to begin</h2>
+        <p class="desk-resume-topic">Your notes, MCQs, and coding labs are organized by subject. Pick one to open its study room.</p>
+        <div class="desk-resume-actions">
+          <button class="desk-btn-primary" type="button" data-subject="${first}">Open ${escapeHtml(CONFIG.subjects[first].shortLabel)}</button>
+          <button class="desk-btn-ghost" type="button" data-nav="subjects">Browse all subjects</button>
+        </div>
+      </div>
+      <div class="desk-resume-art" aria-hidden="true">${deskDiagram(first)}</div>
+    </section>`;
+}
+
+function renderSubjectStrip(activity, returning) {
+  const cards = DESK_STRIP.map(key => {
+    const subj = CONFIG.subjects[key];
+    if (!subj) return '';
+    const fam = DESK_FAMILIES[key] || 'blue';
+    const a = activity[key];
+    const meta = (a && a.total)
+      ? `${a.mastered}/${a.total} topics`
+      : escapeHtml(subj.tagline || '');
+    const pct = (a && a.total) ? Math.round((a.mastered / a.total) * 100) : 0;
+    return `
+      <button class="desk-subject fam-${fam}" type="button" data-subject="${key}">
+        <div class="desk-subject-art" aria-hidden="true">${deskCardMini(key)}</div>
+        <div class="desk-subject-name">${escapeHtml(subj.label)}</div>
+        <div class="desk-subject-foot">
+          <span class="desk-subject-meta">${meta}</span>
+          <svg class="desk-subject-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+        ${pct ? `<div class="desk-subject-bar"><span style="width:${pct}%"></span></div>` : ''}
+      </button>`;
+  }).join('');
+  return `
+    <section class="desk-subjects" id="desk-subjects">
+      <h3 class="desk-h3">${returning ? 'Pick up a subject' : 'Your subjects'}</h3>
+      <div class="desk-subject-strip">${cards}</div>
+    </section>`;
+}
+
+function renderExamCard(exam, activity) {
+  if (!exam) {
+    return `
+      <section class="desk-panel fam-lavender">
+        <div class="desk-panel-head"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Upcoming exam</div>
+        <div class="desk-panel-body"><p class="desk-empty">A little planning leaves more room to focus.</p><button type="button" class="desk-panel-link" data-settings-open>Add your exam dates ${svgIcon(ICON.chevron, 14)}</button></div>
+      </section>`;
+  }
+  const days = Math.max(0, Math.ceil((exam.examTime - Date.now()) / 86400000));
+  const dateStr = new Date(exam.examTime).toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' });
+  const a = activity[exam.key];
+  const coverage = (a && a.total) ? `${Math.round((a.mastered / a.total) * 100)}%` : '—';
+  const mock = days <= 30 ? 'Yes' : 'Not yet';
+  return `
+    <section class="desk-panel fam-lavender desk-exam">
+      <div class="desk-panel-head"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Upcoming exam</div>
+      <div class="desk-panel-body">
+        <div class="desk-exam-name">${escapeHtml(exam.label)}</div>
+        <div class="desk-exam-when">${dateStr}</div>
+        <ul class="desk-stat-list">
+          <li><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Syllabus coverage</span><b>${coverage}</b></li>
+          <li><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Days remaining</span><b>${days} days</b></li>
+          <li><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Mock test recommended</span><b>${mock}</b></li>
+        </ul>
+        <button class="desk-panel-link" type="button" data-open data-subject="${exam.key}">View details <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+      </div>
+    </section>`;
+}
+
+function renderQuickPractice() {
+  const rows = [
+    { subject: 'algo', section: 'practice', icon: ICON.tests, title: 'Algorithms MCQs', meta: 'Complexity, greedy, trees & graphs' },
+    { subject: 'aptitude', section: 'practice', icon: ICON.tests, title: 'Aptitude MCQs', meta: 'Number, reasoning & verbal' },
+    { subject: 'sysdesign', section: 'cheatSheet', icon: ICON.subjects, title: 'System Design cheat sheet', meta: 'Numbers & every comparison' }
+  ];
+  const items = rows.map(r => `
+    <button class="desk-qp-item" type="button" data-open data-subject="${r.subject}" data-section="${r.section}">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${r.icon}</svg>
+      <div><strong>${escapeHtml(r.title)}</strong><span>${escapeHtml(r.meta)}</span></div>
+    </button>`).join('');
+  return `
+    <section class="desk-panel fam-peach desk-qp">
+      <div class="desk-panel-head">Quick practice
+        <svg class="desk-qp-bolt" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <div class="desk-panel-body desk-qp-list">${items}
+        <button class="desk-panel-link desk-qp-all" type="button" data-nav="tests">Browse all tests <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+      </div>
+    </section>`;
+}
+
+function safeParse(str, fallback) {
+  try { return str ? JSON.parse(str) : fallback; } catch (e) { return fallback; }
+}
+
+async function resumeTo(subject, section, index) {
+  await setActiveSubject(subject);
+  // setActiveSubject lands on the overview, so always enter the section explicitly.
+  if (state.activeSubject !== subject || !section) return;
+  setActiveSection(section);
+  if (Number.isInteger(index) && index > 0 && index < currentSectionCount()) selectTopic(index);
+  restoreReadingPosition();
+}
+
+// ── Focused Notebook reader chrome (Phase 4, Redesign_plan.md §5 Phase C) ────
+// Breadcrumb + reading-time + completion, right memory rail, recent-topics list.
+function renderReaderChrome(topic, sectionName, index, sectionTotal) {
+  const subj = CONFIG.subjects[state.activeSubject];
+  const shortSection = sectionName.split(' — ')[0];
+
+  // Breadcrumb: Subject › Section › Topic
+  const bc = document.getElementById('reader-breadcrumb');
+  if (bc) {
+    bc.innerHTML = [
+      `<span>${escapeHtml(subj.shortLabel)}</span>`,
+      `<span>${escapeHtml(shortSection)}</span>`,
+      `<span class="crumb-current">${escapeHtml(topic.title)}</span>`
+    ].join('<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>');
+  }
+
+  // Meta: section badge + reading time + completion
+  const meta = document.getElementById('reader-meta');
+  if (meta) {
+    const words = (elements.contentArea.textContent || '').trim().split(/\s+/).length;
+    const mins = Math.max(1, Math.round(words / 200));
+    const mastered = (state.mastered?.[state.activeSubject]?.[state.activeSection] || []).includes(index);
+    meta.innerHTML = `
+      <p class="section-badge">${escapeHtml(shortSection)}</p>
+      <span class="reader-meta-dot">·</span>
+      <span class="reader-meta-item">${mins} min read</span>
+      <span class="reader-meta-dot">·</span>
+      <span class="reader-meta-item reader-meta-pos">Topic ${index + 1} of ${sectionTotal}</span>
+      ${mastered ? '<span class="reader-meta-done">✓ Completed</span>' : ''}`;
+  }
+
+  pushRecentTopic(topic.title, index);
+  renderMemoryRail(topic);
+  updateReadingProgress();
+}
+
+function pushRecentTopic(title, index) {
+  try {
+    const list = safeParse(localStorage.getItem('prep_recent_topics'), []);
+    const entry = { subject: state.activeSubject, section: state.activeSection, index, title, ts: Date.now() };
+    const filtered = list.filter(r => !(r.subject === entry.subject && r.section === entry.section && r.index === entry.index));
+    filtered.unshift(entry);
+    localStorage.setItem('prep_recent_topics', JSON.stringify(filtered.slice(0, 12)));
+  } catch (e) {}
+}
+
+function renderMemoryRail(topic) {
+  const rail = document.getElementById('memory-rail');
+  if (!rail) return;
+  const subj = CONFIG.subjects[state.activeSubject];
+
+  // On this page: headings inside the current topic
+  const heads = [...elements.contentArea.querySelectorAll('h3, h4')].slice(0, 8);
+  heads.forEach((h, i) => { if (!h.id) h.id = 'sec-' + i + '-' + Math.random().toString(36).slice(2, 6); });
+  const onPage = heads.length
+    ? heads.map(h => `<a class="rail-link" href="#${h.id}" data-anchor="${h.id}">${escapeHtml(h.textContent.trim())}</a>`).join('')
+    : '<p class="rail-empty">No sub-sections on this page.</p>';
+
+  // Recently viewed (this subject first)
+  const recent = safeParse(localStorage.getItem('prep_recent_topics'), [])
+    .filter(r => r.title && r.subject === state.activeSubject)
+    .slice(0, 4);
+  const recentHtml = recent.length
+    ? recent.map(r => `<button class="rail-item" type="button" data-open data-subject="${r.subject}" data-section="${escapeHtml(r.section)}" data-index="${r.index}"><strong>${escapeHtml(r.title)}</strong><span>${escapeHtml(timeAgo(r.ts))}</span></button>`).join('')
+    : '<p class="rail-empty">Topics you open will appear here.</p>';
+
+  // "Try 3 MCQs" — subject's practice section if it has one
+  const practiceTab = subj.tabs.find(t => /practice|mcq/i.test(t.id));
+
+  rail.innerHTML = `
+    <section class="rail-card fam-lavender">
+      <div class="rail-head"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>On this page</div>
+      <div class="rail-body rail-toc">${onPage}</div>
     </section>
-  `;
+    <section class="rail-card fam-peach">
+      <div class="rail-head">${svgIcon(SAVED_ICON.note, 15)}Your notes</div>
+      <div class="rail-body rail-notes" id="rail-notes">${renderRailNotes()}</div>
+    </section>
+    <section class="rail-card fam-mint">
+      <div class="rail-head"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Recently viewed</div>
+      <div class="rail-body rail-recent">${recentHtml}</div>
+    </section>
+    ${practiceTab ? `<button class="rail-mcq-btn" type="button" data-section="${practiceTab.id}"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Try practice questions</button>` : ''}`;
+
+  // Smooth-scroll for the on-this-page anchors (scroll container is the content pane)
+  rail.querySelectorAll('[data-anchor]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.getElementById(a.dataset.anchor);
+    if (target) target.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
+    });
+  });
+  // Recently-viewed jumps and the practice button (rail is outside #welcome-screen)
+  rail.querySelectorAll('[data-open]').forEach(b => b.addEventListener('click', () =>
+    resumeTo(b.dataset.subject, b.dataset.section, parseInt(b.dataset.index, 10))));
+  rail.querySelectorAll('.rail-mcq-btn[data-section]').forEach(b => b.addEventListener('click', () =>
+    setActiveSection(b.dataset.section)));
+  rail.querySelector('#rail-notes').addEventListener('click', e => {
+    const note = e.target.closest('[data-rail-note]');
+    if (note) {
+      const n = state.smartNotes.find(x => x.id === note.dataset.railNote);
+      if (n) scrollToHighlight(n);
+      toggleSmartNotesPanel(true, 'notes');
+    } else if (e.target.closest('[data-rail-add-note]')) {
+      toggleSmartNotesPanel(true, 'notes');
+      document.getElementById('smart-notes-textarea')?.focus();
+    }
+  });
+}
+
+function timeAgo(ts) {
+  if (!ts) return '';
+  const s = Math.floor((Date.now() - ts) / 1000);
+  if (s < 60) return 'Just now';
+  if (s < 3600) return Math.floor(s / 60) + ' min ago';
+  if (s < 86400) return Math.floor(s / 3600) + 'h ago';
+  return Math.floor(s / 86400) + 'd ago';
+}
+
+let readingProgressBound = false;
+function updateReadingProgress() {
+  const pane = document.getElementById('main-content-pane');
+  const bar = document.querySelector('#reading-progress span');
+  if (!pane || !bar) return;
+  if (!readingProgressBound) {
+    pane.addEventListener('scroll', () => {
+      const max = pane.scrollHeight - pane.clientHeight;
+      bar.style.width = (max > 0 ? (pane.scrollTop / max) * 100 : 0) + '%';
+    }, { passive: true });
+    readingProgressBound = true;
+  }
+  bar.style.width = '0%';
+}
+
+// Records the current reading position + subject progress for the Study Desk home.
+function recordActivity() {
+  try {
+    const subj = state.activeSubject;
+    if (!subj || !CONFIG.subjects[subj]) return;
+    const data = CONFIG.subjects[subj].data || {};
+    const progress = subjectProgress(subj);
+    const total = progress.total;
+    const mastered = progress.done;
+    const sectionArr = data[state.activeSection] || [];
+    const topic = isMcqSection() ? getActiveMcqBank()[state.activeTopicIndex] : isBashSection() ? getActiveBashProblems()[state.activeTopicIndex] : isJavaSection() ? getActiveJavaProblems()[state.activeTopicIndex] : sectionArr[state.activeTopicIndex];
+    const store = safeParse(localStorage.getItem('prep_study_activity'), {});
+    store[subj] = {
+      subject: subj,
+      section: state.activeSection,
+      topicIndex: state.activeTopicIndex,
+      topicTitle: (topic && (topic.title || topic.unitName)) || CONFIG.subjects[subj].tabs.find(t => t.id === state.activeSection)?.label || '',
+      sectionTotal: sectionArr.length,
+      total, mastered, ts: Date.now()
+    };
+    localStorage.setItem('prep_study_activity', JSON.stringify(store));
+  } catch (e) {}
 }
 
 // ============================================================
 //  SUBJECT SWITCHING
 // ============================================================
 async function setActiveSubject(subjectId) {
+  if (!CONFIG.subjects[subjectId]) return;
+  const navigationId = ++subjectNavigationId;
   Array.from(document.body.classList).forEach(cls => {
     if (cls.startsWith('subject-')) document.body.classList.remove(cls);
   });
+  document.body.classList.remove('landing-mode');   // otherwise the sidebar stays hidden
+  restoreHeaderControls();                            // move auth/theme controls back to the header
   document.body.classList.add('subject-' + subjectId);
   state.activeSubject = subjectId;
   const subjectConfig = CONFIG.subjects[subjectId];
 
   // Update document title
   document.title = `${subjectConfig.label} — prep`;
-
-  // Update subject buttons
-  elements.subjectBtns.forEach(btn => {
-    if (btn.getAttribute('data-subject') === subjectId) {
-      btn.classList.add('active');
-    } else {
-      btn.classList.remove('active');
-    }
-  });
-
-  // Update mobile header title dynamically
-  if (elements.mobileBrandTitle) {
-    elements.mobileBrandTitle.textContent = subjectConfig.label + " Prep";
-  }
+  if (elements.mobileBrandTitle) elements.mobileBrandTitle.textContent = subjectConfig.shortLabel;
+  if (elements.headerSubject) elements.headerSubject.textContent = subjectConfig.label;
+  if (elements.sidebarSubjectName) elements.sidebarSubjectName.textContent = subjectConfig.label;
+  document.documentElement.style.setProperty('--active-accent', `var(--${DESK_FAMILIES[subjectId] || 'blue'}-ink)`);
 
   if (!hydratedSubjects[subjectId]) {
     renderSubjectLoading(subjectConfig.label);
@@ -1144,21 +1976,18 @@ async function setActiveSubject(subjectId) {
   try {
     await ensureSubjectDataLoaded(subjectId);
   } catch (error) {
-    renderSubjectLoadError(subjectConfig.label, error);
+    if (navigationId === subjectNavigationId) renderSubjectLoadError(subjectConfig.label, error);
     return;
   }
 
-  if (state.activeSubject !== subjectId) return;
+  if (state.activeSubject !== subjectId || navigationId !== subjectNavigationId) return;
 
   // Re-render top nav tabs for this subject
   renderTopNav(subjectId);
 
-  // Update timer instantly
-  updateTimer();
-
-  // Set default section to first tab of this subject
-  const firstTab = subjectConfig.tabs[0].id;
-  setActiveSection(firstTab);
+  // Land on the Learning Atlas overview for this subject (Phase 3),
+  // instead of jumping straight into the first section's notes.
+  renderSubjectOverview(subjectId);
 }
 
 function renderTopNav(subjectId) {
@@ -1166,12 +1995,11 @@ function renderTopNav(subjectId) {
   elements.topNavBar.innerHTML = '';
   if (elements.mobileSectionNav) elements.mobileSectionNav.innerHTML = '';
 
-  tabs.forEach((tab, i) => {
+  tabs.forEach(tab => {
     // Desktop Button
     const btn = document.createElement('button');
     btn.setAttribute('data-section', tab.id);
     btn.textContent = tab.label;
-    if (i === 0) btn.classList.add('active');
     btn.addEventListener('click', () => {
       setActiveSection(tab.id);
       closeMobileSidebar();
@@ -1183,7 +2011,6 @@ function renderTopNav(subjectId) {
       const mobBtn = document.createElement('button');
       mobBtn.setAttribute('data-section', tab.id);
       mobBtn.textContent = tab.label;
-      if (i === 0) mobBtn.classList.add('active');
       mobBtn.addEventListener('click', () => {
         setActiveSection(tab.id);
         closeMobileSidebar();
@@ -1227,7 +2054,7 @@ function getActiveBashProblems() {
 function getActiveJavaProblems() {
   const allProblems = CONFIG.subjects[state.activeSubject].javaProblems || [];
   if (state.activeSubject !== 'java') return allProblems;
-  
+
   let filtered = [];
   if (state.activeSection === 'javaExam') {
     filtered = allProblems.filter(p => p.category === 'exam');
@@ -1257,7 +2084,7 @@ function getActiveJavaProblems() {
 function getUnfilteredJavaProblemsForSection() {
   const allProblems = CONFIG.subjects[state.activeSubject].javaProblems || [];
   if (state.activeSubject !== 'java') return allProblems;
-  
+
   if (state.activeSection === 'javaExam') {
     return allProblems.filter(p => p.category === 'exam');
   } else if (state.activeSection === 'javaTestpad') {
@@ -1269,6 +2096,9 @@ function getUnfilteredJavaProblemsForSection() {
 
 
 function setActiveSection(sectionId) {
+  if (!CONFIG.subjects[state.activeSubject]?.tabs.some(t => t.id === sectionId)) return;
+  document.body.classList.remove('overview-mode');  // leaving the Learning Atlas
+  document.body.classList.remove('landing-mode');
   state.activeSection = sectionId;
   state.activeTopicIndex = 0;
   state.searchQuery = '';
@@ -1281,9 +2111,9 @@ function setActiveSection(sectionId) {
   }
 
   if (isPlaygroundSection(sectionId)) {
-    elements.searchInput.placeholder = "Search files...";
+    elements.searchInput.placeholder = "Search files";
   } else {
-    elements.searchInput.placeholder = "Search topics...";
+    elements.searchInput.placeholder = "Search topics";
   }
 
   // Handle Bash/Practice/Playground section layout
@@ -1310,9 +2140,10 @@ function setActiveSection(sectionId) {
     container.classList.remove('practice-active');
   }
 
-  // Set accent color for this section
-  const color = CONFIG.subjects[state.activeSubject].themeColors[sectionId] || '#B58A3D';
-  document.documentElement.style.setProperty('--active-accent', color);
+  const subjectCfg = CONFIG.subjects[state.activeSubject];
+  if (elements.sidebarSectionName) {
+    elements.sidebarSectionName.textContent = (subjectCfg.sectionNames && subjectCfg.sectionNames[sectionId]) || sectionId;
+  }
 
   // Highlight desktop nav tab
   const navBtns = elements.topNavBar.querySelectorAll('button');
@@ -1418,14 +2249,14 @@ function updateSidebarFilterDropdown() {
 
   if (state.activeSubject === 'java' && !isPlaygroundSection()) {
     wrapper.style.display = 'block';
-    
+
     // Only rebuild if the tab actually changed
     if (state.activeSection === lastActiveSectionForFilter && state.activeSubject === lastActiveSubjectForFilter) {
       const select = document.getElementById('sidebar-section-filter');
       if (select) select.value = state.selectedSectionFilter || 'All';
       return;
     }
-    
+
     lastActiveSectionForFilter = state.activeSection;
     lastActiveSubjectForFilter = state.activeSubject;
 
@@ -1561,7 +2392,7 @@ function renderSidebar() {
           const sectionId = problem.section;
           const sectionMeta = sections.find(s => s.id === sectionId);
           const currentCollapsed = state.expandedJavaSections[sectionId] === false;
-          
+
           const divider = document.createElement('div');
           divider.className = 'sidebar-group-label';
           divider.style.cursor = 'pointer';
@@ -1569,11 +2400,11 @@ function renderSidebar() {
           divider.style.justifyContent = 'space-between';
           divider.style.alignItems = 'center';
           divider.style.userSelect = 'none';
-          
+
           const labelSpan = document.createElement('span');
           labelSpan.textContent = (sectionMeta ? sectionMeta.icon + ' ' : '') + sectionId;
           divider.appendChild(labelSpan);
-          
+
           const arrowSpan = document.createElement('span');
           arrowSpan.className = 'group-arrow';
           arrowSpan.style.transition = 'transform 0.2s ease';
@@ -1581,12 +2412,12 @@ function renderSidebar() {
           arrowSpan.style.opacity = '0.6';
           arrowSpan.innerHTML = currentCollapsed && !state.searchQuery ? '>' : 'v';
           divider.appendChild(arrowSpan);
-          
+
           divider.addEventListener('click', () => {
             state.expandedJavaSections[sectionId] = !state.expandedJavaSections[sectionId];
             updateTopics();
           });
-          
+
           fragment.appendChild(divider);
         }
 
@@ -1653,7 +2484,6 @@ function renderSidebar() {
         // Checkbox circle (kept for MCQ since mastery is answer-based)
         const checkbox = document.createElement('div');
         checkbox.className = 'checkbox-circle';
-        checkbox.style.marginTop = '0.1rem';
         if (isCompleted) {
           checkbox.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
         } else if (answeredCount > 0) {
@@ -1814,7 +2644,13 @@ function updateActiveSidebarItem(index) {
 }
 
 function selectTopic(index) {
+  if (!Number.isInteger(index) || index < 0) return;
   state.activeTopicIndex = index;
+  closeMobileSidebar();
+  syncExperience('study');
+  recordActivity();
+  // The quiz page opts out of the notes typography (see renderPracticeUnit).
+  elements.contentArea.classList.add('reading-area');
 
   const pgContainer = document.getElementById('playground-workspace-container');
   if (pgContainer) {
@@ -1856,17 +2692,21 @@ function selectTopic(index) {
   const topic = topics[index];
 
   elements.welcomeScreen.style.display = 'none';
-  elements.readingPane.style.display = 'block';
+  elements.readingPane.style.display = '';  // let the Focused Notebook grid (CSS) apply
 
   const sectionName = CONFIG.subjects[state.activeSubject].sectionNames[state.activeSection] || state.activeSection;
   elements.sectionBadge.textContent = sectionName;
   elements.mainTitle.textContent = topic.title;
   elements.contentArea.innerHTML = topic.html;
+  enhanceReadingContent();
+  if (window.Prism) Prism.highlightAllUnder(elements.contentArea);
 
-  // Restore scroll behavior for reading
+  // Restore scroll behavior for reading (horizontal spacing comes from the Focused
+  // Notebook grid + centered reading column, so we no longer hard-code side padding)
   elements.contentArea.style.overflowY = 'auto';
-  elements.contentArea.style.padding = '3rem 4.5rem'; 
+  elements.contentArea.style.padding = '';
   elements.contentArea.style.display = 'block';
+  renderReaderChrome(topic, sectionName, index, topics.length);
   // Re-run KaTeX auto-render on the content area
   if (typeof renderMathInElement === 'function') {
     renderMathInElement(elements.contentArea, {
@@ -1882,9 +2722,12 @@ function selectTopic(index) {
 
   // Shuffle MCQs if any are embedded in the HTML
   shuffleMcqOptions(elements.contentArea);
+  applyNoteHighlights();
+  if (document.getElementById('smart-notes-panel')?.classList.contains('open')) renderSavedBody();
 
   // Update sidebar active state
   updateActiveSidebarItem(index);
+  recordActivity();
 
   elements.prevBtn.disabled = index === 0;
   elements.prevBtn.style.opacity = index === 0 ? '0.5' : '1';
@@ -1913,19 +2756,22 @@ function toggleTopicMastery(sectionId, index) {
   saveProgress();
   updateProgressBar();
   updateNextButtonState();
+  recordActivity();
+  announceStudy(isMastered ? 'Topic completed. Nice work.' : 'Topic marked for review.');
 
   // Update sidebar item without full redraw
   const sidebarButtons = elements.topicList.querySelectorAll('.topic-item');
   sidebarButtons.forEach(btn => {
     const idx = parseInt(btn.getAttribute('data-index'));
     if (idx === index) {
+      // Reading topics show a number badge instead of a checkbox — hence the guard.
       const checkbox = btn.querySelector('.checkbox-circle');
       if (isMastered) {
         btn.classList.add('mastered');
-        checkbox.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+        if (checkbox) checkbox.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
       } else {
         btn.classList.remove('mastered');
-        checkbox.innerHTML = '';
+        if (checkbox) checkbox.innerHTML = '';
       }
     }
   });
@@ -1976,7 +2822,7 @@ function updateProgressBar() {
     }).length;
     const total = problems.length;
     const percentage = total > 0 ? Math.round((solvedCount / total) * 100) : 0;
-    elements.progressPercent.textContent = `${percentage}% Solved (${solvedCount}/${total})`;
+    elements.progressPercent.textContent = `${solvedCount} of ${total} solved`;
     elements.progressBar.style.width = `${percentage}%`;
     return;
   }
@@ -1989,7 +2835,7 @@ function updateProgressBar() {
     }).length;
     const total = problems.length;
     const percentage = total > 0 ? Math.round((solvedCount / total) * 100) : 0;
-    elements.progressPercent.textContent = `${percentage}% Solved (${solvedCount}/${total})`;
+    elements.progressPercent.textContent = `${solvedCount} of ${total} solved`;
     elements.progressBar.style.width = `${percentage}%`;
     return;
   }
@@ -1998,16 +2844,16 @@ function updateProgressBar() {
     const mcqBank = getActiveMcqBank();
     const allQuestions = mcqBank.flatMap(u => u.questions || []);
     const total = allQuestions.length || 100;
-    
+
     let answeredCount = 0;
     allQuestions.forEach(q => {
       if (state.practiceAnswers[state.activeSubject][q.id] !== undefined) {
         answeredCount++;
       }
     });
-    
+
     const percentage = total > 0 ? Math.round((answeredCount / total) * 100) : 0;
-    elements.progressPercent.textContent = `${percentage}% Answered (${answeredCount}/${total})`;
+    elements.progressPercent.textContent = `${answeredCount} of ${total} answered`;
     elements.progressBar.style.width = `${percentage}%`;
     return;
   }
@@ -2017,14 +2863,14 @@ function updateProgressBar() {
   const total = topics.length;
 
   if (total === 0) {
-    elements.progressPercent.textContent = '0% Mastered';
+    elements.progressPercent.textContent = '';
     elements.progressBar.style.width = '0%';
     return;
   }
 
   const masteredCount = (state.mastered[state.activeSubject][state.activeSection] || []).length;
   const percentage = Math.round((masteredCount / total) * 100);
-  elements.progressPercent.textContent = `${percentage}% Mastered (${masteredCount}/${total})`;
+  elements.progressPercent.textContent = `${masteredCount} of ${total} done`;
   elements.progressBar.style.width = `${percentage}%`;
 }
 
@@ -2118,7 +2964,7 @@ function renderBashResults(results) {
 function runBashProblem(problem, mode) {
   const editor = document.getElementById('bash-code-editor');
   const code = editor ? editor.value : '';
-  
+
   // Auto-expand results panel
   const resultsPane = document.getElementById('bash-results-pane');
   if (resultsPane) {
@@ -2173,7 +3019,7 @@ function renderBashProblem(index) {
   elements.welcomeScreen.style.display = 'none';
   elements.readingPane.style.display = 'block';
   // Note: Badge and Title are hidden via CSS in bash-mode
-  
+
   const examplesHtml = problem.examples.map(example => `
     <div class="bash-example">
       <label>Input</label>
@@ -2278,7 +3124,7 @@ function renderBashProblem(index) {
           <pre id="bash-highlighter" class="bash-highlighter" aria-hidden="true"><code class="language-bash"></code></pre>
           <textarea class="bash-code-editor" id="bash-code-editor" spellcheck="false" wrap="off">${escapeHtml(currentCode)}</textarea>
         </div>
-        
+
         <div class="resizer-v" id="resizer-bash-v">
           <div class="resizer-notch"></div>
         </div>
@@ -2337,7 +3183,7 @@ function renderBashProblem(index) {
     scheduleBashProgressSave();
     if (window.updateBashHighlighting) window.updateBashHighlighting();
   });
-  
+
   // Initial highlight
   lastBashHighlightSource = null;
   if (window.updateBashHighlighting) window.updateBashHighlighting();
@@ -2377,7 +3223,7 @@ function renderBashProblem(index) {
       }
     });
   }
-  
+
   // Mini nav listeners
   const miniPrev = document.getElementById('bash-mini-prev');
   const miniNext = document.getElementById('bash-mini-next');
@@ -2569,7 +3415,7 @@ function renderJavaProblem(index) {
           <pre id="java-highlighter" class="bash-highlighter" aria-hidden="true"><code class="language-java"></code></pre>
           <textarea class="bash-code-editor java-code-editor" id="java-code-editor" spellcheck="false" wrap="off">${escapeHtml(currentCode)}</textarea>
         </div>
-        
+
         <div class="resizer-v" id="resizer-java-v">
           <div class="resizer-notch"></div>
         </div>
@@ -2681,7 +3527,7 @@ function renderJavaProblem(index) {
   // Run / Submit button handlers
   document.getElementById('java-run-btn').addEventListener('click', () => runJavaProblem(problem, 'run'));
   document.getElementById('java-submit-btn').addEventListener('click', () => runJavaProblem(problem, 'submit'));
-  
+
   // Reset button
   document.getElementById('java-reset-btn').addEventListener('click', () => {
     editor.value = problem.starterCode;
@@ -2796,7 +3642,7 @@ async function runJavaProblem(problem, mode) {
               <p style="font-size: 0.82rem; margin-bottom: 1rem; color: var(--text-secondary);">
                 For Railway, set <code>JUDGE_API_KEY</code> on the frontend host to the exact same value as <code>JUDGE_API_KEY</code> on the Railway judge service. Do not expose that key in the browser for production.
               </p>
-              
+
               <div class="java-settings-inline-panel">
                 <div style="margin-bottom: 0.75rem; display: flex; flex-direction: column;">
                   <label style="font-size: 0.8rem; font-weight: 600; margin-bottom: 0.2rem; color: var(--text-primary);">Custom Execution API URL</label>
@@ -2924,7 +3770,7 @@ function shuffleMcqOptions(container) {
       const letterSpan = opt.querySelector('.option-letter');
       if (letterSpan) {
         const displayLetter = String.fromCharCode(65 + index); // 65 is 'A'
-        letterSpan.textContent = displayLetter + ')';
+        letterSpan.textContent = displayLetter;
       }
       group.appendChild(opt);
     });
@@ -2958,34 +3804,215 @@ function parseOption(text) {
   };
 }
 
-function updateQuizDashboardStats() {
-  const mcqBank = getActiveMcqBank();
-  const allQuestions = mcqBank.flatMap(u => u.questions || []);
-  const totalQuestions = allQuestions.length || 100;
-  
-  let answeredCount = 0;
-  let correctCount = 0;
-  
-  allQuestions.forEach(q => {
-    const savedAns = state.practiceAnswers[state.activeSubject][q.id];
-    if (savedAns !== undefined) {
-      answeredCount++;
-      if (savedAns === q.correct) {
-        correctCount++;
-      }
-    }
+// ── Practice quiz page ──────────────────────────────────────────────────────
+// Question list + sticky rail (progress, question map, weak topics). The rail and
+// filter counts re-render on every answer; cards are only rebuilt on navigation.
+const QUIZ_FILTERS = [
+  ['all', 'All'],
+  ['unanswered', 'Unanswered'],
+  ['wrong', 'Wrong'],
+  ['starred', 'Starred']
+];
+
+const QUIZ_ICON = {
+  star: '<path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>',
+  retry: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',
+  prev: '<polyline points="15 18 9 12 15 6"/>',
+  next: '<polyline points="9 18 15 12 9 6"/>',
+  check: '<polyline points="20 6 9 17 4 12"/>',
+  cross: '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>'
+};
+
+let quizCursorId = null;
+
+function mcqStatus(subject, q) {
+  const ans = state.practiceAnswers[subject]?.[q.id];
+  if (ans === undefined) return 'unanswered';
+  return ans === q.correct ? 'correct' : 'wrong';
+}
+
+function isStarred(subject, qId) {
+  return (state.starredMcqs[subject] || []).includes(qId);
+}
+
+function quizUnit() {
+  return getActiveMcqBank()[state.quizUnitIndex] || null;
+}
+
+function quizCounts(subject, questions) {
+  const c = { all: questions.length, unanswered: 0, correct: 0, wrong: 0, starred: 0 };
+  questions.forEach(q => {
+    c[mcqStatus(subject, q)]++;
+    if (isStarred(subject, q.id)) c.starred++;
   });
+  return c;
+}
 
-  const accuracy = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0;
+function quizMatchesFilter(subject, q, filter) {
+  if (filter === 'starred') return isStarred(subject, q.id);
+  if (filter === 'all') return true;
+  return mcqStatus(subject, q) === filter;
+}
 
-  const statValues = elements.contentArea.querySelectorAll('.quiz-stat-value');
-  if (statValues.length >= 2) {
-    statValues[0].innerHTML = `${correctCount}<span style="font-size: 1rem; font-weight: 500; color: var(--text-secondary);"> / ${totalQuestions}</span>`;
-    statValues[1].innerHTML = `${accuracy}<span style="font-size: 1.25rem; font-weight: 600;">%</span>`;
-    if (statValues.length >= 3) {
-      statValues[2].innerHTML = `${answeredCount}<span style="font-size: 1rem; font-weight: 500; color: var(--text-secondary);"> / ${totalQuestions}</span>`;
+function renderMcqCard(q, number, subject) {
+  const timed = isTimedStudyQuiz();
+  const status = timed ? 'unanswered' : mcqStatus(subject, q);
+  const saved = timed ? timedStudyQuiz.answers[q.id] : state.practiceAnswers[subject]?.[q.id];
+  const starred = isStarred(subject, q.id);
+  let explanation = q.explanation || '';
+
+  const options = Object.keys(q.options).map(letter => {
+    const parsed = parseOption(q.options[letter]);
+    if (letter === q.correct && parsed.explanation) explanation = parsed.explanation;
+    let cls = 'mcq-option';
+    if (timed && letter === saved) cls += ' timed-selected';
+    let badge = '';
+    if (status !== 'unanswered') {
+      if (letter === q.correct) { cls += ' correct'; badge = '<span class="correct-badge">Correct</span>'; }
+      else if (letter === saved) { cls += ' incorrect'; badge = '<span class="incorrect-badge">Your answer</span>'; }
     }
-  }
+    return `<button type="button" class="${cls}" data-option="${letter}"><span class="option-letter">${letter.toUpperCase()}</span><span class="option-text">${parsed.text}</span>${badge}</button>`;
+  }).join('');
+
+  const solve = typeof SOLVER_MAPPING !== 'undefined' && SOLVER_MAPPING[q.id]
+    ? `<button type="button" class="mcq-solve-btn" data-qid="${q.id}">Solve step by step</button>` : '';
+
+  return `
+    <article class="mcq-card" id="mcq-${q.id}" data-question-id="${q.id}" data-status="${status}" tabindex="-1">
+      <div class="mcq-card-header">
+        <div class="mcq-kicker">
+          <span class="mcq-num">Q${number}</span>
+          ${q.topic ? `<span class="mcq-topic">${escapeHtml(q.topic)}</span>` : ''}
+        </div>
+        <div class="mcq-actions">
+          ${solve}
+          <button type="button" class="mcq-star-btn${starred ? ' starred' : ''}" data-qid="${q.id}" aria-pressed="${starred}" aria-label="Star question ${number}" title="Star for revision (S)">${svgIcon(QUIZ_ICON.star, 16)}</button>
+        </div>
+      </div>
+      <div class="mcq-question">${q.question}</div>
+      <div class="mcq-options${status !== 'unanswered' ? ' answered' : ''}" data-correct="${q.correct}">${options}</div>
+      ${explanation ? `<div class="mcq-explanation" style="display:${status !== 'unanswered' ? 'block' : 'none'}"><strong>Why:</strong> ${explanation}</div>` : ''}
+    </article>`;
+}
+
+function renderQuizRail(unitObj) {
+  const subject = state.activeSubject;
+  const questions = unitObj.questions || [];
+  if (isTimedStudyQuiz()) return renderTimedStudyRail(questions);
+  const c = quizCounts(subject, questions);
+  const answered = c.correct + c.wrong;
+  const accuracy = answered ? Math.round((c.correct / answered) * 100) : 0;
+  const pct = n => (c.all ? (n / c.all) * 100 : 0);
+
+  const bank = getActiveMcqBank().flatMap(u => u.questions || []);
+  const bankAnswered = bank.filter(q => mcqStatus(subject, q) !== 'unanswered').length;
+
+  const cells = questions.map((q, i) => {
+    const st = mcqStatus(subject, q);
+    const star = isStarred(subject, q.id);
+    const label = `Question ${i + 1}, ${st}${star ? ', starred' : ''}`;
+    return `<button type="button" class="qmap-cell${star ? ' is-starred' : ''}${quizCursorId === q.id ? ' is-current' : ''}" data-status="${st}" data-quiz-jump="${q.id}" aria-label="${label}">${i + 1}</button>`;
+  }).join('');
+
+  // Weakest topics first, only once something in them has been answered.
+  const byTopic = {};
+  questions.forEach(q => {
+    if (!q.topic) return;
+    const t = byTopic[q.topic] || (byTopic[q.topic] = { correct: 0, answered: 0, total: 0 });
+    t.total++;
+    const st = mcqStatus(subject, q);
+    if (st !== 'unanswered') { t.answered++; if (st === 'correct') t.correct++; }
+  });
+  const topics = Object.entries(byTopic)
+    .filter(([, t]) => t.answered)
+    .sort((a, b) => (a[1].correct / a[1].answered) - (b[1].correct / b[1].answered))
+    .slice(0, 5);
+  // Only worth a card when topics actually group several questions.
+  const topicsHtml = Object.values(byTopic).some(t => t.total > 1) ? `
+    <section class="quiz-card quiz-topics-card">
+      <h3 class="quiz-card-title">Weakest topics</h3>
+      ${topics.length ? topics.map(([name, t]) => `
+        <div class="quiz-topic-row">
+          <span class="quiz-topic-name">${escapeHtml(name)}</span>
+          <span class="quiz-topic-score">${t.correct}/${t.answered}</span>
+          <span class="quiz-topic-bar" aria-hidden="true"><span style="width:${Math.round((t.correct / t.answered) * 100)}%"></span></span>
+        </div>`).join('') : '<p class="quiz-card-empty">Answer a few questions to see where you slip.</p>'}
+    </section>` : '';
+
+  return `
+    <section class="quiz-card">
+      <h3 class="quiz-card-title">This quiz</h3>
+      <div class="quiz-stack" role="img" aria-label="${c.correct} correct, ${c.wrong} wrong, ${c.unanswered} unanswered">
+        <span class="is-correct" style="width:${pct(c.correct)}%"></span><span class="is-wrong" style="width:${pct(c.wrong)}%"></span>
+      </div>
+      <dl class="quiz-legend">
+        <div><dt><i class="dot dot-correct"></i>Correct</dt><dd>${c.correct}</dd></div>
+        <div><dt><i class="dot dot-wrong"></i>Wrong</dt><dd>${c.wrong}</dd></div>
+        <div><dt><i class="dot"></i>Unanswered</dt><dd>${c.unanswered}</dd></div>
+      </dl>
+      <p class="quiz-card-foot">${answered ? `${accuracy}% accuracy` : 'Not started'} · ${bankAnswered} of ${bank.length} answered across all quizzes</p>
+      <div class="quiz-card-actions">
+        <button type="button" class="quiz-ghost-btn" data-quiz-action="retry-wrong"${c.wrong ? '' : ' disabled'}>${svgIcon(QUIZ_ICON.retry, 14)}Retry wrong</button>
+        <button type="button" class="quiz-ghost-btn quiz-ghost-btn--danger" data-quiz-action="reset"${answered ? '' : ' disabled'}>Reset quiz</button>
+      </div>
+    </section>
+    <section class="quiz-card quiz-map-card">
+      <h3 class="quiz-card-title">Questions</h3>
+      <div class="qmap">${cells}</div>
+    </section>
+    ${topicsHtml}`;
+}
+
+function renderQuizFilters(unitObj) {
+  if (isTimedStudyQuiz()) return '<span class="timed-quiz-hint">Choose your answers, then finish to review.</span>';
+  const c = quizCounts(state.activeSubject, unitObj.questions || []);
+  return QUIZ_FILTERS.map(([id, label]) => {
+    const n = id === 'all' ? c.all : c[id];
+    const on = state.quizFilter === id;
+    return `<button type="button" class="quiz-filter-btn${on ? ' active' : ''}" data-quiz-filter="${id}" aria-pressed="${on}">${label}<span class="quiz-filter-count">${n}</span></button>`;
+  }).join('');
+}
+
+function renderQuizFoot(unitObj) {
+  if (isTimedStudyQuiz()) return '';
+  const c = quizCounts(state.activeSubject, unitObj.questions || []);
+  if (!c.all || c.unanswered) return '';
+  const hasNext = state.quizUnitIndex < getActiveMcqBank().length - 1 && !isPracticeTestQuiz();
+  return `
+    <section class="quiz-done">
+      <div>
+        <strong>Quiz complete — ${c.correct} of ${c.all} correct</strong>
+        <span>${c.wrong ? `Retry the ${c.wrong} you missed while they're fresh.` : 'Clean sweep. Move on to the next quiz.'}</span>
+      </div>
+      <div class="quiz-done-actions">
+        ${c.wrong ? `<button type="button" class="quiz-ghost-btn" data-quiz-action="retry-wrong">${svgIcon(QUIZ_ICON.retry, 14)}Retry wrong</button>` : ''}
+        ${hasNext ? `<button type="button" class="quiz-primary-btn" data-quiz-action="next">Next quiz${svgIcon(QUIZ_ICON.next, 16)}</button>` : ''}
+      </div>
+    </section>`;
+}
+
+function renderPracticeEmptyState() {
+  const copy = {
+    starred: ['No starred questions here', 'Star a question with the bookmark icon (or press S) to collect it for revision.'],
+    wrong: ['Nothing wrong in this quiz', 'Every answered question is correct. Keep going.'],
+    unanswered: ['All questions answered', 'Switch to Wrong to review your mistakes.'],
+    all: ['No questions in this quiz yet', 'Pick another quiz from the sidebar.']
+  }[state.quizFilter] || [];
+  return `<div class="practice-empty"><h4>${copy[0]}</h4><p>${copy[1]}</p></div>`;
+}
+
+// Linux PT1 embeds one bank unit; prev/next quiz navigation only makes sense in bank sections.
+function isPracticeTestQuiz() {
+  return state.activeSection === 'practiceTest1';
+}
+
+function updateQuizRail() {
+  const unitObj = quizUnit();
+  const page = elements.contentArea.querySelector('.quiz-page');
+  if (!unitObj || !page) return;
+  page.querySelector('.quiz-rail').innerHTML = renderQuizRail(unitObj);
+  page.querySelector('.quiz-filter').innerHTML = renderQuizFilters(unitObj);
+  page.querySelector('.quiz-foot').innerHTML = renderQuizFoot(unitObj);
 }
 
 function renderPracticeUnit(unitIndex) {
@@ -2993,204 +4020,60 @@ function renderPracticeUnit(unitIndex) {
   const mcqBank = getActiveMcqBank();
   const unitObj = mcqBank[unitIndex];
   if (!unitObj) return;
+  if (state.quizUnitIndex !== unitIndex) quizCursorId = null;
+  state.quizUnitIndex = unitIndex;
 
   elements.welcomeScreen.style.display = 'none';
   elements.readingPane.style.display = 'block';
 
-  const allQuestions = mcqBank.flatMap(u => u.questions || []);
-  const totalQuestions = allQuestions.length || 100;
-  
-  let answeredCount = 0;
-  let correctCount = 0;
-  
-  allQuestions.forEach(q => {
-    const savedAns = state.practiceAnswers[state.activeSubject][q.id];
-    if (savedAns !== undefined) {
-      answeredCount++;
-      if (savedAns === q.correct) {
-        correctCount++;
-      }
-    }
-  });
+  const subject = state.activeSubject;
+  const subj = CONFIG.subjects[subject];
+  const fam = DESK_FAMILIES[subject] || 'blue';
+  const questions = unitObj.questions || [];
+  const topicSet = new Set(questions.map(q => q.topic).filter(Boolean));
+  const topicCount = topicSet.size < questions.length ? topicSet.size : 0;
+  const sectionName = (subj.sectionNames[state.activeSection] || 'Practice').split(' — ')[0];
+  const inBank = !isPracticeTestQuiz();
 
-  const accuracy = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0;
+  const cards = questions
+    .map((q, i) => (isTimedStudyQuiz() || quizMatchesFilter(subject, q, state.quizFilter)) ? renderMcqCard(q, i + 1, subject) : '')
+    .join('');
 
-  let dashboardHtml = `
-    <div class="quiz-dashboard-header">
-      <h3>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--active-accent);"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-        Practice Dashboard
-      </h3>
-      <div class="quiz-stats-grid">
-        <div class="quiz-stat-card">
-          <span class="quiz-stat-label">Score</span>
-          <span class="quiz-stat-value">${correctCount} / ${totalQuestions}</span>
-        </div>
-        <div class="quiz-stat-card">
-          <span class="quiz-stat-label">Accuracy</span>
-          <span class="quiz-stat-value">${accuracy}%</span>
-        </div>
-      </div>
-      <div class="quiz-controls" style="margin-top: 1rem; display: flex; gap: 0.5rem;">
-        <button class="starred-filter-btn ${state.showStarredOnly ? 'active' : ''}" id="starred-filter-btn">
-          Starred Only
-        </button>
-        <button class="quiz-reset-btn" id="quiz-reset-progress-btn" style="flex: 1; font-size: 0.8rem;">
-          Reset Progress
-        </button>
-      </div>
-    </div>
-  `;
-
-  // Filter for starred-only mode
-  const unitQuestions = unitObj.questions || [];
-  const displayQuestions = state.showStarredOnly
-    ? unitQuestions.filter(q => (state.starredMcqs[state.activeSubject] || []).includes(q.id))
-    : unitQuestions;
-
-  const questionsHtml = displayQuestions.map((q, idx) => {
-    const qNum = idx + 1;
-    const savedAns = state.practiceAnswers[state.activeSubject][q.id];
-    const isAnswered = savedAns !== undefined;
-    const isStarred = (state.starredMcqs[state.activeSubject] || []).includes(q.id);
-    let unitExplanation = '';
-
-    const optionsListHtml = Object.keys(q.options).map(optLetter => {
-      const rawText = q.options[optLetter];
-      const parsed = parseOption(rawText);
-      
-      if (optLetter === q.correct && parsed.explanation) {
-        unitExplanation = parsed.explanation;
-      } else if (optLetter === q.correct && q.explanation) {
-        unitExplanation = q.explanation;
-      }
-
-      let optionClasses = 'mcq-option';
-      let badgeHtml = '';
-
-      if (isAnswered) {
-        if (optLetter === q.correct) {
-          optionClasses += ' correct';
-          badgeHtml = '<span class="correct-badge">Correct</span>';
-        } else if (optLetter === savedAns) {
-          optionClasses += ' incorrect';
-          badgeHtml = '<span class="incorrect-badge">Incorrect</span>';
-        }
-      }
-
-      return `
-        <div class="${optionClasses}" data-option="${optLetter}">
-          <span class="option-letter">${optLetter.toUpperCase()})</span>
-          <span class="option-text">${parsed.text}</span>
-          ${badgeHtml}
-        </div>
-      `;
-    }).join('');
-
-    const answeredClass = isAnswered ? ' answered' : '';
-    const explanationStyle = isAnswered && unitExplanation ? 'display: block;' : 'display: none;';
-
-    return `
-      <div class="mcq-card" data-question-id="${q.id}" data-correct-answer="${q.correct}">
-        <div class="mcq-card-header">
-          <div class="mcq-question"><strong>Q${qNum}.</strong> ${q.question}</div>
-          <div class="mcq-actions" style="display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0;">
-            ${typeof SOLVER_MAPPING !== 'undefined' && SOLVER_MAPPING[q.id] ? `
-            <button class="mcq-solve-btn" data-qid="${q.id}" title="Open Interactive Step-by-Step Solver" style="background: none; border: 1px solid var(--border-color); border-radius: 4px; padding: 0.25rem 0.5rem; font-size: 0.75rem; font-weight: 700; color: var(--active-accent); cursor: pointer; display: flex; align-items: center; gap: 0.25rem; transition: background-color 0.2s;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
-              Solve
-            </button>
-            ` : ''}
-            <button class="mcq-star-btn ${isStarred ? 'starred' : ''}" data-qid="${q.id}" title="Star this question">${isStarred ? 'Saved' : 'Save'}</button>
-          </div>
-        </div>
-        <div class="mcq-options${answeredClass}" data-correct="${q.correct}">
-          ${optionsListHtml}
-        </div>
-        ${unitExplanation ? `
-        <div class="mcq-explanation" style="${explanationStyle}">
-          <strong>Explanation:</strong> ${unitExplanation}
-        </div>
-        ` : ''}
-      </div>
-    `;
-  }).join('');
-
+  elements.contentArea.classList.remove('reading-area');
   elements.contentArea.innerHTML = `
-    <div class="practice-workspace">
-      <section class="practice-info-pane" id="practice-info-pane">
-        <div class="bash-problem-header">
-           <span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--active-accent); letter-spacing: 0.05em;">${CONFIG.subjects[state.activeSubject].sectionNames[state.activeSection]}</span>
-           <h3 style="margin-top: 0.5rem; border-left: none; padding-left: 0; font-size: 1.4rem;">${unitObj.unitName}</h3>
+    <div class="quiz-page fam-${fam}">
+      <header class="quiz-head">
+        <div class="quiz-head-copy">
+          <p class="quiz-crumb">${escapeHtml(subj.shortLabel)} · ${escapeHtml(sectionName)}${inBank ? ` · Quiz ${unitIndex + 1} of ${mcqBank.length}` : ''}</p>
+          <h1 class="quiz-title">${escapeHtml(unitObj.unitName)}</h1>
+          <p class="quiz-sub">${questions.length} questions${topicCount ? ` · ${topicCount} topics` : ''} · answers save as you go</p>
         </div>
-        ${dashboardHtml}
-        <div style="margin-top: 2rem; font-size: 0.85rem; color: var(--text-secondary);">
-          <p>Select the correct option for each question. Your progress is saved automatically.</p>
+        ${inBank ? `
+        <div class="quiz-head-nav">
+          <button type="button" class="icon-btn quiz-nav-btn" data-quiz-action="prev" aria-label="Previous quiz"${unitIndex === 0 ? ' disabled' : ''}>${svgIcon(QUIZ_ICON.prev)}</button>
+          <button type="button" class="icon-btn quiz-nav-btn" data-quiz-action="next" aria-label="Next quiz"${unitIndex === mcqBank.length - 1 ? ' disabled' : ''}>${svgIcon(QUIZ_ICON.next)}</button>
+        </div>` : ''}
+      </header>
+      ${renderTimedStudyControls()}
+      <div class="quiz-layout">
+        <div class="quiz-main">
+          <div class="quiz-toolbar">
+            <div class="quiz-filter" role="group" aria-label="Filter questions"></div>
+            <p class="quiz-keys" aria-hidden="true"><kbd>1</kbd>–<kbd>4</kbd> answer <kbd>J</kbd><kbd>K</kbd> move <kbd>S</kbd> star</p>
+          </div>
+          <div class="quiz-list">${cards || renderPracticeEmptyState()}</div>
+          <div class="quiz-foot"></div>
         </div>
-      </section>
-
-      <div class="resizer-h" id="resizer-practice-h">
-        <div class="resizer-notch"></div>
+        <aside class="quiz-rail" aria-label="Quiz progress"></aside>
       </div>
+    </div>`;
+  updateQuizRail();
+  updateTimedStudyClock();
 
-      <section class="practice-questions-pane" style="flex: 1; overflow-y: auto; padding: 2rem; background: var(--bg-color);">
-        ${questionsHtml}
-      </section>
-    </div>
-  `;
+  // Single-column scroll: let the pane own the scroll, clear old lab-chrome inline styles
+  elements.contentArea.style.overflow = '';
+  elements.contentArea.style.padding = '';
 
-  // Ensure content area doesn't have its own scroll or padding
-  elements.contentArea.style.overflow = 'hidden';
-  elements.contentArea.style.padding = '0';
-
-
-  // Initialize resizer
-  initResizer('resizer-practice-h', 'practice-info-pane', 'horizontal');
-
-  const resetBtn = document.getElementById('quiz-reset-progress-btn');
-  if (resetBtn) {
-    resetBtn.addEventListener('click', () => {
-      if (confirm("Are you sure you want to reset your practice progress for this subject? This will clear all your answers.")) {
-        resetPracticeProgress();
-      }
-    });
-  }
-
-  // Starred filter toggle
-  const starredFilterBtn = document.getElementById('starred-filter-btn');
-  if (starredFilterBtn) {
-    starredFilterBtn.addEventListener('click', () => {
-      state.showStarredOnly = !state.showStarredOnly;
-      renderPracticeUnit(unitIndex);
-    });
-  }
-
-  // Star button click handlers
-  elements.contentArea.querySelectorAll('.mcq-star-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const qId = parseInt(btn.getAttribute('data-qid'));
-      if (isNaN(qId)) return;
-      const starredList = state.starredMcqs[state.activeSubject] || [];
-      const idx = starredList.indexOf(qId);
-      if (idx > -1) {
-        starredList.splice(idx, 1);
-        btn.classList.remove('starred');
-        btn.textContent = '\u2606';
-      } else {
-        starredList.push(qId);
-        btn.classList.add('starred');
-        btn.textContent = '\u2605';
-        btn.classList.add('star-animate');
-        setTimeout(() => btn.classList.remove('star-animate'), 350);
-      }
-      state.starredMcqs[state.activeSubject] = starredList;
-      saveStarredMcqs();
-      renderStarredInNotesPanel();
-    });
-  });
-
-  // Re-run KaTeX auto-render
   if (typeof renderMathInElement === 'function') {
     renderMathInElement(elements.contentArea, {
       delimiters: [
@@ -3205,22 +4088,145 @@ function renderPracticeUnit(unitIndex) {
 
   shuffleMcqOptions(elements.contentArea);
 
-  const sidebarButtons = elements.topicList.querySelectorAll('.topic-item');
-  sidebarButtons.forEach(btn => {
-    const idx = parseInt(btn.getAttribute('data-index'));
-    btn.classList.toggle('active', idx === unitIndex);
+  elements.topicList.querySelectorAll('.topic-item').forEach(btn => {
+    btn.classList.toggle('active', parseInt(btn.getAttribute('data-index')) === unitIndex);
   });
 
-  elements.prevBtn.disabled = unitIndex === 0;
-  elements.prevBtn.style.opacity = unitIndex === 0 ? '0.5' : '1';
-
-  const totalUnits = mcqBank.length;
-  const isLastUnit = unitIndex === totalUnits - 1;
-  elements.nextBtn.innerHTML = isLastUnit ? 'Practice Bank Completed!' : 'Next Unit →';
-  elements.nextBtn.disabled = false;
-  elements.nextBtn.style.opacity = '1';
-
   document.getElementById('main-content-pane').scrollTop = 0;
+}
+
+function setQuizCursor(qId, scroll) {
+  quizCursorId = qId;
+  elements.contentArea.querySelectorAll('.mcq-card.is-current, .qmap-cell.is-current').forEach(el => el.classList.remove('is-current'));
+  const card = document.getElementById('mcq-' + qId);
+  if (card) {
+    card.classList.add('is-current');
+    if (scroll) {
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      card.focus({ preventScroll: true });
+    }
+  }
+  elements.contentArea.querySelector(`.qmap-cell[data-quiz-jump="${qId}"]`)?.classList.add('is-current');
+}
+
+// Record an answer for a rendered card (click or keyboard). Works for the quiz page
+// and for the "quick check" cards embedded in notes, which don't persist.
+function answerMcq(option) {
+  const group = option.closest('.mcq-options');
+  if (!group || group.classList.contains('answered')) return;
+  const selected = option.getAttribute('data-option');
+  const correct = group.getAttribute('data-correct');
+  if (isTimedStudyQuiz() && option.closest('.quiz-page')) {
+    const card = option.closest('[data-question-id]');
+    timedStudyQuiz.answers[card.dataset.questionId] = selected;
+    group.querySelectorAll('.mcq-option').forEach(b => b.classList.toggle('timed-selected', b === option));
+    try { localStorage.setItem('prep_timed_quiz', JSON.stringify(timedStudyQuiz)); } catch (_) {}
+    updateQuizRail();
+    announceStudy('Answer saved. Results appear when you finish.');
+    return;
+  }
+
+  group.querySelectorAll('.mcq-option').forEach(opt => {
+    const letter = opt.getAttribute('data-option');
+    if (letter === correct) {
+      opt.classList.add('correct');
+      if (!opt.querySelector('.correct-badge')) opt.insertAdjacentHTML('beforeend', '<span class="correct-badge">Correct</span>');
+    } else if (letter === selected) {
+      opt.classList.add('incorrect');
+      if (!opt.querySelector('.incorrect-badge')) opt.insertAdjacentHTML('beforeend', '<span class="incorrect-badge">Your answer</span>');
+    }
+  });
+  group.classList.add('answered');
+
+  const card = option.closest('.mcq-card');
+  const exp = card?.querySelector('.mcq-explanation');
+  if (exp) exp.style.display = 'block';
+
+  if (!isMcqSection() || !card?.dataset.questionId) return;
+  const qId = parseInt(card.dataset.questionId, 10);
+  card.dataset.status = selected === correct ? 'correct' : 'wrong';
+  state.practiceAnswers[state.activeSubject][qId] = selected;
+  savePracticeProgress();
+  setQuizCursor(qId, false);
+  updateQuizRail();
+  renderSidebar();
+  updateProgressBar();
+}
+
+function toggleStar(subject, qId) {
+  const list = state.starredMcqs[subject] || (state.starredMcqs[subject] = []);
+  const i = list.indexOf(qId);
+  if (i > -1) list.splice(i, 1); else list.push(qId);
+  saveStarredMcqs();
+  const on = i === -1;
+  document.querySelectorAll(`.mcq-star-btn[data-qid="${qId}"]`).forEach(btn => {
+    btn.classList.toggle('starred', on);
+    btn.setAttribute('aria-pressed', String(on));
+  });
+  if (document.querySelector('.quiz-page')) updateQuizRail();
+  renderSavedPanel();
+}
+
+function quizAction(action) {
+  const unitObj = quizUnit();
+  if (!unitObj) return;
+  const answers = state.practiceAnswers[state.activeSubject];
+  if (action === 'prev' || action === 'next') {
+    const target = state.quizUnitIndex + (action === 'next' ? 1 : -1);
+    if (target >= 0 && target < getActiveMcqBank().length) selectTopic(target);
+    return;
+  }
+  if (action === 'retry-wrong') {
+    unitObj.questions.forEach(q => { if (mcqStatus(state.activeSubject, q) === 'wrong') delete answers[q.id]; });
+    state.quizFilter = 'unanswered';
+  } else if (action === 'reset') {
+    const btn = elements.contentArea.querySelector('[data-quiz-action="reset"]');
+    // Two-step confirm in place instead of a blocking dialog.
+    if (btn && !btn.classList.contains('armed')) {
+      btn.classList.add('armed');
+      btn.textContent = 'Tap again to reset';
+      setTimeout(() => { if (btn.isConnected) { btn.classList.remove('armed'); btn.textContent = 'Reset quiz'; } }, 3000);
+      return;
+    }
+    unitObj.questions.forEach(q => { delete answers[q.id]; });
+    state.quizFilter = 'all';
+  }
+  savePracticeProgress();
+  renderPracticeUnit(state.quizUnitIndex);
+  renderSidebar();
+  updateProgressBar();
+}
+
+// Keyboard: 1-4 / A-D answer the current question, J/K move, S stars.
+function handleQuizKey(e) {
+  if (e.metaKey || e.ctrlKey || e.altKey) return false;
+  const cards = [...elements.contentArea.querySelectorAll('.quiz-list .mcq-card')];
+  if (!cards.length) return false;
+  const key = e.key.toLowerCase();
+  let current = document.getElementById('mcq-' + quizCursorId);
+  if (!current || !cards.includes(current)) {
+    current = cards.find(c => c.dataset.status === 'unanswered' && c.getBoundingClientRect().bottom > 80) || cards[0];
+  }
+
+  const optionIndex = '1234'.indexOf(key) > -1 ? '1234'.indexOf(key) : 'abcd'.indexOf(key);
+  if (optionIndex > -1) {
+    const option = current.querySelectorAll('.mcq-option')[optionIndex];
+    if (!option) return false;
+    setQuizCursor(parseInt(current.dataset.questionId, 10), true);
+    answerMcq(option);
+    return true;
+  }
+  if (key === 'j' || key === 'k') {
+    const i = cards.indexOf(current) + (key === 'j' ? 1 : -1);
+    const target = cards[Math.max(0, Math.min(cards.length - 1, i))];
+    setQuizCursor(parseInt(target.dataset.questionId, 10), true);
+    return true;
+  }
+  if (key === 's') {
+    toggleStar(state.activeSubject, parseInt(current.dataset.questionId, 10));
+    return true;
+  }
+  return false;
 }
 
 
@@ -3229,35 +4235,10 @@ function renderPracticeUnit(unitIndex) {
 // ============================================================
 function closeMobileSidebar() {
   elements.sidebar.classList.remove('mobile-open');
-}
-
-// ============================================================
-//  LIVE TIMER COUNTDOWN
-// ============================================================
-function updateTimer() {
-  const now = new Date().getTime();
-  const subjectConfig = CONFIG.subjects[state.activeSubject];
-  const examTime = subjectConfig ? subjectConfig.examTime : new Date("2026-05-29T09:30:00+05:30").getTime();
-  const diff = examTime - now;
-  let timerString = "";
-
-  if (diff <= 0) {
-    timerString = "Exam Started! Good Luck! 🍀";
-  } else {
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-    if (hours > 24) {
-      const days = Math.floor(hours / 24);
-      const remainingHours = hours % 24;
-      timerString = `Exam in ${days}d ${remainingHours}h`;
-    } else {
-      timerString = `Exam in ${hours}h ${mins}m`;
-    }
-  }
-
-  elements.timerText.textContent = timerString;
-  if (elements.mobileTimerText) elements.mobileTimerText.textContent = timerString;
+  const scrim = document.querySelector('.sidebar-scrim');
+  if (scrim) scrim.hidden = true;
+  elements.menuToggleBtn?.setAttribute('aria-expanded', 'false');
+  elements.desktopSidebarToggle?.setAttribute('aria-expanded', 'false');
 }
 
 // ============================================================
@@ -3267,6 +4248,21 @@ function initResizer(resizerId, targetPaneId, direction, invert = false) {
   const resizer = document.getElementById(resizerId);
   const targetPane = document.getElementById(targetPaneId);
   if (!resizer || !targetPane) return;
+  resizer.tabIndex = 0;
+  resizer.setAttribute('role', 'separator');
+  resizer.setAttribute('aria-label', direction === 'horizontal' ? 'Resize problem panel. Arrow keys resize, Home resets.' : 'Resize results panel. Arrow keys resize, Home resets.');
+  resizer.setAttribute('aria-orientation', direction === 'horizontal' ? 'vertical' : 'horizontal');
+  resizer.addEventListener('keydown', e => {
+    const dimension = direction === 'horizontal' ? 'width' : 'height';
+    const before = targetPane.getBoundingClientRect()[dimension];
+    if (e.key === 'Home') { targetPane.style[dimension] = ''; targetPane.style.flex = ''; e.preventDefault(); return; }
+    if (!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)) return;
+    const delta = ['ArrowRight','ArrowDown'].includes(e.key) ? 24 : -24;
+    const max = (direction === 'horizontal' ? window.innerWidth : window.innerHeight) * .85;
+    targetPane.style[dimension] = Math.max(direction === 'horizontal' ? 150 : 0, Math.min(max, before + delta * (invert ? -1 : 1))) + 'px';
+    targetPane.style.flex = 'none';
+    e.preventDefault();
+  });
 
   let startX, startY, startWidth, startHeight;
 
@@ -3275,7 +4271,7 @@ function initResizer(resizerId, targetPaneId, direction, invert = false) {
     startY = e.clientY;
     startWidth = targetPane.offsetWidth;
     startHeight = targetPane.offsetHeight;
-    
+
     resizer.classList.add('resizing');
     document.body.style.cursor = direction === 'horizontal' ? 'col-resize' : 'row-resize';
     document.body.style.userSelect = 'none';
@@ -3287,7 +4283,7 @@ function initResizer(resizerId, targetPaneId, direction, invert = false) {
   let animationFrameId = null;
   const mousemoveHandler = function(e) {
     if (animationFrameId) return;
-    
+
     animationFrameId = requestAnimationFrame(() => {
       if (direction === 'horizontal') {
         const dx = invert ? startX - e.clientX : e.clientX - startX;
@@ -3335,22 +4331,16 @@ function initResizer(resizerId, targetPaneId, direction, invert = false) {
 // ============================================================
 //  ZOOM AND UI CONTROLS
 // ============================================================
-let currentZoom = 1;
-const zoomContainer = document.querySelector('.container');
-
 document.getElementById('zoom-in')?.addEventListener('click', () => {
-  currentZoom = Math.min(currentZoom + 0.1, 1.5);
-  if (zoomContainer) zoomContainer.style.zoom = currentZoom;
+  setReadingScale((studyPreferences.fontScale || 1) + 0.1);
 });
 
 document.getElementById('zoom-out')?.addEventListener('click', () => {
-  currentZoom = Math.max(currentZoom - 0.1, 0.7);
-  if (zoomContainer) zoomContainer.style.zoom = currentZoom;
+  setReadingScale((studyPreferences.fontScale || 1) - 0.1);
 });
 
 document.getElementById('zoom-default')?.addEventListener('click', () => {
-  currentZoom = 1;
-  if (zoomContainer) zoomContainer.style.zoom = currentZoom;
+  setReadingScale(1);
 });
 
 // ============================================================
@@ -3408,38 +4398,13 @@ window.addEventListener('DOMContentLoaded', () => {
 // ============================================================
 function initThemeToggle() {
   const toggleBtn = document.getElementById('theme-toggle');
-  const themeIconPath = document.querySelector('#theme-icon path');
-  
-  if (!toggleBtn || !themeIconPath) return;
-
-  // Prevent duplicate event listener registration
+  if (!toggleBtn) return;
   if (toggleBtn.dataset.themeToggleInitialized) return;
   toggleBtn.dataset.themeToggleInitialized = 'true';
-
-  let currentTheme = 'light';
-  try {
-    currentTheme = localStorage.getItem('theme') || 'light';
-  } catch (e) {
-    console.warn("localStorage not accessible for theme toggle");
-  }
-
-  if (currentTheme === 'dark') {
-    document.body.classList.add('dark-theme');
-    themeIconPath.setAttribute('d', 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z'); // Sun icon
-  }
-
   toggleBtn.addEventListener('click', () => {
-    document.body.classList.toggle('dark-theme');
-    const isDark = document.body.classList.contains('dark-theme');
-    try {
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    } catch (e) {}
-    
-    if (isDark) {
-      themeIconPath.setAttribute('d', 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z'); // Sun icon
-    } else {
-      themeIconPath.setAttribute('d', 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'); // Moon icon
-    }
+    studyPreferences.theme = document.body.classList.contains('dark-theme') ? 'light' : 'dark';
+    saveStudyPreferences();
+    applyStudyPreferences();
   });
 }
 
@@ -3483,19 +4448,19 @@ function renderPracticeTest1Item(index) {
     // Subjective Q&A Mode
     mainContentPane.classList.remove('bash-mode', 'practice-mode');
     container.classList.remove('practice-active');
-    
+
     elements.welcomeScreen.style.display = 'none';
     elements.readingPane.style.display = 'block';
-    
+
     elements.sectionBadge.textContent = 'PT1';
     elements.mainTitle.textContent = topic.title;
-    
+
     let cardsHtml = topic.questions.map((q, i) => `
       <div class="subjective-card" style="background: var(--card-bg, #FAF8F5); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; position: relative; margin-bottom: 1.5rem; text-align: left;">
         <div style="font-weight: 700; color: var(--active-accent); margin-bottom: 0.5rem; font-size: 0.85rem; text-transform: uppercase;">Question ${i + 1}</div>
         <div style="font-size: 1rem; color: var(--text-primary); margin-bottom: 1rem; font-weight: 600; line-height: 1.45;">${escapeHtml(q.question)}</div>
         <button class="reveal-btn" data-index="${i}" style="background-color: var(--active-accent); color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s ease;">Reveal Answer</button>
-        <div class="subjective-answer" id="subjective-ans-${i}" style="display: none; margin-top: 1rem; padding: 1rem; background-color: var(--body-bg, #F3EFE9); border-left: 4px solid var(--active-accent); border-radius: 6px;">
+        <div class="subjective-answer" id="subjective-ans-${i}" style="display: none; margin-top: 1rem; padding: 1rem; background-color: var(--blue-bg); border-radius: 6px;">
           <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">Answer:</strong>
           <code style="font-family: monospace; font-size: 0.95rem; color: var(--active-accent); background: none; padding: 0; word-break: break-all; white-space: pre-wrap; display: block;">${escapeHtml(q.answer)}</code>
         </div>
@@ -3510,7 +4475,7 @@ function renderPracticeTest1Item(index) {
         </div>
       </div>
     `;
-    
+
     // Add event listeners
     elements.contentArea.querySelectorAll('.reveal-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -3526,757 +4491,668 @@ function renderPracticeTest1Item(index) {
     });
 
     elements.contentArea.style.overflowY = 'auto';
-    elements.contentArea.style.padding = '3rem 4.5rem'; 
+    elements.contentArea.style.padding = '3rem 4.5rem';
     elements.contentArea.style.display = 'block';
   }
 }
 
 // ============================================================
-//  SMART NOTES ENGINE
+//  SAVED — notes, highlights, starred questions, mistakes
 // ============================================================
+// One drawer, three lists:
+//   Notes     highlights and typed notes, grouped by topic, editable, jump back to source
+//   Starred   bookmarked questions as flashcards (answer hidden until asked)
+//   Mistakes  every question answered wrong; retry in place until it's right
+// Question lists need each subject's MCQ bank, so opening them lazy-loads those subjects.
+const SAVED_TABS = [['notes', 'Notes'], ['starred', 'Starred'], ['mistakes', 'Mistakes']];
+const SAVED_ICON = {
+  close: '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+  search: '<circle cx="11" cy="11" r="7"/><line x1="20" y1="20" x2="16.65" y2="16.65"/>',
+  open: '<line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/>',
+  copy: '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+  note: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+  highlight: '<path d="m9 11-6 6v3h9l3-3"/><path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4"/>'
+};
+
+const saved = { tab: 'notes', query: '', editingId: null, undo: null, loading: false };
+
+function subjectShort(id) {
+  return CONFIG.subjects[id]?.shortLabel || 'General';
+}
+
+function questionSectionId(subject) {
+  return (CONFIG.subjects[subject]?.tabs || []).map(t => t.id).find(id => id === 'practice' || id === 'linuxMcq') || null;
+}
+
+// { subject, unitIndex, q } for every loaded question matching a predicate.
+function collectQuestions(match) {
+  const out = [];
+  Object.keys(CONFIG.subjects).forEach(subject => {
+    (CONFIG.subjects[subject].mcqs || []).forEach((unit, unitIndex) => {
+      (unit.questions || []).forEach(q => { if (match(subject, q)) out.push({ subject, unitIndex, unitName: unit.unitName, q }); });
+    });
+  });
+  return out;
+}
+
+const starredItems = () => collectQuestions((s, q) => isStarred(s, q.id));
+const mistakeItems = () => collectQuestions((s, q) => mcqStatus(s, q) === 'wrong');
+
+// Load banks for every subject that has starred or answered questions.
+async function ensureSavedBanksLoaded() {
+  const needed = Object.keys(CONFIG.subjects).filter(s =>
+    !hydratedSubjects[s] && ((state.starredMcqs[s] || []).length || Object.keys(state.practiceAnswers[s] || {}).length));
+  if (!needed.length) return;
+  saved.loading = true;
+  renderSavedPanel();
+  await Promise.all(needed.map(s => ensureSubjectDataLoaded(s).catch(() => {})));
+  saved.loading = false;
+  renderSavedPanel();
+}
+
 function initSmartNotesUI() {
-  // --- Create FAB ---
   const fab = document.createElement('button');
   fab.className = 'smart-notes-fab';
   fab.id = 'smart-notes-fab';
-  fab.setAttribute('aria-label', 'Toggle Smart Notes');
-  fab.title = 'Smart Notes (N)';
-
-  // SVG icon for notepad
-  const fabSvg = new DOMParser().parseFromString(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>',
-    'image/svg+xml'
-  );
-  fab.appendChild(fab.ownerDocument.importNode(fabSvg.documentElement, true));
-
-  const countBadge = document.createElement('span');
-  countBadge.className = 'notes-count';
-  countBadge.id = 'notes-count-badge';
-  fab.appendChild(countBadge);
-
-  fab.addEventListener('click', toggleSmartNotesPanel);
+  fab.type = 'button';
+  fab.setAttribute('aria-label', 'Saved notes and questions');
+  fab.title = 'Saved (N)';
+  fab.innerHTML = `${svgIcon(ICON.saved, 20)}<span class="notes-count" id="notes-count-badge"></span>`;
+  fab.addEventListener('click', () => toggleSmartNotesPanel());
   document.body.appendChild(fab);
 
-  // --- Create Panel ---
-  const panel = document.createElement('div');
+  const panel = document.createElement('aside');
   panel.className = 'smart-notes-panel';
   panel.id = 'smart-notes-panel';
-
-  // Header
-  const header = document.createElement('div');
-  header.className = 'smart-notes-header';
-
-  const headerLeft = document.createElement('div');
-  headerLeft.className = 'smart-notes-header-left';
-  const headerIcon = new DOMParser().parseFromString(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--active-accent);"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>',
-    'image/svg+xml'
-  );
-  headerLeft.appendChild(headerLeft.ownerDocument.importNode(headerIcon.documentElement, true));
-  const headerTitle = document.createElement('h3');
-  headerTitle.textContent = 'Smart Notes';
-  headerLeft.appendChild(headerTitle);
-
-  const headerActions = document.createElement('div');
-  headerActions.className = 'smart-notes-header-actions';
-
-  const copyBtn = document.createElement('button');
-  copyBtn.id = 'copy-notes-btn';
-  const copySvg = new DOMParser().parseFromString(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
-    'image/svg+xml'
-  );
-  copyBtn.appendChild(copyBtn.ownerDocument.importNode(copySvg.documentElement, true));
-  const copyBtnText = document.createTextNode(' Copy All');
-  copyBtn.appendChild(copyBtnText);
-  copyBtn.addEventListener('click', copyNotesToClipboard);
-  headerActions.appendChild(copyBtn);
-
-  const filterBtn = document.createElement('button');
-  filterBtn.id = 'toggle-filters-btn';
-  const filterSvg = new DOMParser().parseFromString(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>',
-    'image/svg+xml'
-  );
-  filterBtn.appendChild(filterBtn.ownerDocument.importNode(filterSvg.documentElement, true));
-  const filterBtnText = document.createTextNode(' Filter');
-  filterBtn.appendChild(filterBtnText);
-  filterBtn.addEventListener('click', () => {
-    const filtersContainer = document.getElementById('smart-notes-filters');
-    if (filtersContainer) {
-      const isShowing = filtersContainer.classList.toggle('show');
-      filterBtn.classList.toggle('active', isShowing);
-    }
-  });
-  headerActions.appendChild(filterBtn);
-
-  // Clear All Notes button
-  const clearBtn = document.createElement('button');
-  clearBtn.id = 'clear-notes-btn';
-  clearBtn.className = 'smart-notes-clear-btn';
-  const clearSvg = new DOMParser().parseFromString(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>',
-    'image/svg+xml'
-  );
-  clearBtn.appendChild(clearBtn.ownerDocument.importNode(clearSvg.documentElement, true));
-  const clearBtnText = document.createTextNode(' Clear All');
-  clearBtn.appendChild(clearBtnText);
-
-  let clearConfirmTimeout = null;
-  clearBtn.addEventListener('click', () => {
-    if (clearBtn.classList.contains('armed')) {
-      state.smartNotes = [];
-      localStorage.setItem('prep_smart_notes', JSON.stringify(state.smartNotes));
-      updateNotesCount();
-      renderNotesList();
-      clearBtn.classList.remove('armed');
-      clearBtn.lastChild.textContent = ' Clear All';
-      if (clearConfirmTimeout) {
-        clearTimeout(clearConfirmTimeout);
-        clearConfirmTimeout = null;
-      }
-    } else {
-      clearBtn.classList.add('armed');
-      clearBtn.lastChild.textContent = ' Confirm?';
-      clearConfirmTimeout = setTimeout(() => {
-        clearBtn.classList.remove('armed');
-        clearBtn.lastChild.textContent = ' Clear All';
-        clearConfirmTimeout = null;
-      }, 3000);
-    }
-  });
-  headerActions.appendChild(clearBtn);
-
-  const closeBtn = document.createElement('button');
-  closeBtn.className = 'smart-notes-close-btn';
-  const closeSvg = new DOMParser().parseFromString(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
-    'image/svg+xml'
-  );
-  closeBtn.appendChild(closeBtn.ownerDocument.importNode(closeSvg.documentElement, true));
-  closeBtn.addEventListener('click', toggleSmartNotesPanel);
-  headerActions.appendChild(closeBtn);
-
-  header.appendChild(headerLeft);
-  header.appendChild(headerActions);
-  panel.appendChild(header);
-
-  // Filters
-  const filters = document.createElement('div');
-  filters.className = 'smart-notes-filters';
-  filters.id = 'smart-notes-filters';
-  const filterOptions = [
-    { key: 'all', label: 'All' },
-    { key: 'iot', label: 'ES & IoT' },
-    { key: 'cn', label: 'CN' },
-    { key: 'linux', label: 'Linux' }
-  ];
-  filterOptions.forEach(opt => {
-    const pill = document.createElement('button');
-    pill.className = 'smart-notes-filter-pill' + (opt.key === 'all' ? ' active' : '');
-    pill.setAttribute('data-filter', opt.key);
-    pill.textContent = opt.label;
-    pill.addEventListener('click', () => {
-      state.notesFilterSubject = opt.key;
-      filters.querySelectorAll('.smart-notes-filter-pill').forEach(p => p.classList.remove('active'));
-      pill.classList.add('active');
-      renderNotesList();
-    });
-    filters.appendChild(pill);
-  });
-  panel.appendChild(filters);
-
-  // Notes list body
-  const body = document.createElement('div');
-  body.className = 'smart-notes-body';
-  body.id = 'smart-notes-body';
-  panel.appendChild(body);
-
-  // Starred MCQs section
-  const starredToggle = document.createElement('button');
-  starredToggle.className = 'starred-section-toggle';
-  starredToggle.id = 'starred-section-toggle';
-  const starredToggleText = document.createElement('span');
-  starredToggleText.style.display = 'inline-flex';
-  starredToggleText.style.alignItems = 'center';
-  starredToggleText.style.gap = '6px';
-  const starredSectionSvg = new DOMParser().parseFromString(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #E3B261; vertical-align: middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
-    'image/svg+xml'
-  );
-  starredToggleText.appendChild(starredToggleText.ownerDocument.importNode(starredSectionSvg.documentElement, true));
-  const starredTextNode = document.createTextNode(' Starred Questions');
-  starredToggleText.appendChild(starredTextNode);
-  starredToggle.appendChild(starredToggleText);
-  const starredCountBadge = document.createElement('span');
-  starredCountBadge.className = 'starred-count';
-  starredCountBadge.id = 'starred-count-badge';
-  starredToggle.appendChild(starredCountBadge);
-  panel.appendChild(starredToggle);
-
-  const starredContent = document.createElement('div');
-  starredContent.className = 'starred-section-content';
-  starredContent.id = 'starred-section-content';
-
-  const starredList = document.createElement('div');
-  starredList.className = 'starred-section-list';
-  starredList.id = 'starred-section-list';
-  starredContent.appendChild(starredList);
-
-  // Copy & Clear starred buttons row
-  const copyStarredRow = document.createElement('div');
-  copyStarredRow.style.cssText = 'padding: 0 1.25rem 1rem; display: flex; gap: 0.5rem;';
-  
-  const copyStarredBtn = document.createElement('button');
-  copyStarredBtn.id = 'copy-starred-btn';
-  copyStarredBtn.style.cssText = 'flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px;';
-  copyStarredBtn.className = 'starred-filter-btn';
-  const copyStarredSvg = new DOMParser().parseFromString(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
-    'image/svg+xml'
-  );
-  copyStarredBtn.appendChild(copyStarredBtn.ownerDocument.importNode(copyStarredSvg.documentElement, true));
-  const copyStarredBtnText = document.createTextNode(' Copy for AI');
-  copyStarredBtn.appendChild(copyStarredBtnText);
-  copyStarredBtn.addEventListener('click', copyStarredToClipboard);
-  copyStarredRow.appendChild(copyStarredBtn);
-
-  // Clear Starred button
-  const clearStarredBtn = document.createElement('button');
-  clearStarredBtn.id = 'clear-starred-btn';
-  clearStarredBtn.style.cssText = 'flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px;';
-  clearStarredBtn.className = 'starred-filter-btn starred-clear-btn';
-  const unstarAllSvg = new DOMParser().parseFromString(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>',
-    'image/svg+xml'
-  );
-  clearStarredBtn.appendChild(clearStarredBtn.ownerDocument.importNode(unstarAllSvg.documentElement, true));
-  const clearStarredBtnText = document.createTextNode(' Unstar All');
-  clearStarredBtn.appendChild(clearStarredBtnText);
-
-  let clearStarredConfirmTimeout = null;
-  clearStarredBtn.addEventListener('click', () => {
-    if (clearStarredBtn.classList.contains('armed')) {
-      state.starredMcqs = { iot: [], cn: [], linux: [] };
-      localStorage.setItem('prep_starred_mcqs', JSON.stringify(state.starredMcqs));
-      renderStarredInNotesPanel();
-      
-      if (state.activeSection === 'practice' || state.activeSection === 'linuxMcq') {
-        const activeUnitObj = CONFIG.subjects[state.activeSubject]?.mcqs?.[state.activePracticeUnitIdx];
-        if (activeUnitObj) {
-          renderPracticeUnit(activeUnitObj);
-        }
-      }
-      clearStarredBtn.classList.remove('armed');
-      clearStarredBtn.lastChild.textContent = ' Unstar All';
-      if (clearStarredConfirmTimeout) {
-        clearTimeout(clearStarredConfirmTimeout);
-        clearStarredConfirmTimeout = null;
-      }
-    } else {
-      clearStarredBtn.classList.add('armed');
-      clearStarredBtn.lastChild.textContent = ' Confirm?';
-      clearStarredConfirmTimeout = setTimeout(() => {
-        clearStarredBtn.classList.remove('armed');
-        clearStarredBtn.lastChild.textContent = ' Unstar All';
-        clearStarredConfirmTimeout = null;
-      }, 3000);
-    }
-  });
-  copyStarredRow.appendChild(clearStarredBtn);
-  starredContent.appendChild(copyStarredRow);
-  panel.appendChild(starredContent);
-
-  starredToggle.addEventListener('click', () => {
-    starredContent.classList.toggle('expanded');
-  });
-
-  // Footer
-  const footer = document.createElement('div');
-  footer.className = 'smart-notes-footer';
-
-  const inputRow = document.createElement('div');
-  inputRow.className = 'smart-notes-input-row';
-
-  const textarea = document.createElement('textarea');
-  textarea.className = 'smart-notes-textarea';
-  textarea.id = 'smart-notes-textarea';
-  textarea.placeholder = 'Write a note...';
-  textarea.rows = 1;
-  inputRow.appendChild(textarea);
-
-  const addBtn = document.createElement('button');
-  addBtn.className = 'smart-notes-add-btn';
-  addBtn.textContent = 'Add';
-  addBtn.addEventListener('click', () => {
-    const text = textarea.value.trim();
-    if (!text) return;
-    addNote({
-      sourceType: 'manual',
-      selectedText: '',
-      userAnnotation: text
-    });
-    textarea.value = '';
-  });
-  inputRow.appendChild(addBtn);
-  footer.appendChild(inputRow);
-  panel.appendChild(footer);
-
+  panel.setAttribute('aria-label', 'Saved');
+  panel.innerHTML = `
+    <header class="saved-head">
+      <h2>Saved</h2>
+      <button type="button" class="icon-btn" data-saved-close aria-label="Close saved panel">${svgIcon(SAVED_ICON.close)}</button>
+    </header>
+    <div class="saved-tabs" role="tablist" aria-label="Saved lists"></div>
+    <div class="saved-tools">
+      <label class="saved-search">${svgIcon(SAVED_ICON.search, 15)}<input type="search" id="saved-search" placeholder="Search" aria-label="Search saved items"></label>
+      <select id="saved-scope" class="saved-scope" aria-label="Filter by subject"></select>
+    </div>
+    <div class="saved-body" id="saved-body" role="tabpanel"></div>
+    <footer class="saved-foot" id="saved-foot"></footer>`;
   document.body.appendChild(panel);
 
-  // --- Create Selection Tooltip ---
+  panel.addEventListener('click', onSavedClick);
+  panel.addEventListener('keydown', onSavedKeydown);
+  panel.querySelector('#saved-search').addEventListener('input', debounce(e => { saved.query = e.target.value.trim().toLowerCase(); renderSavedBody(); }, 120));
+  panel.querySelector('#saved-scope').addEventListener('change', e => { state.notesFilterSubject = e.target.value; renderSavedBody(); });
+
   const tooltip = document.createElement('div');
   tooltip.className = 'selection-tooltip';
   tooltip.id = 'selection-tooltip';
-  
-  const pinSvg = new DOMParser().parseFromString(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: middle;"><line x1="18" y1="8" x2="22" y2="12"/><line x1="12" y1="2" x2="22" y2="12"/><path d="M12 2L2 12h5l5 5v5l10-10H17l-5-5z"/></svg>',
-    'image/svg+xml'
-  );
-  tooltip.appendChild(tooltip.ownerDocument.importNode(pinSvg.documentElement, true));
-  const tooltipText = document.createTextNode(' Save to Notes');
-  tooltip.appendChild(tooltipText);
+  tooltip.setAttribute('role', 'toolbar');
+  tooltip.innerHTML = `
+    <button type="button" data-sel="highlight">${svgIcon(SAVED_ICON.highlight, 14)}Highlight</button>
+    <button type="button" data-sel="note">${svgIcon(SAVED_ICON.note, 14)}Add note</button>`;
   document.body.appendChild(tooltip);
-
-  // Setup selection listener
   setupSelectionTooltip();
 
-  // Initial render
-  updateNotesCount();
-  renderNotesList();
-  renderStarredInNotesPanel();
+  renderSavedPanel();
 }
 
-function toggleSmartNotesPanel() {
+function toggleSmartNotesPanel(force, tab) {
+  const memoryDialog = document.getElementById('study-memory');
+  if (memoryDialog?.open) memoryDialog.close();
   const panel = document.getElementById('smart-notes-panel');
   const fab = document.getElementById('smart-notes-fab');
   if (!panel || !fab) return;
-  
-  const isOpen = panel.classList.toggle('open');
+  const isOpen = panel.classList.toggle('open', force === undefined ? !panel.classList.contains('open') : force);
   fab.classList.toggle('panel-open', isOpen);
   document.body.classList.toggle('notes-open', isOpen);
-
+  if (tab) saved.tab = tab;
   if (isOpen) {
-    renderNotesList();
-    renderStarredInNotesPanel();
+    renderSavedPanel();
+    if (saved.tab !== 'notes') ensureSavedBanksLoaded();
+    // Don't steal focus from a note that just opened in edit mode.
+    if (!panel.contains(document.activeElement)) panel.querySelector('[aria-selected="true"]')?.focus({ preventScroll: true });
+  } else {
+    saved.editingId = null;
+    if (panel.contains(document.activeElement)) fab.focus({ preventScroll: true });
   }
 }
 
+function renderSavedPanel() {
+  updateNotesCount();
+  const panel = document.getElementById('smart-notes-panel');
+  if (!panel) return;
+  const counts = { notes: state.smartNotes.length, starred: starredItems().length, mistakes: mistakeItems().length };
+  // Starred ids from not-yet-loaded subjects still count toward the tab badge.
+  counts.starred = Math.max(counts.starred, Object.values(state.starredMcqs).reduce((n, l) => n + (l || []).length, 0));
+
+  panel.querySelector('.saved-tabs').innerHTML = SAVED_TABS.map(([id, label]) => `
+    <button type="button" role="tab" data-saved-tab="${id}" aria-selected="${saved.tab === id}" tabindex="${saved.tab === id ? 0 : -1}">
+      ${label}<span class="saved-tab-count">${counts[id]}</span>
+    </button>`).join('');
+
+  panel.querySelector('#saved-search').placeholder = { notes: 'Search notes', starred: 'Search starred', mistakes: 'Search mistakes' }[saved.tab];
+  renderSavedScope();
+  renderSavedBody();
+}
+
+function renderSavedScope() {
+  const select = document.getElementById('saved-scope');
+  const subjects = new Set();
+  if (saved.tab === 'notes') state.smartNotes.forEach(n => subjects.add(n.subject || ''));
+  else (saved.tab === 'starred' ? starredItems() : mistakeItems()).forEach(i => subjects.add(i.subject));
+  if (state.notesFilterSubject !== 'all' && !subjects.has(state.notesFilterSubject)) state.notesFilterSubject = 'all';
+  select.innerHTML = `<option value="all">All subjects</option>` + [...subjects].map(s =>
+    `<option value="${s}"${state.notesFilterSubject === s ? ' selected' : ''}>${escapeHtml(subjectShort(s))}</option>`).join('');
+  select.hidden = subjects.size < 2;
+}
+
+function inScope(subject) {
+  return state.notesFilterSubject === 'all' || state.notesFilterSubject === (subject || '');
+}
+
+function renderSavedBody() {
+  const body = document.getElementById('saved-body');
+  const foot = document.getElementById('saved-foot');
+  if (!body) return;
+  if (saved.tab === 'notes') {
+    body.innerHTML = renderNotesTab();
+    foot.innerHTML = renderNoteComposer();
+  } else {
+    body.innerHTML = saved.loading ? '<p class="saved-empty">Loading questions…</p>' : (saved.tab === 'starred' ? renderStarredTab() : renderMistakesTab());
+    const n = (saved.tab === 'starred' ? starredItems() : mistakeItems()).length;
+    foot.innerHTML = n ? `<button type="button" class="saved-btn" data-saved-copy>${svgIcon(SAVED_ICON.copy, 14)}Copy as text</button><span class="saved-foot-hint">Paste into any chat to get explanations</span>` : '';
+  }
+  if (saved.undo) {
+    foot.insertAdjacentHTML('afterbegin', `<div class="saved-toast" role="status">Note deleted<button type="button" data-saved-undo>Undo</button></div>`);
+  }
+  const editing = body.querySelector('.saved-edit textarea');
+  if (editing) { editing.focus(); editing.setSelectionRange(editing.value.length, editing.value.length); }
+}
+
+function savedEmpty(title, text) {
+  return `<div class="saved-empty"><strong>${title}</strong><p>${text}</p></div>`;
+}
+
+function matchesQuery(...parts) {
+  return !saved.query || parts.join(' ').toLowerCase().includes(saved.query);
+}
+
+// ── Notes tab ──
+function renderNotesTab() {
+  if (!state.smartNotes.length) {
+    return savedEmpty('No notes yet', 'Select any text while reading to highlight it or attach a thought. You can also write a note below.');
+  }
+  const notes = state.smartNotes.filter(n => inScope(n.subject) && matchesQuery(n.selectedText, n.userAnnotation, n.topicTitle));
+  if (!notes.length) return savedEmpty('Nothing matches', 'Try a different word or subject.');
+
+  const groups = new Map();
+  notes.forEach(n => {
+    const key = n.topicTitle ? `${n.subject}|${n.section}|${n.topicIndex}` : `${n.subject || ''}|general`;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(n);
+  });
+
+  return [...groups.values()].map(list => {
+    const n = list[0];
+    const sectionShort = (n.sectionName || '').split(' — ')[0];
+    const canOpen = n.subject && n.topicTitle && CONFIG.subjects[n.subject];
+    return `
+      <section class="saved-group">
+        <header class="saved-group-head">
+          <div>
+            <h3>${escapeHtml(n.topicTitle || 'General notes')}</h3>
+            <p>${escapeHtml([n.subject ? subjectShort(n.subject) : '', n.topicTitle ? sectionShort : ''].filter(Boolean).join(' · ') || 'Not tied to a topic')}</p>
+          </div>
+          ${canOpen ? `<button type="button" class="saved-link" data-open-note="${n.id}">Open${svgIcon(SAVED_ICON.open, 13)}</button>` : ''}
+        </header>
+        ${list.map(renderNoteItem).join('')}
+      </section>`;
+  }).join('');
+}
+
+function renderNoteItem(n) {
+  const editing = saved.editingId === n.id;
+  const text = editing
+    ? `<div class="saved-edit">
+         <textarea rows="3" aria-label="Edit note" placeholder="What should you remember about this?">${escapeHtml(n.userAnnotation || '')}</textarea>
+         <div class="saved-edit-actions"><span>⌘/Ctrl + Enter to save</span><button type="button" class="saved-btn" data-note-cancel>Cancel</button><button type="button" class="saved-btn saved-btn--primary" data-note-save="${n.id}">Save</button></div>
+       </div>`
+    : (n.userAnnotation ? `<p class="saved-text">${escapeHtml(n.userAnnotation)}</p>` : '');
+  return `
+    <article class="saved-note" data-note-id="${n.id}">
+      ${n.selectedText ? `<blockquote class="saved-quote">${escapeHtml(n.selectedText)}</blockquote>` : ''}
+      ${text}
+      ${editing ? '' : `
+      <div class="saved-note-foot">
+        <time>${escapeHtml(timeAgo(n.updatedAt || n.timestamp))}</time>
+        <span class="saved-note-actions">
+          <button type="button" data-note-edit="${n.id}">${n.userAnnotation ? 'Edit' : 'Add thought'}</button>
+          <button type="button" data-note-delete="${n.id}">Delete</button>
+        </span>
+      </div>`}
+    </article>`;
+}
+
+function noteContext() {
+  const inSubject = !document.body.classList.contains('landing-mode');
+  const subj = inSubject ? CONFIG.subjects[state.activeSubject] : null;
+  const reading = inSubject && !document.body.classList.contains('overview-mode') && elements.readingPane.style.display !== 'none'
+    && !isMcqSection() && !isBashSection() && !isJavaSection() && !isPlaygroundSection();
+  const topic = reading ? subj?.data?.[state.activeSection]?.[state.activeTopicIndex] : null;
+  return {
+    subject: subj ? state.activeSubject : null,
+    section: topic ? state.activeSection : null,
+    sectionName: topic ? (subj.sectionNames?.[state.activeSection] || state.activeSection) : '',
+    topicIndex: topic ? state.activeTopicIndex : null,
+    topicTitle: topic ? topic.title : '',
+    label: topic ? topic.title : subj ? subj.label : 'General'
+  };
+}
+
+function renderNoteComposer() {
+  const ctx = noteContext();
+  return `
+    <form class="saved-composer" data-note-form>
+      <label for="smart-notes-textarea">Note on <strong>${escapeHtml(ctx.label)}</strong></label>
+      <textarea id="smart-notes-textarea" rows="2" placeholder="Write a note…"></textarea>
+      <div class="saved-composer-actions">
+        ${state.smartNotes.length ? `<button type="button" class="saved-btn" data-saved-copy>${svgIcon(SAVED_ICON.copy, 14)}Copy all</button>` : '<span></span>'}
+        <button type="submit" class="saved-btn saved-btn--primary">Add note</button>
+      </div>
+    </form>`;
+}
+
 function addNote(noteData) {
+  const ctx = noteContext();
   const note = {
     id: 'note_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
-    subject: state.activeSubject,
-    section: state.activeSection,
-    sectionName: CONFIG.subjects[state.activeSubject]?.sectionNames?.[state.activeSection] || state.activeSection,
-    topicTitle: '',
-    topicIndex: state.activeTopicIndex,
+    subject: ctx.subject,
+    section: ctx.section,
+    sectionName: ctx.sectionName,
+    topicTitle: ctx.topicTitle,
+    topicIndex: ctx.topicIndex,
     timestamp: Date.now(),
     sourceType: noteData.sourceType || 'manual',
     selectedText: noteData.selectedText || '',
     userAnnotation: noteData.userAnnotation || ''
   };
-
-  // Get topic title if on a study page
-  if (!isMcqSection() && !isBashSection()) {
-    const subjectData = CONFIG.subjects[state.activeSubject]?.data;
-    const topics = subjectData?.[state.activeSection];
-    if (topics && topics[state.activeTopicIndex]) {
-      note.topicTitle = topics[state.activeTopicIndex].title;
-    }
-  }
-
   state.smartNotes.unshift(note);
   saveSmartNotes();
-  updateNotesCount();
-  renderNotesList();
-
-  // Bump animation on badge
+  renderSavedPanel();
+  applyNoteHighlights();
+  refreshRailNotes();
   const badge = document.getElementById('notes-count-badge');
-  if (badge) {
-    badge.classList.add('bump');
-    setTimeout(() => badge.classList.remove('bump'), 300);
-  }
+  if (badge) { badge.classList.add('bump'); setTimeout(() => badge.classList.remove('bump'), 300); }
+  return note;
 }
 
 function deleteNote(noteId) {
-  state.smartNotes = state.smartNotes.filter(n => n.id !== noteId);
+  const index = state.smartNotes.findIndex(n => n.id === noteId);
+  if (index === -1) return;
+  const [note] = state.smartNotes.splice(index, 1);
+  clearTimeout(saved.undo?.timer);
+  saved.undo = { note, index, timer: setTimeout(() => { saved.undo = null; renderSavedBody(); }, 6000) };
   saveSmartNotes();
-  updateNotesCount();
-  renderNotesList();
+  renderSavedPanel();
+  applyNoteHighlights();
+  refreshRailNotes();
 }
 
-function renderNotesList() {
-  const body = document.getElementById('smart-notes-body');
-  if (!body) return;
+function undoDeleteNote() {
+  if (!saved.undo) return;
+  clearTimeout(saved.undo.timer);
+  state.smartNotes.splice(saved.undo.index, 0, saved.undo.note);
+  saved.undo = null;
+  saveSmartNotes();
+  renderSavedPanel();
+  applyNoteHighlights();
+  refreshRailNotes();
+}
 
-  // Clear previous content safely
-  body.replaceChildren();
+function saveNoteEdit(noteId) {
+  const note = state.smartNotes.find(n => n.id === noteId);
+  const field = document.querySelector('.saved-edit textarea');
+  if (!note || !field) return;
+  note.userAnnotation = field.value.trim();
+  note.updatedAt = Date.now();
+  // A note with neither a highlight nor text is just empty; drop it.
+  if (!note.userAnnotation && !note.selectedText) { saved.editingId = null; deleteNote(noteId); return; }
+  saved.editingId = null;
+  saveSmartNotes();
+  renderSavedBody();
+  refreshRailNotes();
+}
 
-  const filtered = state.notesFilterSubject === 'all'
-    ? state.smartNotes
-    : state.smartNotes.filter(n => n.subject === state.notesFilterSubject);
+async function openNoteSource(noteId) {
+  const n = state.smartNotes.find(x => x.id === noteId);
+  if (!n || !n.subject) return;
+  if (window.matchMedia('(max-width: 900px)').matches) toggleSmartNotesPanel(false);
+  await resumeTo(n.subject, n.section, n.topicIndex);
+  requestAnimationFrame(() => scrollToHighlight(n));
+}
 
-  if (filtered.length === 0) {
-    const empty = document.createElement('div');
-    empty.className = 'smart-notes-empty';
-    const icon = document.createElement('div');
-    icon.className = 'smart-notes-empty-icon';
-    icon.textContent = '\uD83D\uDCDD';
-    empty.appendChild(icon);
-    const msg = document.createElement('p');
-    msg.textContent = state.smartNotes.length === 0
-      ? 'No notes yet. Select text on a page or type a note below.'
-      : 'No notes for this subject filter.';
-    empty.appendChild(msg);
-    body.appendChild(empty);
+// ── Starred + Mistakes tabs ──
+function questionMeta(item) {
+  return [subjectShort(item.subject), item.q.topic || item.unitName.split(' — ')[0]].filter(Boolean).join(' · ');
+}
+
+function correctOptionText(q) {
+  return parseOption(q.options[q.correct] || '').text;
+}
+
+function renderStarredTab() {
+  const items = starredItems();
+  if (!items.length) return savedEmpty('No starred questions', 'Tap the bookmark on any practice question (or press S) to keep it here as a flashcard.');
+  const shown = items.filter(i => inScope(i.subject) && matchesQuery(i.q.question, i.q.topic || ''));
+  if (!shown.length) return savedEmpty('Nothing matches', 'Try a different word or subject.');
+  return shown.map(item => {
+    const q = item.q;
+    const exp = q.explanation || parseOption(q.options[q.correct] || '').explanation;
+    return `
+      <article class="saved-q">
+        <p class="saved-q-meta">${escapeHtml(questionMeta(item))}</p>
+        <div class="saved-q-text">${q.question}</div>
+        <details class="saved-q-answer">
+          <summary>Show answer</summary>
+          <p><b>${q.correct.toUpperCase()}</b> ${correctOptionText(q)}</p>
+          ${exp ? `<p class="saved-q-why">${exp}</p>` : ''}
+        </details>
+        <div class="saved-note-foot">
+          <span></span>
+          <span class="saved-note-actions">
+            <button type="button" data-q-open="${item.subject}:${q.id}">Open in quiz</button>
+            <button type="button" data-q-unstar="${item.subject}:${q.id}">Unstar</button>
+          </span>
+        </div>
+      </article>`;
+  }).join('');
+}
+
+function renderMistakesTab() {
+  const items = mistakeItems();
+  if (!items.length) return savedEmpty('No mistakes to review', 'Questions you answer wrong collect here. Get them right and they leave the list.');
+  const shown = items.filter(i => inScope(i.subject) && matchesQuery(i.q.question, i.q.topic || ''));
+  if (!shown.length) return savedEmpty('Nothing matches', 'Try a different word or subject.');
+  return `<p class="saved-intro">Pick the right answer to clear a mistake.</p>` + shown.map(item => {
+    const q = item.q;
+    const key = `${item.subject}:${q.id}`;
+    const last = state.practiceAnswers[item.subject][q.id];
+    return `
+      <article class="saved-q" data-retry="${key}">
+        <p class="saved-q-meta">${escapeHtml(questionMeta(item))}</p>
+        <div class="saved-q-text">${q.question}</div>
+        <div class="saved-retry">
+          ${Object.keys(q.options).map(letter => `
+            <button type="button" class="saved-retry-opt${letter === last ? ' was-picked' : ''}" data-retry-pick="${letter}">
+              <span class="option-letter">${letter.toUpperCase()}</span><span>${parseOption(q.options[letter]).text}</span>
+            </button>`).join('')}
+        </div>
+        <p class="saved-retry-status" role="status">Last time you picked ${last.toUpperCase()}.</p>
+        <div class="saved-note-foot">
+          <span></span>
+          <span class="saved-note-actions"><button type="button" data-q-open="${key}">Open in quiz</button></span>
+        </div>
+      </article>`;
+  }).join('');
+}
+
+function retryMistake(card, letter) {
+  const [subject, id] = card.dataset.retry.split(':');
+  const item = collectQuestions((s, q) => s === subject && String(q.id) === id)[0];
+  if (!item || card.classList.contains('is-done')) return;
+  const q = item.q;
+  const right = letter === q.correct;
+  state.practiceAnswers[subject][q.id] = letter;
+  const key = CONFIG.subjects[subject].storageKeyPractice;
+  localStorage.setItem(key, JSON.stringify(state.practiceAnswers[subject]));
+  if (typeof window.triggerCloudSync === 'function') window.triggerCloudSync();
+
+  card.querySelectorAll('.saved-retry-opt').forEach(btn => {
+    const l = btn.dataset.retryPick;
+    btn.classList.remove('was-picked');
+    btn.classList.toggle('correct', l === q.correct && right);
+    btn.classList.toggle('incorrect', l === letter && !right);
+  });
+  const exp = q.explanation || parseOption(q.options[q.correct] || '').explanation;
+  card.querySelector('.saved-retry-status').innerHTML = right
+    ? 'Correct. Cleared from mistakes.'
+    : `Not quite. Try again.${exp ? ` <span class="saved-q-why">Hint: ${exp}</span>` : ''}`;
+  if (right) {
+    card.classList.add('is-done');
+    setTimeout(() => renderSavedPanel(), 1400);
+  }
+  if (state.activeSubject === subject && document.querySelector('.quiz-page')) renderPracticeUnit(state.quizUnitIndex);
+}
+
+async function openQuestion(key) {
+  const [subject, id] = key.split(':');
+  const item = collectQuestions((s, q) => s === subject && String(q.id) === id)[0];
+  const section = questionSectionId(subject);
+  if (!item || !section) return;
+  if (window.matchMedia('(max-width: 900px)').matches) toggleSmartNotesPanel(false);
+  state.quizFilter = 'all';
+  await resumeTo(subject, section, item.unitIndex);
+  if (state.quizUnitIndex !== item.unitIndex) selectTopic(item.unitIndex);
+  requestAnimationFrame(() => setQuizCursor(item.q.id, true));
+}
+
+function formatQuestionsForExport(items, title) {
+  return `${title} — prep\n\n` + items.map((item, i) => {
+    const q = item.q;
+    const plain = html => { const d = document.createElement('div'); d.innerHTML = html; return d.textContent; };
+    const opts = Object.keys(q.options).map(l => `  ${l.toUpperCase()}) ${plain(parseOption(q.options[l]).text)}${l === q.correct ? '  ← correct' : ''}`).join('\n');
+    const mine = state.practiceAnswers[item.subject]?.[q.id];
+    return `${i + 1}. [${subjectShort(item.subject)}] ${plain(q.question)}\n${opts}${mine ? `\n  My answer: ${mine.toUpperCase()}` : ''}`;
+  }).join('\n\n');
+}
+
+function formatNotesForExport() {
+  const groups = new Map();
+  state.smartNotes.forEach(n => {
+    const key = `${subjectShort(n.subject)} — ${n.topicTitle || 'General notes'}`;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(n);
+  });
+  return '# Notes — prep\n\n' + [...groups].map(([head, list]) =>
+    `## ${head}\n\n` + list.map(n => [n.selectedText && `> ${n.selectedText.replace(/\n+/g, ' ')}`, n.userAnnotation].filter(Boolean).join('\n\n')).join('\n\n')
+  ).join('\n\n');
+}
+
+function copySavedTab(button) {
+  const text = saved.tab === 'notes' ? formatNotesForExport()
+    : saved.tab === 'starred' ? formatQuestionsForExport(starredItems(), 'Starred questions')
+    : formatQuestionsForExport(mistakeItems(), 'Questions I got wrong');
+  navigator.clipboard.writeText(text).then(() => {
+    const original = button.innerHTML;
+    button.textContent = 'Copied';
+    setTimeout(() => { if (button.isConnected) button.innerHTML = original; }, 1600);
+  }).catch(() => {});
+}
+
+function onSavedClick(e) {
+  const t = e.target;
+  const hit = sel => t.closest(sel);
+  let el;
+  if (hit('[data-saved-close]')) return toggleSmartNotesPanel(false);
+  if ((el = hit('[data-saved-tab]'))) {
+    saved.tab = el.dataset.savedTab; saved.editingId = null;
+    renderSavedPanel();
+    if (saved.tab !== 'notes') ensureSavedBanksLoaded();
     return;
   }
-
-  filtered.forEach(note => {
-    const card = document.createElement('div');
-    card.className = 'smart-note-card';
-
-    // Source badge row
-    const sourceRow = document.createElement('div');
-    sourceRow.className = 'smart-note-source';
-
-    const badge = document.createElement('span');
-    badge.className = 'smart-note-source-badge source-' + note.subject;
-    badge.textContent = CONFIG.subjects[note.subject]?.label || note.subject;
-    sourceRow.appendChild(badge);
-
-    const timestamp = document.createElement('span');
-    timestamp.className = 'smart-note-timestamp';
-    timestamp.textContent = formatTimeAgo(note.timestamp);
-    sourceRow.appendChild(timestamp);
-    card.appendChild(sourceRow);
-
-    // Context line
-    if (note.topicTitle || note.sectionName) {
-      const context = document.createElement('div');
-      context.className = 'smart-note-context';
-      context.textContent = [note.sectionName, note.topicTitle].filter(Boolean).join(' \u2192 ');
-      card.appendChild(context);
-    }
-
-    // Selected text (if selection note)
-    if (note.selectedText) {
-      const selDiv = document.createElement('div');
-      selDiv.className = 'smart-note-content selection-text';
-      selDiv.textContent = note.selectedText;
-      card.appendChild(selDiv);
-    }
-
-    // Annotation / manual note
-    if (note.userAnnotation) {
-      const annoDiv = document.createElement('div');
-      annoDiv.className = note.selectedText ? 'smart-note-annotation' : 'smart-note-content';
-      annoDiv.textContent = note.userAnnotation;
-      card.appendChild(annoDiv);
-    }
-
-    // Delete button
-    const delBtn = document.createElement('button');
-    delBtn.className = 'smart-note-delete';
-    delBtn.title = 'Delete note';
-    const delSvg = new DOMParser().parseFromString(
-      '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
-      'image/svg+xml'
-    );
-    delBtn.appendChild(delBtn.ownerDocument.importNode(delSvg.documentElement, true));
-    delBtn.addEventListener('click', () => deleteNote(note.id));
-    card.appendChild(delBtn);
-
-    body.appendChild(card);
-  });
+  if (hit('[data-saved-copy]')) return copySavedTab(hit('[data-saved-copy]'));
+  if (hit('[data-saved-undo]')) return undoDeleteNote();
+  if ((el = hit('[data-note-edit]'))) { saved.editingId = el.dataset.noteEdit; return renderSavedBody(); }
+  if (hit('[data-note-cancel]')) { saved.editingId = null; return renderSavedBody(); }
+  if ((el = hit('[data-note-save]'))) return saveNoteEdit(el.dataset.noteSave);
+  if ((el = hit('[data-note-delete]'))) return deleteNote(el.dataset.noteDelete);
+  if ((el = hit('[data-open-note]'))) return openNoteSource(el.dataset.openNote);
+  if ((el = hit('[data-q-open]'))) return openQuestion(el.dataset.qOpen);
+  if ((el = hit('[data-q-unstar]'))) {
+    const [subject, id] = el.dataset.qUnstar.split(':');
+    return toggleStar(subject, parseInt(id, 10));
+  }
+  if ((el = hit('[data-retry-pick]'))) return retryMistake(el.closest('[data-retry]'), el.dataset.retryPick);
 }
+
+function onSavedKeydown(e) {
+  if (e.key === 'Escape') {
+    if (saved.editingId) { saved.editingId = null; renderSavedBody(); }
+    else toggleSmartNotesPanel(false);
+    e.stopPropagation();
+    return;
+  }
+  const composer = e.target.closest('[data-note-form]');
+  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+    if (saved.editingId) { saveNoteEdit(saved.editingId); e.preventDefault(); }
+    else if (composer) { composer.requestSubmit(); e.preventDefault(); }
+    return;
+  }
+  // Arrow keys move between tabs (WAI-ARIA tabs pattern).
+  const tab = e.target.closest('[data-saved-tab]');
+  if (tab && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
+    const ids = SAVED_TABS.map(([id]) => id);
+    const next = ids[(ids.indexOf(saved.tab) + (e.key === 'ArrowRight' ? 1 : ids.length - 1)) % ids.length];
+    saved.tab = next;
+    renderSavedPanel();
+    if (next !== 'notes') ensureSavedBanksLoaded();
+    document.querySelector(`[data-saved-tab="${next}"]`)?.focus();
+    e.preventDefault();
+  }
+}
+
+document.addEventListener('submit', e => {
+  if (!e.target.matches('[data-note-form]')) return;
+  e.preventDefault();
+  const field = e.target.querySelector('textarea');
+  const text = field.value.trim();
+  if (!text) { field.focus(); return; }
+  addNote({ sourceType: 'manual', userAnnotation: text });
+  document.getElementById('smart-notes-textarea')?.focus();
+});
 
 function updateNotesCount() {
   const badge = document.getElementById('notes-count-badge');
   if (!badge) return;
-  const count = state.smartNotes.length;
+  const count = state.smartNotes.length + Object.values(state.starredMcqs).reduce((n, l) => n + (l || []).length, 0);
   badge.textContent = count > 0 ? String(count) : '';
   badge.setAttribute('data-count', String(count));
 }
 
-function formatTimeAgo(timestamp) {
-  const diff = Date.now() - timestamp;
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return 'Just now';
-  if (mins < 60) return mins + 'm ago';
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return hours + 'h ago';
-  const days = Math.floor(hours / 24);
-  if (days < 7) return days + 'd ago';
-  return new Date(timestamp).toLocaleDateString();
-}
-
-function formatNotesForExport() {
-  if (state.smartNotes.length === 0) return 'No notes saved yet.';
-
-  let output = '\uD83D\uDCDA STUDY NOTES \u2014 prep\n';
-  output += '\u2550'.repeat(30) + '\n\n';
-
-  state.smartNotes.forEach(note => {
-    const subjectLabel = CONFIG.subjects[note.subject]?.label || note.subject;
-    const context = [subjectLabel, note.sectionName, note.topicTitle].filter(Boolean).join(' \u2192 ');
-    const timeAgo = formatTimeAgo(note.timestamp);
-
-    output += '[' + context + '] (' + timeAgo + ')\n';
-
-    if (note.selectedText) {
-      output += '\uD83D\uDCCC "' + note.selectedText + '"\n';
-    }
-    if (note.userAnnotation) {
-      const prefix = note.selectedText ? '\uD83D\uDCAD ' : '\u270D\uFE0F ';
-      output += prefix + note.userAnnotation + '\n';
-    }
-    output += '\n';
-  });
-
-  return output.trim();
-}
-
-function copyNotesToClipboard() {
-  const text = formatNotesForExport();
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById('copy-notes-btn');
-    if (btn) {
-      const original = btn.textContent;
-      btn.textContent = '\u2713 Copied!';
-      btn.classList.add('copied');
-      setTimeout(() => {
-        btn.textContent = original;
-        btn.classList.remove('copied');
-      }, 2000);
-    }
-  }).catch(() => {
-    // Fallback: select from a temporary element
-  });
-}
-
 // ============================================================
-//  TEXT SELECTION → SAVE TO NOTES TOOLTIP
+//  TEXT SELECTION → HIGHLIGHT / NOTE
 // ============================================================
 function setupSelectionTooltip() {
   const tooltip = document.getElementById('selection-tooltip');
   if (!tooltip) return;
-
   let selectedText = '';
 
   document.addEventListener('mouseup', (e) => {
-    // Only on reading content area (theory pages)
-    const contentArea = document.getElementById('reading-content-area');
-    if (!contentArea || !contentArea.contains(e.target)) {
-      hideSelectionTooltip();
-      return;
-    }
-
-    // Don't show in MCQ/Bash modes
-    if (isMcqSection() || isBashSection()) {
-      hideSelectionTooltip();
-      return;
-    }
-
-    // Don't show if clicking on the tooltip itself
     if (tooltip.contains(e.target)) return;
-
+    const contentArea = document.getElementById('reading-content-area');
+    if (!contentArea || !contentArea.contains(e.target) || isMcqSection() || isBashSection() || isJavaSection()) {
+      hideSelectionTooltip();
+      return;
+    }
     const selection = window.getSelection();
     const text = selection ? selection.toString().trim() : '';
-
-    if (text.length > 3) {
-      selectedText = text;
-      const range = selection.getRangeAt(0);
-      const rect = range.getBoundingClientRect();
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-
-      tooltip.style.top = (rect.bottom + scrollTop + 8) + 'px';
-      tooltip.style.left = (rect.left + scrollLeft + (rect.width / 2) - 60) + 'px';
-      tooltip.classList.add('visible');
-    } else {
-      hideSelectionTooltip();
-    }
+    if (text.length < 4) { hideSelectionTooltip(); return; }
+    selectedText = text.slice(0, 1200);
+    const rect = selection.getRangeAt(0).getBoundingClientRect();
+    tooltip.classList.add('visible');
+    const w = tooltip.offsetWidth;
+    tooltip.style.top = (rect.bottom + window.scrollY + 8) + 'px';
+    tooltip.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, rect.left + rect.width / 2 - w / 2)) + 'px';
   });
 
-  tooltip.addEventListener('click', () => {
-    if (!selectedText) return;
-
-    addNote({
-      sourceType: 'selection',
-      selectedText: selectedText,
-      userAnnotation: ''
-    });
-
+  tooltip.addEventListener('mousedown', e => e.preventDefault()); // keep the selection alive
+  tooltip.addEventListener('click', (e) => {
+    const action = e.target.closest('[data-sel]')?.dataset.sel;
+    if (!action || !selectedText) return;
+    const note = addNote({ sourceType: 'selection', selectedText });
     hideSelectionTooltip();
     window.getSelection().removeAllRanges();
-
-    // Open panel briefly if not open
-    const panel = document.getElementById('smart-notes-panel');
-    if (panel && !panel.classList.contains('open')) {
-      toggleSmartNotesPanel();
+    if (action === 'note') {
+      saved.editingId = note.id;
+      toggleSmartNotesPanel(true, 'notes');
     }
   });
 
-  // Hide tooltip on scroll or click elsewhere
   document.addEventListener('mousedown', (e) => {
-    if (!tooltip.contains(e.target)) {
-      hideSelectionTooltip();
-    }
+    if (!tooltip.contains(e.target)) hideSelectionTooltip();
   });
 }
 
 function hideSelectionTooltip() {
-  const tooltip = document.getElementById('selection-tooltip');
-  if (tooltip) {
-    tooltip.classList.remove('visible');
-  }
+  document.getElementById('selection-tooltip')?.classList.remove('visible');
 }
 
-// ============================================================
-//  STARRED MCQs IN NOTES PANEL
-// ============================================================
-function renderStarredInNotesPanel() {
-  const list = document.getElementById('starred-section-list');
-  const countBadge = document.getElementById('starred-count-badge');
-  if (!list) return;
-
-  // Collect all starred questions across subjects
-  const allStarred = [];
-  Object.keys(state.starredMcqs).forEach(subject => {
-    const qIds = state.starredMcqs[subject] || [];
-    const mcqBank = CONFIG.subjects[subject]?.mcqs || [];
-    const allQuestions = mcqBank.flatMap(u => u.questions || []);
-
-    qIds.forEach(qId => {
-      const q = allQuestions.find(question => question.id === qId);
-      if (q) {
-        allStarred.push({ ...q, subject });
-      }
-    });
-  });
-
-  if (countBadge) {
-    countBadge.textContent = allStarred.length > 0 ? String(allStarred.length) : '';
-  }
-
-  list.replaceChildren();
-
-  if (allStarred.length === 0) {
-    const empty = document.createElement('p');
-    empty.style.cssText = 'font-size: 0.85rem; color: var(--text-secondary); padding: 0.5rem 0;';
-    empty.textContent = 'No starred questions yet. Star questions in MCQ practice to see them here.';
-    list.appendChild(empty);
-    return;
-  }
-
-  allStarred.forEach(q => {
-    const item = document.createElement('div');
-    item.className = 'starred-mcq-item';
-
-    const headerRow = document.createElement('div');
-    headerRow.className = 'starred-mcq-item-header';
-
-    const badge = document.createElement('span');
-    badge.className = 'starred-mcq-subject-badge';
-    badge.textContent = CONFIG.subjects[q.subject]?.label || q.subject;
-    headerRow.appendChild(badge);
-
-    const unstarItemBtn = document.createElement('button');
-    unstarItemBtn.className = 'unstar-item-btn';
-    unstarItemBtn.title = 'Remove Star';
-    const trashSvg = new DOMParser().parseFromString(
-      '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
-      'image/svg+xml'
-    );
-    unstarItemBtn.appendChild(unstarItemBtn.ownerDocument.importNode(trashSvg.documentElement, true));
-    unstarItemBtn.addEventListener('click', () => {
-      const starredList = state.starredMcqs[q.subject] || [];
-      state.starredMcqs[q.subject] = starredList.filter(id => id !== q.id);
-      localStorage.setItem('prep_starred_mcqs', JSON.stringify(state.starredMcqs));
-      renderStarredInNotesPanel();
-      
-      const activeStarBtn = document.querySelector(`.mcq-star-btn[data-qid="${q.id}"]`);
-      if (activeStarBtn) {
-        activeStarBtn.classList.remove('starred');
-        activeStarBtn.textContent = '☆';
-      }
-    });
-    headerRow.appendChild(unstarItemBtn);
-    item.appendChild(headerRow);
-
-    const qText = document.createElement('div');
-    qText.className = 'starred-mcq-question-text';
-    qText.textContent = q.question;
-    item.appendChild(qText);
-
-    if (q.correct && q.options) {
-      const ansDiv = document.createElement('div');
-      ansDiv.className = 'starred-mcq-answer';
-      const parsed = parseOption(q.options[q.correct] || '');
-      ansDiv.textContent = '\u2713 ' + q.correct.toUpperCase() + ') ' + parsed.text;
-      item.appendChild(ansDiv);
+// Paint saved highlights on the open topic with the CSS Custom Highlight API: no DOM
+// mutation, so ranges may span elements. Browsers without it simply show no marks.
+function findTextRange(root, needle) {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const map = [];
+  let flat = '';
+  let lastSpace = true;
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    const s = node.nodeValue;
+    for (let i = 0; i < s.length; i++) {
+      const space = /\s/.test(s[i]);
+      if (space && lastSpace) continue;
+      flat += space ? ' ' : s[i];
+      map.push([node, i]);
+      lastSpace = space;
     }
-
-    list.appendChild(item);
-  });
+  }
+  const target = needle.replace(/\s+/g, ' ').trim();
+  const at = flat.indexOf(target);
+  if (at === -1 || !target) return null;
+  const range = document.createRange();
+  const [sNode, sOff] = map[at];
+  const [eNode, eOff] = map[at + target.length - 1];
+  range.setStart(sNode, sOff);
+  range.setEnd(eNode, eOff + 1);
+  return range;
 }
 
-function formatStarredForExport() {
-  const allStarred = [];
-  Object.keys(state.starredMcqs).forEach(subject => {
-    const qIds = state.starredMcqs[subject] || [];
-    const mcqBank = CONFIG.subjects[subject]?.mcqs || [];
-    const allQuestions = mcqBank.flatMap(u => u.questions || []);
-
-    qIds.forEach(qId => {
-      const q = allQuestions.find(question => question.id === qId);
-      if (q) {
-        allStarred.push({ ...q, subject });
-      }
-    });
-  });
-
-  if (allStarred.length === 0) return 'No starred questions.';
-
-  let output = '\u2605 STARRED QUESTIONS \u2014 prep\n';
-  output += '\u2550'.repeat(30) + '\n\n';
-
-  allStarred.forEach((q, i) => {
-    const subjectLabel = CONFIG.subjects[q.subject]?.label || q.subject;
-    output += '\u2605 Q' + (i + 1) + '. [' + subjectLabel + '] ' + q.question + '\n';
-
-    if (q.options) {
-      Object.keys(q.options).forEach(optLetter => {
-        const parsed = parseOption(q.options[optLetter]);
-        const marker = optLetter === q.correct ? ' \u2190 Correct' : '';
-        output += '  ' + optLetter.toUpperCase() + ') ' + parsed.text + marker + '\n';
-      });
-    }
-
-    const savedAns = state.practiceAnswers[q.subject]?.[q.id];
-    if (savedAns !== undefined) {
-      const isCorrect = savedAns === q.correct;
-      output += '  [Your answer: ' + savedAns.toUpperCase() + ' \u2014 ' + (isCorrect ? 'Correct' : 'Incorrect') + ']\n';
-    }
-    output += '\n';
-  });
-
-  return output.trim();
+function topicNotes() {
+  return state.smartNotes.filter(n => n.subject === state.activeSubject && n.section === state.activeSection && n.topicIndex === state.activeTopicIndex);
 }
 
-function copyStarredToClipboard() {
-  const text = formatStarredForExport();
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById('copy-starred-btn');
-    if (btn) {
-      const original = btn.textContent;
-      btn.textContent = '\u2713 Copied!';
-      setTimeout(() => { btn.textContent = original; }, 2000);
-    }
-  }).catch(() => {
-    // Fallback silently
-  });
+function applyNoteHighlights() {
+  if (typeof CSS === 'undefined' || !CSS.highlights || typeof Highlight === 'undefined') return;
+  const reading = elements.readingPane.style.display !== 'none' && !isMcqSection() && !isBashSection() && !isJavaSection();
+  const ranges = reading
+    ? topicNotes().filter(n => n.selectedText).map(n => findTextRange(elements.contentArea, n.selectedText)).filter(Boolean)
+    : [];
+  CSS.highlights.set('prep-notes', new Highlight(...ranges));
+}
+
+function scrollToHighlight(note) {
+  if (!note.selectedText) return;
+  const range = findTextRange(elements.contentArea, note.selectedText);
+  const el = range?.startContainer.parentElement;
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// Keep the reader's "Your notes" rail card in sync without re-rendering the whole rail.
+function refreshRailNotes() {
+  const slot = document.getElementById('rail-notes');
+  if (slot) slot.innerHTML = renderRailNotes();
+}
+
+function renderRailNotes() {
+  const notes = topicNotes();
+  const list = notes.slice(0, 3).map(n => `
+    <button type="button" class="rail-note" data-rail-note="${n.id}">
+      ${n.selectedText ? `<span class="rail-note-quote">${escapeHtml(n.selectedText)}</span>` : ''}
+      ${n.userAnnotation ? `<span class="rail-note-text">${escapeHtml(n.userAnnotation)}</span>` : ''}
+    </button>`).join('');
+  return `
+    ${notes.length ? list : '<p class="rail-empty">Select text to highlight it, or add a note for this topic.</p>'}
+    ${notes.length > 3 ? `<p class="rail-empty">+${notes.length - 3} more in Saved</p>` : ''}
+    <button type="button" class="rail-add-note" data-rail-add-note>${svgIcon(SAVED_ICON.note, 14)}${notes.length ? 'Open notes' : 'Add a note'}</button>`;
 }
 
 // ============================================================
@@ -4288,11 +5164,11 @@ function initPlaygroundShell(forceReset = false) {
     state.playgroundShell.fs = { ...VIRTUAL_FS };
     state.playgroundShell.directories = new Set(['/etc', '/var', '/var/log', '/home', '/home/student', '/tmp']);
     state.playgroundShell.cwd = '/home/student';
-    state.playgroundShell.vars = { 
-      '0': 'bash', 
-      'USER': 'student', 
-      'HOME': '/home/student', 
-      'PATH': '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' 
+    state.playgroundShell.vars = {
+      '0': 'bash',
+      'USER': 'student',
+      'HOME': '/home/student',
+      'PATH': '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
     };
     state.playgroundShell.arrays = {};
     state.playgroundShell.functions = {};
@@ -4318,7 +5194,7 @@ function initPlaygroundShell(forceReset = false) {
 
 function buildFSTree(fs, directories) {
   const root = { name: '/', type: 'dir', children: {}, path: '/' };
-  
+
   // Add directories
   if (directories) {
     for (const dirPath of directories) {
@@ -4361,7 +5237,7 @@ function buildFSTree(fs, directories) {
 
 function renderPlaygroundSidebar() {
   initPlaygroundShell(); // Ensure state.playgroundShell is initialized
-  
+
   elements.topicList.innerHTML = '';
   elements.topicList.className = 'topic-list playground-sidebar';
 
@@ -4591,7 +5467,7 @@ const PLAYGROUND_CHALLENGES = [
       if (!dirs || !dirs.has(assetsDir)) {
         return { success: false, error: 'Directory "/home/student/web/assets" not found.' };
       }
-      
+
       const fileContent = fs['web/index.html'] !== undefined ? fs['web/index.html'] : fs[indexFile];
       if (fileContent === undefined) {
         return { success: false, error: 'File "/home/student/web/index.html" not found.' };
@@ -4624,7 +5500,7 @@ function renderPlaygroundChallenges() {
   const listContainer = document.getElementById('challenges-list-container');
   PLAYGROUND_CHALLENGES.forEach(challenge => {
     const isSolved = !!state.playgroundShell.solvedChallenges[challenge.id];
-    
+
     const card = document.createElement('div');
     card.className = `challenge-card ${isSolved ? 'solved' : ''}`;
     card.id = `challenge-card-${challenge.id}`;
@@ -4664,22 +5540,22 @@ function renderPlaygroundChallenges() {
 
       const result = challenge.verify(state.playgroundShell);
       const feedbackBox = document.getElementById(`feedback-box-${challengeId}`);
-      
+
       if (result.success) {
         state.playgroundShell.solvedChallenges[challengeId] = true;
         feedbackBox.style.display = 'block';
         feedbackBox.className = 'challenge-feedback-box success-feedback';
         feedbackBox.textContent = '🎉 Success! Challenge completed successfully.';
-        
+
         btn.disabled = true;
         btn.textContent = 'Verified';
-        
+
         const badge = container.querySelector(`#challenge-card-${challengeId} .challenge-status-badge`);
         if (badge) {
           badge.className = 'challenge-status-badge solved';
           badge.textContent = 'Solved';
         }
-        
+
         const card = document.getElementById(`challenge-card-${challengeId}`);
         if (card) {
           card.classList.add('solved');
@@ -4720,7 +5596,7 @@ function renderPlayground() {
     container = document.createElement('div');
     container.id = 'playground-workspace-container';
     container.className = 'playground-workspace';
-    
+
     // Build HTML content inside
     container.innerHTML = `
       <!-- Left Side: Terminal / Editor -->
@@ -4729,7 +5605,7 @@ function renderPlayground() {
           <button class="panel-tab-btn active" id="btn-tab-terminal" data-tab="terminal">Terminal (CLI)</button>
           <button class="panel-tab-btn" id="btn-tab-editor" data-tab="editor">Script Editor</button>
         </div>
-        
+
         <div class="panel-tab-content active" id="playground-terminal-tab">
           <div class="terminal-log-container" id="terminal-log-container">
             <div class="terminal-log-line sys-info">Welcome to prep Linux Terminal Playground!
@@ -4737,7 +5613,7 @@ Type commands in the input line below. Filesystem alterations and shell variable
 Type 'help' to see simulated commands, or check the reference guide on the right.</div>
           </div>
         </div>
-        
+
         <div class="panel-tab-content" id="playground-editor-tab" style="display: none;">
           <div class="editor-instructions">
             Write a Bash script below. Standard inputs are simulated, and execution updates the persistent filesystem and variables.
@@ -4762,7 +5638,7 @@ Type 'help' to see simulated commands, or check the reference guide on the right
           <button class="panel-tab-btn" id="btn-tab-disk-monitor" data-tab="disk-monitor">Disk Visualizer</button>
           <button class="panel-tab-btn" id="btn-tab-quick-ref" data-tab="quick-ref">Quick Reference</button>
         </div>
-        
+
         <div class="panel-tab-content active" id="playground-challenges-tab" style="display: flex; flex-direction: column; height: 100%; overflow: hidden;">
           <!-- Dynamic Lab Challenges -->
         </div>
@@ -4775,7 +5651,7 @@ Type 'help' to see simulated commands, or check the reference guide on the right
             <!-- Dynamic disk columns and VG blocks -->
           </div>
         </div>
-        
+
         <div class="panel-tab-content" id="playground-quick-ref-tab" style="display: none;">
           <div class="quick-ref-scroll">
             <h3 style="margin-top:0; border-left:none; padding-left:0; font-size:1.1rem; color:var(--text-primary);">Common Bash Commands</h3>
@@ -4797,7 +5673,7 @@ Type 'help' to see simulated commands, or check the reference guide on the right
                 <tr><td><code>find . -name "*.txt"</code></td><td>Find files by name pattern</td></tr>
               </tbody>
             </table>
-            
+
             <h3 style="margin-top:1.2rem; border-left:none; padding-left:0; font-size:1.1rem; color:var(--text-primary);">LVM Commands</h3>
             <table class="quick-ref-table">
               <thead>
@@ -4865,11 +5741,11 @@ function setupPlaygroundListeners() {
       rightTabs.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       const target = btn.getAttribute('data-tab');
-      
+
       const tabChallenges = document.getElementById('playground-challenges-tab');
       const tabDiskMonitor = document.getElementById('playground-disk-monitor-tab');
       const tabQuickRef = document.getElementById('playground-quick-ref-tab');
-      
+
       if (target === 'challenges') {
         if (tabChallenges) tabChallenges.style.display = 'flex';
         if (tabDiskMonitor) tabDiskMonitor.style.display = 'none';
@@ -4919,16 +5795,16 @@ function handleTerminalKeydown(e) {
   if (!cliInput) return;
 
   const history = state.playgroundShell.terminalHistory;
-  
+
   if (e.key === 'Enter') {
     const cmd = cliInput.value.trim();
-    
+
     // Replace the active row with a static line representing the prompt + what was typed
     const activeRow = document.getElementById('terminal-active-row');
     if (activeRow) {
       const lineEl = document.createElement('div');
       lineEl.className = 'terminal-log-line command-input';
-      
+
       const promptSpan = document.createElement('span');
       promptSpan.className = 'terminal-prompt';
       promptSpan.textContent = getPromptString() + ' ';
@@ -4953,14 +5829,14 @@ function handleTerminalKeydown(e) {
       // Just append a fresh prompt row
       appendActivePromptRow();
     }
-  } 
+  }
   else if (e.key === 'ArrowUp') {
     e.preventDefault();
     if (history.length > 0 && state.playgroundShell.historyIndex > 0) {
       state.playgroundShell.historyIndex--;
       cliInput.value = history[state.playgroundShell.historyIndex];
     }
-  } 
+  }
   else if (e.key === 'ArrowDown') {
     e.preventDefault();
     if (state.playgroundShell.historyIndex < history.length - 1) {
@@ -4970,7 +5846,7 @@ function handleTerminalKeydown(e) {
       state.playgroundShell.historyIndex = history.length;
       cliInput.value = '';
     }
-  } 
+  }
   else if (e.key === 'Tab') {
     e.preventDefault();
     handleTabCompletion(cliInput);
@@ -4993,7 +5869,7 @@ function handleTabCompletion(inputEl) {
 
   const prefix = lastPart;
   const isAbs = prefix.startsWith('/');
-  
+
   const toSearch = [...files, ...dirs];
   for (const item of toSearch) {
     let matchCandidate = '';
@@ -5094,7 +5970,7 @@ function appendActivePromptRow() {
   inputEl.id = 'cli-terminal-input';
   inputEl.autocomplete = 'off';
   inputEl.spellcheck = false;
-  
+
   activeRow.appendChild(inputEl);
   logContainer.appendChild(activeRow);
 
@@ -5230,7 +6106,7 @@ function updateDiskMonitor() {
   defaultDisks.forEach(disk => {
     const diskCard = document.createElement('div');
     diskCard.className = 'disk-card';
-    
+
     // Header
     const diskHeader = document.createElement('div');
     diskHeader.className = 'disk-card-header';
@@ -5256,7 +6132,7 @@ function updateDiskMonitor() {
         const partEl = document.createElement('div');
         const isPartPV = pvs.includes(part);
         partEl.className = `part-item ${isPartPV ? 'is-pv' : ''}`;
-        
+
         const vgName = isPartPV ? (Object.keys(vgs).find(vgKey => vgs[vgKey].pvs.includes(part)) || 'Unallocated') : '';
         partEl.innerHTML = `
           <strong>${part.split('/').pop()}</strong>

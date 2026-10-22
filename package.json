@@ -9,7 +9,7 @@
     "test:executor": "node tools/tests/test_executor.js",
     "test:judge": "node tools/tests/test_judge.js",
     "test:single": "node tools/tests/test_single_file.js",
-    "test:frontend": "node tools/tests/linux-behavior.test.js && node tools/tests/java-engine.test.js && node tools/tests/lazy-loader.test.js",
+    "test:frontend": "node tools/tests/linux-behavior.test.js && node tools/tests/java-engine.test.js && node tools/tests/lazy-loader.test.js && node tools/tests/study-experience.test.js",
     "test:all": "npm run test:vercel && npm run test:executor && npm run test:frontend",
     "data:decode": "node tools/data_prep/decode_everything.js",
     "data:parse": "python3 tools/data_prep/parse_notes.py",
