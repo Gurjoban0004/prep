@@ -532,6 +532,7 @@ const elements = {
   sidebar: document.getElementById('sidebar-pane'),
   menuToggleBtn: document.getElementById('menu-toggle-btn'),
   desktopSidebarToggle: document.getElementById('desktop-sidebar-toggle'),
+  outlineClose: document.getElementById('outline-close'),
   searchInput: document.getElementById('search-input'),
   topicList: document.getElementById('topic-list-container'),
   progressPercent: document.getElementById('progress-percentage'),
@@ -932,9 +933,10 @@ function setupEventListeners() {
         if (open) elements.searchInput.focus();
         return;
       }
-      document.querySelector('.container').classList.toggle('sidebar-collapsed');
+      setDesktopOutlineCollapsed(!document.querySelector('.container').classList.contains('sidebar-collapsed'));
     });
   }
+  elements.outlineClose?.addEventListener('click', () => setDesktopOutlineCollapsed(true));
 
   document.getElementById('brand-home')?.addEventListener('click', () => renderLandingPage());
   document.getElementById('sidebar-back')?.addEventListener('click', () => {
@@ -1124,6 +1126,15 @@ function setupEventListeners() {
     const subject = subjectCard.getAttribute('data-subject');
     if (subject) setActiveSubject(subject);
   });
+}
+
+function setDesktopOutlineCollapsed(collapsed) {
+  const container = document.querySelector('.container');
+  container.classList.toggle('sidebar-collapsed', collapsed);
+  const label = collapsed ? 'Show topic outline' : 'Hide topic outline';
+  elements.desktopSidebarToggle?.setAttribute('aria-label', label);
+  elements.desktopSidebarToggle?.setAttribute('title', label);
+  elements.desktopSidebarToggle?.setAttribute('aria-expanded', String(!collapsed));
 }
 
 function renderLandingPage(page = 'home') {
@@ -2242,6 +2253,24 @@ function refreshCurrentTopic() {
 // ============================================================
 let lastActiveSectionForFilter = null;
 let lastActiveSubjectForFilter = null;
+let outlineExpanded = safeParse(localStorage.getItem('prep_outline_expanded'), false) === true;
+
+function setOutlineExpanded(expanded) {
+  outlineExpanded = expanded;
+  try { localStorage.setItem('prep_outline_expanded', JSON.stringify(expanded)); } catch (_) {}
+  renderSidebar();
+}
+
+function appendOutlineDensityToggle(total) {
+  if (state.searchQuery || total <= 4) return;
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'outline-density-toggle';
+  button.setAttribute('aria-expanded', String(outlineExpanded));
+  button.textContent = outlineExpanded ? 'Show a quieter outline' : `Show all ${total} topics`;
+  button.addEventListener('click', () => setOutlineExpanded(!outlineExpanded));
+  elements.topicList.appendChild(button);
+}
 
 function updateSidebarFilterDropdown() {
   const wrapper = document.getElementById('sidebar-filter-wrapper');
@@ -2583,6 +2612,9 @@ function renderSidebar() {
     const titleLower = topic.title.toLowerCase();
     if (!titleLower.includes(state.searchQuery)) return;
 
+    // Keep the reader outline calm by default while leaving search exhaustive.
+    if (!state.searchQuery && !outlineExpanded && topics.length > 4 && Math.abs(index - state.activeTopicIndex) > 1) return;
+
     const isMastered = state.mastered[state.activeSubject][state.activeSection].includes(index);
     const isActive = index === state.activeTopicIndex;
 
@@ -2621,6 +2653,7 @@ function renderSidebar() {
     fragment.appendChild(button);
   });
   elements.topicList.appendChild(fragment);
+  appendOutlineDensityToggle(topics.length);
 }
 
 

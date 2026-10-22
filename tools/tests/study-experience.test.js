@@ -43,4 +43,6 @@ const app = fs.readFileSync(path.join(__dirname,'../../IOT/app.js'),'utf8');
 assert(!app.includes('setupSecurity'), 'Browser shortcuts and context menus must remain available.');
 assert(app.includes('delete subjectLoadPromises[subjectId]'), 'A failed subject load must permit retry.');
 assert(app.includes('navigationId !== subjectNavigationId'), 'An old subject request must not overwrite new navigation.');
+assert(app.includes("localStorage.getItem('prep_outline_expanded')"), 'Outline density must persist per browser.');
+assert(app.includes('Math.abs(index - state.activeTopicIndex) > 1'), 'A compact outline must retain the current topic and its neighbours.');
 console.log('Study experience checks passed');
