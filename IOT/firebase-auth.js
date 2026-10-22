@@ -71,8 +71,11 @@
     const provider = new firebase.auth.GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
     window.fbAuth.signInWithPopup(provider).catch(err => {
-      if (err.code !== 'auth/popup-closed-by-user') {
-        showToast('Sign-in failed. Please try again.', true);
+      console.error('[Firebase Auth]', err.code, err.message);
+      if (err.code === 'auth/popup-blocked') {
+        showToast('Sign-in popup was blocked by your browser. Please allow popups.', true);
+      } else if (err.code !== 'auth/popup-closed-by-user') {
+        showToast(`Sign-in failed: ${err.message || 'Please try again.'}`, true);
       }
     });
   }

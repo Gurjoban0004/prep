@@ -5,6 +5,6 @@
     { "source": "/plan", "destination": "/IOT" },
     { "source": "/boost", "destination": "/IOT" },
     { "source": "/analytics", "destination": "/IOT" },
-    { "source": "/((?!api/).*)", "destination": "/IOT/$1" }
+    { "source": "/((?!(?:api|_vercel)/).*)", "destination": "/IOT/$1" }
   ]
 }
